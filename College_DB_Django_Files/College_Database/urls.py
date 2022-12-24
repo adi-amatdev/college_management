@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,include 
 from django.urls import re_path as url
 
 from dataentry.api import StudentList,AadharList
@@ -26,6 +26,7 @@ from dataentry.api import BacklogsList
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('',include('main.urls')),
     url(r'api/students_list/$',StudentList.as_view(),name='student_list'),
     url(r'api/attendance_list/$',AttendanceList.as_view(),name='attendance_list'),
     url(r'api/marks_list/$',MarksList.as_view(),name='marks_list'),
