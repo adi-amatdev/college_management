@@ -10,7 +10,7 @@ from django.db import models
 
 class Aadhar(models.Model):
     aadhar_no = models.BigIntegerField(db_column='AADHAR_NO', primary_key=True)  # Field name made lowercase.
-    usn = models.ForeignKey('Student', db_column='USN',on_delete=models.CASCADE,default=None)  # Field name made lowercase.
+    usn = models.ForeignKey('Student',on_delete=models.CASCADE,default=None, db_column='USN')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -19,8 +19,8 @@ class Aadhar(models.Model):
 
 class Attendance(models.Model):
     slno = models.IntegerField(db_column='SLNO', primary_key=True)  # Field name made lowercase.
-    usn = models.ForeignKey('Student',db_column='USN',on_delete=models.CASCADE,default=None)  # Field name made lowercase.
-    sub_code = models.ForeignKey('Departmentcourseinfo',db_column='SUB_CODE',on_delete=models.CASCADE,default=None)  # Field name made lowercase.
+    usn = models.ForeignKey('Student',on_delete=models.CASCADE,default=None,db_column='USN')  # Field name made lowercase.
+    sub_code = models.ForeignKey('Departmentcourseinfo',on_delete=models.CASCADE,default=None, db_column='SUB_CODE')  # Field name made lowercase.
     classes_attended = models.IntegerField(db_column='CLASSES_ATTENDED', blank=True, null=True)  # Field name made lowercase.
     total_classes = models.IntegerField(db_column='TOTAL_CLASSES', blank=True, null=True)  # Field name made lowercase.
     percentage = models.DecimalField(db_column='PERCENTAGE', max_digits=10, decimal_places=2, blank=True, null=True)  # Field name made lowercase.
@@ -31,9 +31,78 @@ class Attendance(models.Model):
         unique_together = (('slno', 'usn', 'sub_code'),)
 
 
+class AuthGroup(models.Model):
+    name = models.CharField(unique=True, max_length=150)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group'
+
+
+class AuthGroupPermissions(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+    permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group_permissions'
+        unique_together = (('group', 'permission'),)
+
+
+class AuthPermission(models.Model):
+    name = models.CharField(max_length=255)
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
+    codename = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_permission'
+        unique_together = (('content_type', 'codename'),)
+
+
+class AuthUser(models.Model):
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.IntegerField()
+    username = models.CharField(unique=True, max_length=150)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    email = models.CharField(max_length=254)
+    is_staff = models.IntegerField()
+    is_active = models.IntegerField()
+    date_joined = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user'
+
+
+class AuthUserGroups(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_groups'
+        unique_together = (('user', 'group'),)
+
+
+class AuthUserUserPermissions(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_user_permissions'
+        unique_together = (('user', 'permission'),)
+
+
 class Backlogs(models.Model):
     slno = models.IntegerField(db_column='SLNO', primary_key=True)  # Field name made lowercase.
-    usn = models.ForeignKey('Student',db_column='USN',on_delete=models.CASCADE,default=None)  # Field name made lowercase.
+    usn = models.ForeignKey('Student',on_delete=models.CASCADE,default=None, db_column='USN')  # Field name made lowercase.
     backlogs_sub_code = models.CharField(db_column='BACKLOGS_SUB_CODE', max_length=100)  # Field name made lowercase.
 
     class Meta:
@@ -43,7 +112,7 @@ class Backlogs(models.Model):
 
 
 class Departmentcourseinfo(models.Model):
-    dept = models.ForeignKey('Departmentlist',db_column='DEPT_ID', blank=True, null=True,on_delete=models.CASCADE,default=None)  # Field name made lowercase.
+    dept = models.ForeignKey('Departmentlist',on_delete=models.CASCADE,default=None, db_column='DEPT_ID', blank=True, null=True)  # Field name made lowercase.
     subcode = models.CharField(db_column='SUBCODE', primary_key=True, max_length=10)  # Field name made lowercase.
     subjectname = models.CharField(db_column='SUBJECTNAME', max_length=50, blank=True, null=True)  # Field name made lowercase.
     no_of_credits = models.IntegerField(db_column='NO_OF_CREDITS', blank=True, null=True)  # Field name made lowercase.
@@ -64,8 +133,53 @@ class Departmentlist(models.Model):
         db_table = 'departmentlist'
 
 
+class DjangoAdminLog(models.Model):
+    action_time = models.DateTimeField()
+    object_id = models.TextField(blank=True, null=True)
+    object_repr = models.CharField(max_length=200)
+    action_flag = models.PositiveSmallIntegerField()
+    change_message = models.TextField()
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'django_admin_log'
+
+
+class DjangoContentType(models.Model):
+    app_label = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'django_content_type'
+        unique_together = (('app_label', 'model'),)
+
+
+class DjangoMigrations(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    app = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    applied = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_migrations'
+
+
+class DjangoSession(models.Model):
+    session_key = models.CharField(primary_key=True, max_length=40)
+    session_data = models.TextField()
+    expire_date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_session'
+
+
 class Fees(models.Model):
-    usn = models.OneToOneField('Student',db_column='USN', primary_key=True,on_delete=models.CASCADE,default=None)  # Field name made lowercase.
+    usn = models.OneToOneField('Student',on_delete=models.CASCADE,default=None, db_column='USN', primary_key=True)  # Field name made lowercase.
     college_fee = models.IntegerField(db_column='COLLEGE_FEE', blank=True, null=True)  # Field name made lowercase.
     hostel_fee = models.IntegerField(db_column='HOSTEL_FEE', blank=True, null=True)  # Field name made lowercase.
     library_fines = models.IntegerField(db_column='LIBRARY_FINES', blank=True, null=True)  # Field name made lowercase.
@@ -77,7 +191,7 @@ class Fees(models.Model):
 
 
 class Hostel(models.Model):
-    usn = models.OneToOneField('Student',db_column='USN', primary_key=True,on_delete=models.CASCADE,default=None)  # Field name made lowercase.
+    usn = models.OneToOneField('Student',on_delete=models.CASCADE,default=None, db_column='USN', primary_key=True)  # Field name made lowercase.
     girls_or_boys_hostel = models.CharField(db_column='GIRLS_OR_BOYS_HOSTEL', max_length=5, blank=True, null=True)  # Field name made lowercase.
     room_no = models.CharField(db_column='ROOM_NO', max_length=5)  # Field name made lowercase.
     block_name = models.CharField(db_column='BLOCK_NAME', max_length=10, blank=True, null=True)  # Field name made lowercase.
@@ -88,7 +202,7 @@ class Hostel(models.Model):
 
 
 class ImpInfo(models.Model):
-    usn = models.ForeignKey('Student',db_column='USN',on_delete=models.CASCADE,default=None)  # Field name made lowercase.
+    usn = models.ForeignKey('Student',on_delete=models.CASCADE,default=None, db_column='USN')  # Field name made lowercase.
     number_10th_percentage = models.BigIntegerField(db_column='10TH_PERCENTAGE', blank=True, null=True)  # Field name made lowercase. Field renamed because it wasn't a valid Python identifier.
     number_12th_percentage = models.BigIntegerField(db_column='12TH_PERCENTAGE', blank=True, null=True)  # Field name made lowercase. Field renamed because it wasn't a valid Python identifier.
     name_of_school_10th = models.CharField(db_column='NAME_OF_SCHOOL_10TH', max_length=50, blank=True, null=True)  # Field name made lowercase.
@@ -117,9 +231,9 @@ class ImpInfo(models.Model):
 
 class Marks(models.Model):
     slno = models.IntegerField(db_column='SLNO', primary_key=True)  # Field name made lowercase.
-    usn = models.ForeignKey('Student',db_column='USN',on_delete=models.CASCADE,default=None)  # Field name made lowercase.
+    usn = models.ForeignKey('Student',on_delete=models.CASCADE,default=None, db_column='USN')  # Field name made lowercase.
     semester = models.IntegerField(db_column='SEMESTER', blank=True, null=True)  # Field name made lowercase.
-    subcode = models.ForeignKey(Departmentcourseinfo, models.DO_NOTHING, db_column='SUBCODE')  # Field name made lowercase.
+    subcode = models.ForeignKey(Departmentcourseinfo,on_delete=models.CASCADE,default=None, db_column='SUBCODE')  # Field name made lowercase.
     ia1_scores = models.IntegerField(db_column='IA1_SCORES', blank=True, null=True)  # Field name made lowercase.
     ia2_scores = models.IntegerField(db_column='IA2_SCORES', blank=True, null=True)  # Field name made lowercase.
     ia3_scores = models.IntegerField(db_column='IA3_SCORES', blank=True, null=True)  # Field name made lowercase.
@@ -131,7 +245,7 @@ class Marks(models.Model):
 
 
 class Parent(models.Model):
-    usn = models.OneToOneField('Student',db_column='USN', primary_key=True,on_delete=models.CASCADE,default=None)  # Field name made lowercase.
+    usn = models.OneToOneField('Student',on_delete=models.CASCADE,default=None, db_column='USN', primary_key=True)  # Field name made lowercase.
     parent_or_gaurdian = models.CharField(db_column='PARENT_OR_GAURDIAN', max_length=15, blank=True, null=True)  # Field name made lowercase.
     fname = models.CharField(db_column='FNAME', max_length=50, blank=True, null=True)  # Field name made lowercase.
     father_occupation = models.CharField(db_column='FATHER_OCCUPATION', max_length=50, blank=True, null=True)  # Field name made lowercase.
@@ -171,7 +285,7 @@ class Teacherslist(models.Model):
     slno = models.IntegerField(db_column='SLNO', primary_key=True)  # Field name made lowercase.
     tid = models.CharField(db_column='TID', max_length=10)  # Field name made lowercase.
     tname = models.CharField(db_column='TNAME', max_length=50)  # Field name made lowercase.
-    subcode = models.ForeignKey(Departmentcourseinfo,db_column='SUBCODE',on_delete=models.CASCADE,default=None)  # Field name made lowercase.
+    subcode = models.ForeignKey(Departmentcourseinfo,on_delete=models.CASCADE,default=None, db_column='SUBCODE')  # Field name made lowercase.
 
     class Meta:
         managed = False
