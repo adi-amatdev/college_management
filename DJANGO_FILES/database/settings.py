@@ -36,6 +36,7 @@ STATICFILES_DIRS = [
 
 INSTALLED_APPS = [
     'dataentry',
+    'main',
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
