@@ -52,4 +52,8 @@ def signin(request):
     
     else:
         return render(request,'home.html')
+    
+def logout(request):
+    auth.logout(request)
+    return redirect('/') 
 

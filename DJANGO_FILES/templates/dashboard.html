@@ -23,6 +23,9 @@
              RNSIT
           </div>
           <ul>
+            {% if user.is_authenticated %}
+            <li><h2 class="heading">Hi <span>{{user.username}}!</span></h2></li>
+            {% endif %}
             <li><a href="#">
               <i class="fas fa-search"></i>
               </a></li>
@@ -62,8 +65,8 @@
               <span class="icon"><i class="fas fa-book"></i></span>
               <span class="title">Change Pswd</span>
           </a></li>
-            <li><a href="#">
-              <span class="icon"><i class="fas fa-book"></i></span>
+            <li><a href="/logout">
+              <span class="icon"><i class="fas fa-book" ></i></span>
               <span class="title">Logout</span>
               </a></li>
         </ul>
