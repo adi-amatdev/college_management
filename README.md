@@ -1,2 +1,0 @@
-  # COLLEGE_DATABASE
-
