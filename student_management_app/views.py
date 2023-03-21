@@ -4,6 +4,14 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.shortcuts import HttpResponseRedirect
 from student_management_app.EmailBackEnd import EmailBackEnd
+from rest_framework.decorators import api_view
+from rest_framework import status 
+from rest_framework.response import Response
+import requests
+
+from .serializers import *
+from .models import *
+from django.http import JsonResponse
 
 def showdemopage(request):
     return render(request,"demo.html")
@@ -33,4 +41,8 @@ def logout_user(request):
     logout(request)
     return HttpResponseRedirect("/")
 
+
+
+            
+    
     

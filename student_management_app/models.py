@@ -6,7 +6,7 @@ from django.contrib.auth.models import UserManager
 from django.contrib.auth.hashers import make_password
 
 
-# Create your models here.
+
 
 class CustomUser(AbstractUser):
     user_type_data = ((1,"AdminHOD"),(2,"Staff"),(3,"Student"))
@@ -18,7 +18,6 @@ class AdminHOD(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     objects=models.Manager()
-    
 
 class Staff(models.Model):
     id = models.AutoField(primary_key=True)
@@ -28,7 +27,6 @@ class Staff(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     objects=models.Manager()
     
-
     
 class Courses(models.Model):
     id = models.AutoField(primary_key=True)

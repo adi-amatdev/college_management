@@ -1,8 +1,16 @@
-from pyexpat.errors import messages
+from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-
 from student_management_app.models import CustomUser, Staff
+import requests
+
+
+from rest_framework.generics import CreateAPIView,RetrieveAPIView,UpdateAPIView,DestroyAPIView
+from rest_framework.mixins import ListModelMixin,RetrieveModelMixin
+from rest_framework.generics import GenericAPIView
+from .serializers import *
+from .models import *
+
 
 def admin_home(request):
     return render(request,"hod_template/home_content.html")
@@ -10,22 +18,40 @@ def admin_home(request):
 def add_staff(request):
     return render(request,"hod_template/add_staff_template.html")
 
-def add_staff_save(request):
-    if request.method!="POST":
-        return HttpResponse("Method Not Allowed")
-    else:
-        first_name=request.POST.get("first_name")
-        last_name=request.POST.get("last_name")
-        username=request.POST.get("username")
-        email=request.POST.get("email")
-        password=request.POST.get("password")
-        address=request.POST.get("address")
-        try:
-            user=CustomUser.objects.create_user(username=username,password=password,email=email,last_name=last_name,first_name=first_name,user_type=2)
-            user.staff.address=address
-            user.save()
-            messages.success(request,"Successfully Added Staff")
-            return HttpResponseRedirect("/add_staff")
-        except:
-            messages.error(request,"Failed to add Staff")
-            return HttpResponseRedirect("/add_staff")
+
+class CreateStaffAPIView(CreateAPIView):
+    serializer_class = StaffSerializer
+    queryset = Staff.objects.all()
+
+class RetrieveStaffAPIView(RetrieveAPIView):
+    serializer_class = StaffSerializer
+    queryset = Staff.objects.all()
+    #lookup_field = 'id'
+
+
+class UpdateStaffAPIView(UpdateAPIView):
+    serializer_class = StaffSerializer
+    queryset = Staff.objects.all()
+    #lookup_field = 'id'
+    
+class DestroyStaffAPIView(DestroyAPIView):
+    serializer_class = StaffSerializer
+    queryset = Staff.objects.all()
+    #lookup_field = 'id'
+    
+class StaffListView(ListModelMixin, GenericAPIView):
+    queryset = Staff.objects.all()
+    serializer_class = StaffSerializer
+    
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+    
+class StaffDetailView(RetrieveModelMixin, GenericAPIView):
+    queryset = Staff.objects.all()
+    serializer_class = StaffSerializer
+    
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+    
+
+
