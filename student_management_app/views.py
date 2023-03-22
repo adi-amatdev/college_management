@@ -17,7 +17,7 @@ def showdemopage(request):
     return render(request,"demo.html")
 
 def showloginpage(request):
-    return render(request,"login_page.html")
+    return render(request,"main_login.html")
 
 def doLogin(request):
     if request.method != 'POST':
