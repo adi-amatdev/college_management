@@ -26,6 +26,8 @@ router.register('Staff',CreateStaffAPIView )
 router.register('Staff',RetrieveStaffAPIView)
 router.register('Staff',UpdateStaffAPIView )
 router.register('Staff', DestroyStaffAPIView)
+router.register('Staff',DestroyStaffAPIView)
+router.register('Staff',StaffDetailView)
 
 
 urlpatterns = [

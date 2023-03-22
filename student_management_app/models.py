@@ -19,7 +19,7 @@ class AdminHOD(models.Model):
 
 class Staff(models.Model):
     id = models.AutoField(primary_key=True)
-    admin = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
+    admin = models.ForeignKey(CustomUser,on_delete=models.CASCADE,default=None)
     address = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
