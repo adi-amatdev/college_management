@@ -3,6 +3,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from student_management_app.models import CustomUser, Staff
 import requests
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
 
 
 from rest_framework.generics import CreateAPIView,RetrieveAPIView,UpdateAPIView,DestroyAPIView
@@ -187,7 +191,14 @@ def manage_subject(request):
     subjects = Subjects.objects.all()
     return render(request,"hod_template/manage_subject_template.html",{ "subjects":subjects})
     
-
+@api_view(['POST'])
+def courses_form_submission(request):
+    serializer = CourseSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
     

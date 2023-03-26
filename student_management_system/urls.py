@@ -77,6 +77,8 @@ urlpatterns = [
     path('subject/<int:pk>/delete/', DestroySubjectAPIView.as_view()), #deletes an existing object with the given primary key.
     path('subject/<int:pk>/detail', SubjectDetailView.as_view()), #to retrieve a single MyModel object with primary key.
     
+    path('courses_form_submission', courses_form_submission, name='courses_form_submission'),
+    
     
     
     
