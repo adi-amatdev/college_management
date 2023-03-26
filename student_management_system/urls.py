@@ -40,6 +40,14 @@ urlpatterns = [
     path('admin_home',HodViews.admin_home),
     path('add_staff',HodViews.add_staff),
     #path('add_staff_save',HodViews.add_staff_save)
+    path('add_course',HodViews.add_course),
+    #path('add_course_save',HodViews.add_course_save),
+    path('add_student',HodViews.add_student),
+    path('add_subject',HodViews.add_subject),
+    path('manage_staff',HodViews.manage_staff),
+    path('manage_student',HodViews.manage_student),
+    path('manage_course',HodViews.manage_course),
+    path('manage_subject',HodViews.manage_subject),
     
     path('staff/', StaffListView.as_view()),    #returns a list of all objects.
     path('staff/create/', CreateStaffAPIView.as_view()),  #creates a new object.
@@ -47,6 +55,27 @@ urlpatterns = [
     path('staff/<int:pk>/update/', UpdateStaffAPIView.as_view()), #updates an existing object with the given primary key.
     path('staff/<int:pk>/delete/', DestroyStaffAPIView.as_view()), #deletes an existing object with the given primary key.
     path('staff/<int:pk>/detail', StaffDetailView.as_view()), #to retrieve a single MyModel object with primary key.
+
+    path('course/', CourseListView.as_view()),    #returns a list of all objects.
+    path('course/create/', CreateCourseAPIView.as_view()),  #creates a new object.
+    path('course/<int:pk>/', RetrieveCourseAPIView.as_view()), #returns a single object with the given primary key.
+    path('course/<int:pk>/update/', UpdateCourseAPIView.as_view()), #updates an existing object with the given primary key.
+    path('course/<int:pk>/delete/', DestroyCourseAPIView.as_view()), #deletes an existing object with the given primary key.
+    path('course/<int:pk>/detail', CourseDetailView.as_view()), #to retrieve a single MyModel object with primary key.
+
+    path('student/', StudentListView.as_view()),    #returns a list of all objects.
+    path('student/create/', CreateStudentAPIView.as_view()),  #creates a new object.
+    path('student/<int:pk>/', RetrieveStudentAPIView.as_view()), #returns a single object with the given primary key.
+    path('student/<int:pk>/update/', UpdateStudentAPIView.as_view()), #updates an existing object with the given primary key.
+    path('student/<int:pk>/delete/', DestroyStudentAPIView.as_view()), #deletes an existing object with the given primary key.
+    path('student/<int:pk>/detail', StudentDetailView.as_view()), #to retrieve a single MyModel object with primary key.
+
+    path('subject/', SubjectListView.as_view()),    #returns a list of all objects.
+    path('subject/create/', CreateSubjectAPIView.as_view()),  #creates a new object.
+    path('subject/<int:pk>/', RetrieveSubjectAPIView.as_view()), #returns a single object with the given primary key.
+    path('subject/<int:pk>/update/', UpdateSubjectAPIView.as_view()), #updates an existing object with the given primary key.
+    path('subject/<int:pk>/delete/', DestroySubjectAPIView.as_view()), #deletes an existing object with the given primary key.
+    path('subject/<int:pk>/detail', SubjectDetailView.as_view()), #to retrieve a single MyModel object with primary key.
     
     
     
