@@ -79,6 +79,9 @@ urlpatterns = [
     
     path('courses_form_submission', courses_form_submission, name='courses_form_submission'),
     
+    path('my_form', MyFormAPIView.as_view(), name='my_form_api'),
+    
+
     
     
     
