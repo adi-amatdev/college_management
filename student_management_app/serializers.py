@@ -27,7 +27,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
         
-class MyFormSerializer(serializers.Serializer):
+class AddStaffFormSerializer(serializers.Serializer):
     email = serializers.CharField()
     password = serializers.CharField()
     first_name = serializers.CharField()

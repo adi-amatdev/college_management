@@ -205,7 +205,7 @@ def courses_form_submission(request):
 class MyFormAPIView(APIView):
 
     def post(self, request):
-        serializer = MyFormSerializer(data=request.data)
+        serializer = AddStaffFormSerializer(data=request.data)
         if serializer.is_valid():
             data = serializer.save()
             return Response(data, status=status.HTTP_201_CREATED)
