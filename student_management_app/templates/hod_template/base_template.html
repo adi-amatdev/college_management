@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AdminLTE 3 | Dashboard</title>
+  <title>RNSIT Student Portal</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -43,13 +43,8 @@
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="index3.html" class="nav-link">Home</a>
-      </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Contact</a>
-      </li>
     </ul>
+    <h4 style="margin-left:10px;margin-top:px;">RNSIT | ADMIN LOGIN</h4>
 
     <!-- Right navbar links -->
     {% include 'hod_template/notification_template.html' %}
@@ -74,8 +69,7 @@
         </div><!-- /.col -->
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-           <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item active">Dashboard v1</li>
+           <li class="breadcrumb-item"><a href="/admin_home">Home</a></li>
           </ol>
         </div><!-- /.col -->
       </div><!-- /.row -->
@@ -94,9 +88,9 @@
 <!-- ./wrapper -->
 
 <!-- jQuery -->
-<script src="{% static "plugins/jquery/jquery.min.js" %}"></script>
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
 <!-- jQuery UI 1.11.4 -->
-<script src="{% static "plugins/jquery-ui/jquery-ui.min.js" %}"></script>
+<script src="{% static 'plugins/jquery-ui/jquery-ui.min.js' %}"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
   $.widget.bridge('uibutton', $.ui.button)

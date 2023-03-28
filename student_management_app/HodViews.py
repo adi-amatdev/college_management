@@ -164,14 +164,12 @@ class DestroySubjectAPIView(DestroyAPIView):
 class SubjectListView(ListModelMixin, GenericAPIView):
     queryset = Subjects.objects.all()
     serializer_class = SubjectSerializer
-    
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
     
 class SubjectDetailView(RetrieveModelMixin, GenericAPIView):
     queryset = Subjects.objects.all()
     serializer_class = SubjectSerializer
-    
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
@@ -203,7 +201,6 @@ def courses_form_submission(request):
 
 
 class MyFormAPIView(APIView):
-
     def post(self, request):
         serializer = AddStaffFormSerializer(data=request.data)
         if serializer.is_valid():
