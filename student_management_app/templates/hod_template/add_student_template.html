@@ -14,7 +14,7 @@ Add Student
           <h3 class="card-title">Add Student</h3>
         </div>
 
-        <form role="form" action="/add_student_save" method="post">
+        <form role="form" action="/add_student_form_api" method="post">
           {% csrf_token %}
           <div class="card-body">
             <div class="form-group">
@@ -50,12 +50,12 @@ Add Student
                 </select>
             </div>
             <div class="form-group">
-                <label>Gender</label>
-                <select class="form-control" name="gender">
-                    <option>Male</option>
-                    <option>Female</option>
-                </select>
-            </div>
+              <label>Gender</label>
+              <select class="form-control" name="gender">
+                  <option>M</option>
+                  <option>F</option>
+              </select>
+          </div>
             <div class="form-group">
                 <label>Session Start</label>
                 <input type="date" class="form-control" placeholder="Session Start Year" name="session_start_year">
@@ -64,6 +64,10 @@ Add Student
                 <label>Session End</label>
                 <input type="date" class="form-control" placeholder="Session End Year" name="session_end_year">
             </div>
+            <div class="form-group">
+              <label>Admin ID</label>
+              <input type="text" class="form-control" placeholder="Admin ID" name="admin_id">
+          </div>
             
             <div class="form-group">
               {% if messages %}
