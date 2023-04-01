@@ -14,7 +14,7 @@ Add Subject
           <h3 class="card-title">Add Subject</h3>
         </div>
 
-        <form role="form" action="/add_subject_save" method="post">
+        <form role="form" action="/add_subject_form_api" method="post">
           {% csrf_token %}
           <div class="card-body">
             <div class="form-group">
@@ -22,7 +22,7 @@ Add Subject
               <input type="text" class="form-control" name="subject_name" placeholder="Enter subject name">
             </div>
             <div class="form-group">
-                <label>Course</label>
+                <label>Course Name</label>
                 <select class="form-control" name="course">
                     {% for course in courses %}
                         <option value="{{course.id}}">{{course.course_name}}</option>
@@ -30,12 +30,16 @@ Add Subject
                 </select>
             </div>
             <div class="form-group">
-                <label>Staff</label>
-                <select class="form-control" name="staff">
+                <label>Staff Name</label>
+                <select class="form-control" name="staff_id">
                     {% for staff in staffs %}
                         <option value="{{staff.id}}">{{staff.first_name}} {{staff.last_name}}</option>
                     {%endfor%}
                 </select>
+            </div>
+            <div class="form-group">
+              <label>Subject Code</label>
+              <input type="text" class="form-control" name="subject_code" placeholder="Enter subject code">
             </div>
             <div class="form-group">
               {% if messages %}

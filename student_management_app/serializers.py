@@ -82,5 +82,18 @@ class AddStudentFormSerializer(serializers.Serializer):
         CustomUser1 = CustomUser.objects.create(**CustomUser_data)
         Students1 = Students.objects.create(**Students_data)
         return {'CustomUser': CustomUser1, 'Students': Students1}
-        
-
+    
+class AddSubjectFormSerializer(serializers.Serializer):
+    subject_name = serializers.CharField()
+    course = serializers.CharField()
+    staff_id = serializers.CharField()
+    subject_code = serializers.CharField()
+    def create(self, validated_data):
+        Subjects_data = {
+            'subject_name': validated_data['subject_name'],
+            'course_id_id': validated_data['course'],
+            'staff_id_id': validated_data['staff_id'],
+            'subject_code':validated_data['subject_code'],
+        }
+        Subjects1 = Subjects.objects.create(**Subjects_data)
+        return {'Subjects': Subjects1}

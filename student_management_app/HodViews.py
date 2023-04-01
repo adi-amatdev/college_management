@@ -7,9 +7,6 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-
-
 from rest_framework.generics import CreateAPIView,RetrieveAPIView,UpdateAPIView,DestroyAPIView
 from rest_framework.mixins import ListModelMixin,RetrieveModelMixin
 from rest_framework.generics import GenericAPIView
@@ -191,7 +188,7 @@ def manage_subject(request):
     return render(request,"hod_template/manage_subject_template.html",{ "subjects":subjects})
     
 @api_view(['POST'])
-def courses_form_submission(request):
+def add_course_form_api(request):
     serializer = CourseSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -216,6 +213,24 @@ class AddStudentFormAPIView(APIView):
             return Response(data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+@api_view(['POST'])
+def add_course_form_api(request):
+    serializer = CourseSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class AddSubjectFormAPIView(APIView):
+    def post(self, request):
+        serializer = AddSubjectFormSerializer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.save()
+            return Response(data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
 def edit_staff(request,staff_id):   #need to do it thorugh api
     staff = Staff.objects.get(admin=staff_id)
     return render(request,"hod_template/edit_staff_template.html",{"staff":staff})
@@ -230,7 +245,6 @@ def edit_subject(request,subject_id):
     courses=Courses.objects.all()
     staffs=CustomUser.objects.filter(user_type=2)
     return render(request,"hod_template/edit_subject_template.html",{"subject":subject,"staffs":staffs,"courses":courses})
-
 
 def edit_course(request,course_id):
     course=Courses.objects.get(id=course_id)
