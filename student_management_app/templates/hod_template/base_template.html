@@ -45,6 +45,14 @@
       </li>
     </ul>
     <h4 style="margin-left:10px;margin-top:px;">RNSIT | ADMIN LOGIN</h4>
+    <ul class="navbar-nav ml-auto">
+
+    <li class="nav-item">
+      <a class="nav-link" href="/logout_user">
+        Logout
+      </a>
+    </li>
+  </ul>
 
     <!-- Right navbar links -->
     {% include 'hod_template/notification_template.html' %}
@@ -52,7 +60,7 @@
   <!-- /.navbar -->
 
   <!-- Main Sidebar Container -->
-  {% include 'hod_template/sidebar_template.html' %}
+  {% include 'hod_template/sidebar_template.html' with user=user %}
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">

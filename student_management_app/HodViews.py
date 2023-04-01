@@ -216,6 +216,27 @@ class AddStudentFormAPIView(APIView):
             return Response(data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+def edit_staff(request,staff_id):   #need to do it thorugh api
+    staff = Staff.objects.get(admin=staff_id)
+    return render(request,"hod_template/edit_staff_template.html",{"staff":staff})
+
+def edit_student(request,student_id):   #need to do it thorugh api
+    student = Students.objects.get(admin=student_id)
+    courses = Courses.objects.all()
+    return render(request,"hod_template/edit_student_template.html",{"student":student, "courses":courses})
+
+def edit_subject(request,subject_id):
+    subject=Subjects.objects.get(id=subject_id)
+    courses=Courses.objects.all()
+    staffs=CustomUser.objects.filter(user_type=2)
+    return render(request,"hod_template/edit_subject_template.html",{"subject":subject,"staffs":staffs,"courses":courses})
+
+
+def edit_course(request,course_id):
+    course=Courses.objects.get(id=course_id)
+    return render(request,"hod_template/edit_course_template.html",{"course":course})
+
+
 
 
         

@@ -48,6 +48,10 @@ urlpatterns = [
     path('manage_student',HodViews.manage_student),
     path('manage_course',HodViews.manage_course),
     path('manage_subject',HodViews.manage_subject),
+    path('edit_staff/<str:staff_id>',HodViews.edit_staff),
+    path('edit_student/<str:student_id>',HodViews.edit_student),
+    path('edit_subject/<str:subject_id>',HodViews.edit_subject),
+    path('edit_course/<str:course_id>',HodViews.edit_course),
     
     path('staff/', StaffListView.as_view()),    #returns a list of all objects.
     path('staff/create/', CreateStaffAPIView.as_view()),  #creates a new object.
