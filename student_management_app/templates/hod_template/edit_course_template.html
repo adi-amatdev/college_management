@@ -14,7 +14,7 @@ Edit Course | Course ID : {{course.id}}
           <h3 class="card-title">Edit Course</h3>
         </div>
 
-        <form role="form" action="/edit_course_save" method="post">
+        <form role="form" action="{% url 'update-course' course_id=course.id %}" method="post">
           {% csrf_token %}
           <div class="card-body">
             <div class="form-group">
@@ -41,7 +41,7 @@ Edit Course | Course ID : {{course.id}}
           </div>
 
           <div class="card-footer">
-            <button type="submit" class="btn btn-primary btn-block">Savek</button>
+            <button type="submit" class="btn btn-primary btn-block">Save</button>
           </div>
         </form>
       </div>

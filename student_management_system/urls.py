@@ -63,7 +63,7 @@ urlpatterns = [
     path('course/', CourseListView.as_view()),    #returns a list of all objects.
     path('course/create/', CreateCourseAPIView.as_view()),  #creates a new object.
     path('course/<int:pk>/', RetrieveCourseAPIView.as_view()), #returns a single object with the given primary key.
-    path('course/<int:pk>/update/', UpdateCourseAPIView.as_view()), #updates an existing object with the given primary key.
+    #path('course/<int:pk>/update/', UpdateCourseAPIView.as_view()), #updates an existing object with the given primary key.
     path('course/<int:pk>/delete/', DestroyCourseAPIView.as_view()), #deletes an existing object with the given primary key.
     path('course/<int:pk>/detail', CourseDetailView.as_view()), #to retrieve a single MyModel object with primary key.
 
@@ -81,13 +81,13 @@ urlpatterns = [
     path('subject/<int:pk>/delete/', DestroySubjectAPIView.as_view()), #deletes an existing object with the given primary key.
     path('subject/<int:pk>/detail', SubjectDetailView.as_view()), #to retrieve a single MyModel object with primary key.
     
-    
-    
     path('add_staff_form_api', AddStaffFormAPIView.as_view(), name='add_staff_form_api'),
     path('add_student_form_api', AddStudentFormAPIView.as_view(), name='add_student_form_api'),
     path('add_course_form_api',add_course_form_api,name='add_course_form_api'),
     path('add_subject_form_api',AddSubjectFormAPIView.as_view(),name='add_subject_form_api'),
     
+     path('courses/<int:course_id>/update/', update_course, name='update-course'),
+
     
 
     

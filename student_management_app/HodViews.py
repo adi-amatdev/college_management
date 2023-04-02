@@ -72,7 +72,7 @@ class RetrieveCourseAPIView(RetrieveAPIView):
 class UpdateCourseAPIView(UpdateAPIView):
     serializer_class = CourseSerializer
     queryset = Courses.objects.all()
-    #lookup_field = 'id'
+    
     
 class DestroyCourseAPIView(DestroyAPIView):
     serializer_class = CourseSerializer
@@ -251,6 +251,18 @@ def edit_course(request,course_id):
     return render(request,"hod_template/edit_course_template.html",{"course":course})
 
 
+@api_view(['PUT', 'POST'])
+def update_course(request, course_id):
+    try:
+        course = Courses.objects.get(id=course_id)
+    except Courses.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = CourseSerializer(course, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
         
