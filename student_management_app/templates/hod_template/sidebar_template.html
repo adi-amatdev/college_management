@@ -128,11 +128,21 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="/manage_subject" class="nav-link">
+            {% url 'manage_subject' as manage_subject %}
+            {% url 'edit_subject' subject_id=id as edit_subject %}
+            <a href="/manage_subject" class="nav-link {% if request.path == manage_subject %} active {% endif %} {% if request.path == edit_subject %} active {% endif %} ">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Manage Subject
-                <span class="right badge badge-danger">New</span>
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            {% url 'manage_session' as manage_session %}
+            <a href="/manage_session" class="nav-link {% if request.path == manage_session %} active {% endif %} ">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Manage Session Year
               </p>
             </a>
           </li>

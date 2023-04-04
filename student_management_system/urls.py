@@ -15,10 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from student_management_app import views, HodViews
+from student_management_app import views, HodViews,StaffViews,StudentViews
 from django.conf.urls.static import static 
 from student_management_system import settings
 from student_management_app.HodViews import *
+from student_management_app.StaffViews import *
+from student_management_app.StudentViews import *
 
 from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
@@ -38,6 +40,7 @@ urlpatterns = [
     path('logout_user',views.logout_user),
     path('doLogin',views.doLogin),
     path('admin_home',HodViews.admin_home),
+    path('student_home',StudentViews.student_home),
     path('add_staff',HodViews.add_staff),
     #path('add_staff_save',HodViews.add_staff_save)
     path('add_course',HodViews.add_course),
@@ -52,6 +55,12 @@ urlpatterns = [
     path('edit_student/<str:student_id>',HodViews.edit_student),
     path('edit_subject/<str:subject_id>',HodViews.edit_subject),
     path('edit_course/<str:course_id>',HodViews.edit_course),
+    path('manage_session',HodViews.manage_session),
+
+    path('staff_home',StaffViews.staff_home),
+    path('staff_take_attendance',StaffViews.staff_take_attendance, name="staff_take_attendance"),
+    path('get_students',StaffViews.get_students, name="get_students"),
+    path('save_attendance_data',StaffViews.save_attendance_data, name="save_attendance_data"),
     
     path('staff/', StaffListView.as_view()),    #returns a list of all objects.
     path('staff/create/', CreateStaffAPIView.as_view()),  #creates a new object.

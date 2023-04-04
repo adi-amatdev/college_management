@@ -5,6 +5,11 @@ from django.db.models.signals import post_save
 from django.contrib.auth.models import UserManager
 from django.contrib.auth.hashers import make_password
 
+class SessionYearModel(models.Model):
+    id = models.AutoField(primary_key=True)
+    session_start_year = models.DateField()
+    session_end_year = models.DateField()
+    objects=models.Manager()
 
 class CustomUser(AbstractUser):
     user_type_data = ((1,"AdminHOD"),(2,"Staff"),(3,"Student"))
@@ -53,8 +58,7 @@ class Students(models.Model):
     address = models.TextField()
     objects=models.Manager()
     course_id = models.ForeignKey(Courses,on_delete=models.CASCADE)
-    session_start_year = models.DateField()
-    session_end_year = models.DateField()
+    session_year_id = models.ForeignKey(SessionYearModel,on_delete=models.CASCADE,default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -64,6 +68,7 @@ class Attendance(models.Model):
     subject_id = models.ForeignKey(Subjects,on_delete=models.DO_NOTHING)
     attendance_date = models.DateTimeField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    session_year_id = models.ForeignKey(SessionYearModel,on_delete=models.CASCADE,default=1)
     updated_at = models.DateTimeField(auto_now=True)
     objects=models.Manager()
     
