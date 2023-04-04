@@ -44,9 +44,9 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="" class="brand-link">
-      <img src="{% static "dist/img/AdminLTELogo.png" %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+      <img src="https://th.bing.com/th?id=OIP.qgcG-DEtWBrp1keC2ok8hwAAAA&w=130&h=130&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2" class="brand-image img-square elevation-3"
            style="opacity: .8">
-      <span class="brand-text font-weight-light">AdminLTE 3</span>
+      <span class="brand-text font-weight-light">RNSIT</span>
     </a>
 
     <!-- Sidebar -->
@@ -84,15 +84,17 @@
               </p>
             </a>
           </li>
-           <li class="nav-item">
+          <li class="nav-item">
             {% url 'staff_update_attendance' as staff_update_attendance %}
+            {% url 'staff_take_attendance' as staff_take_attendance %}
             <a href="{{ staff_update_attendance }}" class="nav-link {% if request.path == staff_update_attendance %} active {% endif %}">
               <i class="nav-icon fas fa-th"></i>
               <p>
-                View Update Attendance
+                Update Attendance
               </p>
             </a>
           </li>
+        
           <li class="nav-item">
             {% url 'staff_apply_leave' as staff_apply_leave %}
             <a href="{{ staff_apply_leave }}" class="nav-link {% if request.path == staff_apply_leave %} active {% endif %}">
@@ -126,15 +128,6 @@
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Edit Result
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            {% url 'start_live_classroom' as start_live_classroom %}
-            <a href="{{ start_live_classroom }}" class="nav-link {% if request.path == start_live_classroom %} active {% endif %}">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-                Start Live Class Room
               </p>
             </a>
           </li>

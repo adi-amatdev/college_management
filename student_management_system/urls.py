@@ -61,7 +61,17 @@ urlpatterns = [
     path('staff_take_attendance',StaffViews.staff_take_attendance, name="staff_take_attendance"),
     path('get_students',StaffViews.get_students, name="get_students"),
     path('save_attendance_data',StaffViews.save_attendance_data, name="save_attendance_data"),
+    path('staff_update_attendance',StaffViews.update_attendance,name="staff_update_attendance"),
+    path('get_attendance_data',StaffViews.save_attendance_data,name='save_attendance_data'), 
     
+    path('get_attendance_dates', StaffViews.get_attendance_dates, name="get_attendance_dates"),
+    path('save_attendance_data', StaffViews.save_attendance_data, name="save_attendance_data"),
+    path('get_attendance_student', StaffViews.get_attendance_student, name="get_attendance_student"),
+    path('save_updateattendance_data', StaffViews.save_updateattendance_data, name="save_updateattendance_data"),
+    
+    path('staff_apply_leave', StaffViews.staff_apply_leave, name="staff_apply_leave"),
+    path('staff_feedback', StaffViews.staff_feedback, name="staff_feedback"),
+     
     path('staff/', StaffListView.as_view()),    #returns a list of all objects.
     path('staff/create/', CreateStaffAPIView.as_view()),  #creates a new object.
     path('staff/<int:pk>/', RetrieveStaffAPIView.as_view()), #returns a single object with the given primary key.
