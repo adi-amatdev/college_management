@@ -264,6 +264,9 @@ def update_course(request, course_id):
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+def manage_session(request):
+    return render(request,"hod_template/manage_session_template.html")
+
 
         
 
