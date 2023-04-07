@@ -122,7 +122,7 @@ def get_attendance_student(request):
 
 
 def staff_apply_leave(request):
-    return render(request,"staff_template\staff_apply_leave.html")
+    return render(request,"staff_template/staff_apply_leave.html")
 
 
 def staff_feedback(request):
@@ -130,5 +130,10 @@ def staff_feedback(request):
 
 def staff_apply_leave_save(request):
     pass 
+
+def staff_add_result(request):
+    return render(request,"staff_template/staff_add_result.html")
+
+
 
     

@@ -63,6 +63,8 @@ urlpatterns = [
     path('save_attendance_data',StaffViews.save_attendance_data, name="save_attendance_data"),
     path('staff_update_attendance',StaffViews.update_attendance,name="staff_update_attendance"),
     path('get_attendance_data',StaffViews.save_attendance_data,name='save_attendance_data'), 
+    path('staff_add_result', StaffViews.staff_add_result, name="staff_add_result"),
+    #path('edit_student_result',EditResultViewClass.as_view(), name="edit_student_result"),
     
     path('get_attendance_dates', StaffViews.get_attendance_dates, name="get_attendance_dates"),
     path('save_attendance_data', StaffViews.save_attendance_data, name="save_attendance_data"),
@@ -104,6 +106,7 @@ urlpatterns = [
     path('add_student_form_api', AddStudentFormAPIView.as_view(), name='add_student_form_api'),
     path('add_course_form_api',add_course_form_api,name='add_course_form_api'),
     path('add_subject_form_api',AddSubjectFormAPIView.as_view(),name='add_subject_form_api'),
+    path('add_session_form_api', add_session_form_api, name='add_session_form_api'),
     
      path('courses/<int:course_id>/update/', update_course, name='update-course'),
 
