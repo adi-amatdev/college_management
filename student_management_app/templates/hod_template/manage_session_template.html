@@ -1,5 +1,5 @@
 
- k{% extends 'hod_template/base_template.html' %}
+k{% extends 'hod_template/base_template.html' %}
 {% block page_title %}
 Add Session Year
 {% endblock page_title %}
@@ -16,17 +16,17 @@ Add Session Year
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" action="/add_session_save" method="post">
+              <form role="form" action="/add_session_form_api" method="post">
                   {% csrf_token %}
                 <div class="card-body">
                   <div class="form-group">
                     <label>Session Start Year </label>
-                    <input type="date" class="form-control" name="session_start" placeholder="Enter Session Start Year">
+                    <input type="date" class="form-control" name="session_start_year" placeholder="Enter Session Start Year">
                   </div>
 
                  <div class="form-group">
                     <label>Session End Year </label>
-                    <input type="date" class="form-control" name="session_end" placeholder="Enter Session End Year">
+                    <input type="date" class="form-control" name="session_end_year" placeholder="Enter Session End Year">
                   </div>
 
 

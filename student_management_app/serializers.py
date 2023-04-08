@@ -25,6 +25,11 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id','email','password','first_name','last_name','username']
+
+class SessionYearSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SessionYearModel
+        fields = ['session_start_year','session_end_year']
             
 class AddStaffFormSerializer(serializers.Serializer):
     email = serializers.CharField()
@@ -59,8 +64,9 @@ class AddStudentFormSerializer(serializers.Serializer):
     address = serializers.CharField()
     course = serializers.CharField()
     gender = serializers.CharField()
-    session_start_year = serializers.CharField()
-    session_end_year = serializers.CharField()
+    #session_start_year = serializers.CharField()
+    #session_end_year = serializers.CharField()
+    session_year_id = serializers.CharField()
     admin_id = serializers.CharField()
     
     def create(self, validated_data):

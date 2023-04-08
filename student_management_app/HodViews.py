@@ -267,6 +267,16 @@ def update_course(request, course_id):
 def manage_session(request):
     return render(request,"hod_template/manage_session_template.html")
 
+@api_view(['POST'])
+def add_session_form_api(request):
+    serializer = SessionYearSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
         
 
