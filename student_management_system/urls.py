@@ -77,7 +77,7 @@ urlpatterns = [
     path('staff/', StaffListView.as_view()),    #returns a list of all objects.
     path('staff/create/', CreateStaffAPIView.as_view()),  #creates a new object.
     path('staff/<int:pk>/', RetrieveStaffAPIView.as_view()), #returns a single object with the given primary key.
-    path('staff/<int:pk>/update/', UpdateStaffAPIView.as_view()), #updates an existing object with the given primary key.
+    #path('staff/<int:pk>/update/', UpdateStaffAPIView.as_view()), #updates an existing object with the given primary key.
     path('staff/<int:pk>/delete/', DestroyStaffAPIView.as_view()), #deletes an existing object with the given primary key.
     path('staff/<int:pk>/detail', StaffDetailView.as_view()), #to retrieve a single MyModel object with primary key.
 
@@ -109,6 +109,8 @@ urlpatterns = [
     path('add_session_form_api', add_session_form_api, name='add_session_form_api'),
     
      path('courses/<int:course_id>/update/', update_course, name='update-course'),
+     path('staff/<int:staff_id>/update/',update_staff,name='update_staff'),
+
 
     
 
