@@ -5,7 +5,11 @@ class StaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = Staff
         fields = '__all__'
-
+    def update(self, instance, validated_data):
+        instance.address = validated_data.get('address', instance.address)
+        instance.save()
+        return instance
+        
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Courses
@@ -25,6 +29,20 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id','email','password','first_name','last_name','username']
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get('username', instance.username)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.email = validated_data.get('email', instance.email)
+        instance.password = validated_data.get('password', instance.password)
+        instance.user_type = validated_data.get('user_type', instance.user_type)
+        instance.save()
+        return instance
+    
+class SessionYearSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SessionYearModel
+        fields = ['session_start_year','session_end_year']
             
 class AddStaffFormSerializer(serializers.Serializer):
     email = serializers.CharField()
@@ -59,8 +77,9 @@ class AddStudentFormSerializer(serializers.Serializer):
     address = serializers.CharField()
     course = serializers.CharField()
     gender = serializers.CharField()
-    session_start_year = serializers.CharField()
-    session_end_year = serializers.CharField()
+    #session_start_year = serializers.CharField()
+    #session_end_year = serializers.CharField()
+    session_year_id = serializers.CharField()
     admin_id = serializers.CharField()
     
     def create(self, validated_data):
@@ -97,3 +116,38 @@ class AddSubjectFormSerializer(serializers.Serializer):
         }
         Subjects1 = Subjects.objects.create(**Subjects_data)
         return {'Subjects': Subjects1}
+        
+class UpdateStaffFormSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    username = serializers.CharField()
+    address = serializers.CharField()
+
+    def update(self, instance, validated_data):
+        custom_user_instance = instance.admin
+        custom_user_data = {
+            'email': validated_data.get('email', custom_user_instance.email),
+            'first_name': validated_data.get('first_name', custom_user_instance.first_name),
+            'last_name': validated_data.get('last_name', custom_user_instance.last_name),
+            'username': validated_data.get('username', custom_user_instance.username),
+        }
+        staff_data = {
+            'address': validated_data.get('address', instance.address),
+            'admin_id':validated_data.get('admin_id',instance.admin_id)
+        }
+
+        # update CustomUser fields
+        for key, value in custom_user_data.items():
+            setattr(custom_user_instance, key, value)
+
+        # update Staff fields
+        for key, value in staff_data.items():
+            setattr(instance, key, value)
+
+        custom_user_instance.save()
+        instance.save()
+
+        return {'CustomUser': custom_user_instance, 'Staff': instance}
+
+    
