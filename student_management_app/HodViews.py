@@ -96,7 +96,8 @@ class CourseDetailView(RetrieveModelMixin, GenericAPIView):
 
 def add_student(request):
     courses = Courses.objects.all()
-    return render(request,"hod_template/add_student_template.html",{"courses":courses})
+    session_years = SessionYearModel.objects.all()
+    return render(request,"hod_template/add_student_template.html",{"courses":courses, "session_years":session_years})
 
 class CreateStudentAPIView(CreateAPIView):
     serializer_class = StudentSerializer
@@ -135,7 +136,8 @@ class StudentDetailView(RetrieveModelMixin, GenericAPIView):
 
 def add_subject(request):
     courses = Courses.objects.all()
-    staffs = CustomUser.objects.filter(user_type=2)
+    #staffs = CustomUser.objects.filter(user_type=2)
+    staffs = CustomUser.objects.all()
     return render(request,"hod_template/add_subject_template.html",{"staffs":staffs, "courses":courses})
 
 class CreateSubjectAPIView(CreateAPIView):
@@ -335,6 +337,8 @@ def update_staff(request, staff_id):
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
+
 
 
 
