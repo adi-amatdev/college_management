@@ -132,7 +132,9 @@ def staff_apply_leave_save(request):
     pass 
 
 def staff_add_result(request):
-    return render(request,"staff_template/staff_add_result.html")
+    subjects = Subjects.objects.all()
+    session_years = SessionYearModel.objects.all()
+    return render(request,"staff_template/staff_add_result.html",{"subjects":subjects,"session_years":session_years})
 
 
 
