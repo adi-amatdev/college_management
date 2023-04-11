@@ -96,7 +96,8 @@ class CourseDetailView(RetrieveModelMixin, GenericAPIView):
 
 def add_student(request):
     courses = Courses.objects.all()
-    return render(request,"hod_template/add_student_template.html",{"courses":courses})
+    session_years = SessionYearModel.objects.all()
+    return render(request,"hod_template/add_student_template.html",{"courses":courses, "session_years":session_years})
 
 class CreateStudentAPIView(CreateAPIView):
     serializer_class = StudentSerializer
@@ -135,7 +136,8 @@ class StudentDetailView(RetrieveModelMixin, GenericAPIView):
 
 def add_subject(request):
     courses = Courses.objects.all()
-    staffs = CustomUser.objects.filter(user_type=2)
+    #staffs = CustomUser.objects.filter(user_type=2)
+    staffs = CustomUser.objects.all()
     return render(request,"hod_template/add_subject_template.html",{"staffs":staffs, "courses":courses})
 
 class CreateSubjectAPIView(CreateAPIView):
@@ -266,6 +268,81 @@ def update_course(request, course_id):
 
 def manage_session(request):
     return render(request,"hod_template/manage_session_template.html")
+
+@api_view(['POST'])
+def add_session_form_api(request):
+    serializer = SessionYearSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+'''@api_view(['PUT', 'POST'])
+def update_staff(request, staff_id):
+    try:
+        instance1 = Staff.objects.get(id=staff_id)
+        instance2 = CustomUser.objects.get(id=staff_id)
+    except (Staff.DoesNotExist, CustomUser.DoesNotExist):
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer1 = StaffSerializer(instance1, data=request.data)
+    serializer2 = CustomUserSerializer(instance2, data=request.data)
+    serializer1.is_valid()
+    serializer2.is_valid()
+    if serializer1.is_valid() and serializer2.is_valid():
+        serializer1.save()
+        serializer2.save()
+        return Response(serializer1.data, serializer2.data)
+    else:
+        errors = {
+            "staff_errors": serializer1.errors,
+            "customuser_errors": serializer2.errors,
+        }
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)'''
+        
+'''@api_view(['PUT', 'POST'])
+def update_staff(request, staff_id):
+    try:
+        instance1 = Staff.objects.get(id=staff_id)
+        instance2 = CustomUser.objects.get(id=staff_id)
+    except (Staff.DoesNotExist, CustomUser.DoesNotExist):
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer1 = StaffSerializer(instance1, data=request.data)
+    serializer2 = CustomUserSerializer(instance2, data=request.data)
+    serializer1.is_valid()
+    serializer2.is_valid()
+    if serializer1.is_valid() and serializer2.is_valid():
+        serializer1.save()
+        serializer2.save()
+        return Response(serializer1.data, serializer2.data)
+    else:
+        errors = {
+            "staff_errors": serializer1.errors,
+            "customuser_errors": serializer2.errors,
+        }
+        return Response(errors, status=status.HTTP_400_BAD_REQUEST)'''
+ 
+@api_view(['PUT', 'PATCH', 'POST', 'OPTIONS'])
+def update_staff(request, staff_id):
+    try:
+        staff = Staff.objects.get(id=staff_id)
+    except Courses.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = UpdateStaffFormSerializer(staff, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
+
+
+
+
 
 
         

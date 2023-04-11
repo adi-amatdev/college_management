@@ -14,7 +14,7 @@ Edit Staff | username : {{staff.admin.username}} | ID : {{staff.admin.id}}
           <h3 class="card-title">Edit Staff</h3>
         </div>
 
-        <form role="form" action="/add_staff_form_api" method="post">
+        <form role="form" action= "{% url 'update_staff' staff_id=staff.id %}" method="post">
           {% csrf_token %}
           <div class="card-body">
             <div class="form-group">
