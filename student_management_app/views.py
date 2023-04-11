@@ -4,6 +4,12 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.shortcuts import HttpResponseRedirect
 from student_management_app.EmailBackEnd import EmailBackEnd
+from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
+from openpyxl import load_workbook
+from django.db import transaction
+from .models import TestScores
+
 from rest_framework.decorators import api_view
 from rest_framework import status 
 from rest_framework.response import Response
@@ -47,9 +53,21 @@ def logout_user(request):
     logout(request)
     return HttpResponseRedirect("/")
 
-
-
-
-            
-    
-    
+@transaction.atomic
+def upload_scores(request):
+    if request.method == 'POST' and request.FILES['scores_file']:
+        # Get the uploaded file from the request
+        scores_file = request.FILES['scores_file']
+        # Load the workbook using openpyxl
+        wb = load_workbook(scores_file)
+        # Get the active worksheet
+        ws = wb.active
+        # Loop through the rows in the worksheet, starting from the second row
+        for row in ws.iter_rows(min_row=2, values_only=True):
+            # Create a new TestScores object and save it to the database
+            test_scores = TestScores(test1=row[0], test2=row[1], test3=row[2])
+            test_scores.save()
+    # Redirect back to the upload page
+        return HttpResponseRedirect('/upload/')
+    else:
+        return render(request, 'upload.html')

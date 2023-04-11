@@ -155,3 +155,11 @@ def save_user_profile(sender, instance, **kwargs):
         instance.staff.save()
     if instance.user_type == 3:
         instance.student.save()
+
+class TestScores(models.Model):
+    test1 = models.FloatField()
+    test2 = models.FloatField()
+    test3 = models.FloatField()
+    date_uploaded = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        db_table = 'test_scores'

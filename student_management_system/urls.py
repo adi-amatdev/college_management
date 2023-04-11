@@ -21,6 +21,8 @@ from student_management_system import settings
 from student_management_app.HodViews import *
 from student_management_app.StaffViews import *
 from student_management_app.StudentViews import *
+from student_management_app.views import upload_scores
+
 
 from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
@@ -105,11 +107,11 @@ urlpatterns = [
     path('add_course_form_api',add_course_form_api,name='add_course_form_api'),
     path('add_subject_form_api',AddSubjectFormAPIView.as_view(),name='add_subject_form_api'),
     
-     path('courses/<int:course_id>/update/', update_course, name='update-course'),
+    path('courses/<int:course_id>/update/', update_course, name='update-course'),
 
-    
+    path('upload/', upload_scores, name='upload_scores'),
 
-    
-    
-    
+
+
+
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)+static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
