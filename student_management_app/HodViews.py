@@ -94,7 +94,7 @@ class CourseDetailView(RetrieveModelMixin, GenericAPIView):
         return self.retrieve(request, *args, **kwargs)
 
 
-def add_student(request):
+def add_student(request): 
     courses = Courses.objects.all()
     session_years = SessionYearModel.objects.all()
     return render(request,"hod_template/add_student_template.html",{"courses":courses, "session_years":session_years})
