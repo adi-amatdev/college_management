@@ -73,8 +73,7 @@ class AddStaffFormSerializer(serializers.Serializer):
         CustomUser1.save()
         Staff1 = Staff.objects.create(admin=CustomUser1, **Staff_data)
         Staff1.save()
-        return {'CustomUser': CustomUser1, 'Staff':Staff1}
-        #return {'CustomUser': CustomUserSerializer(CustomUser1).data, 'Staff': StaffSerializer(Staff1).data}
+        return {'CustomUser': CustomUserSerializer(CustomUser1).data, 'Staff': StaffSerializer(Staff1).data}
 
     
 class AddStudentFormSerializer(serializers.Serializer):
