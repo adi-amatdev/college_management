@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from student_management_app import views, HodViews,StaffViews,StudentViews
+from student_management_app import EditResultViewClass, views, HodViews,StaffViews,StudentViews
 from django.conf.urls.static import static 
 from student_management_system import settings
 from student_management_app.HodViews import *
@@ -64,6 +64,8 @@ urlpatterns = [
     path('staff_update_attendance',StaffViews.update_attendance,name="staff_update_attendance"),
     path('get_attendance_data',StaffViews.save_attendance_data,name='save_attendance_data'), 
     path('staff_add_result', StaffViews.staff_add_result, name="staff_add_result"),
+    path('edit_student_result', StaffViews.staff_edit_result, name="staff_edit_result"),
+
     #path('edit_student_result',EditResultViewClass.as_view(), name="edit_student_result"),
     
     path('get_attendance_dates', StaffViews.get_attendance_dates, name="get_attendance_dates"),
@@ -72,6 +74,7 @@ urlpatterns = [
     path('save_updateattendance_data', StaffViews.save_updateattendance_data, name="save_updateattendance_data"),
     
     path('staff_apply_leave', StaffViews.staff_apply_leave, name="staff_apply_leave"),
+    path('staff_apply_leave_save', StaffViews.staff_apply_leave_save, name="staff_apply_leave_save"), #http
     path('staff_feedback', StaffViews.staff_feedback, name="staff_feedback"),
      
     path('staff/', StaffListView.as_view()),    #returns a list of all objects.

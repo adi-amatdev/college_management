@@ -88,7 +88,7 @@ class AddStudentFormSerializer(serializers.Serializer):
     gender = serializers.CharField()
     #session_start_year = serializers.CharField()
     #session_end_year = serializers.CharField()
-    session_year_id = serializers.CharField()
+    #session_year_id = serializers.CharField()
     admin_id = serializers.CharField()
     
     def create(self, validated_data):
