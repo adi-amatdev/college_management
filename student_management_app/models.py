@@ -57,7 +57,7 @@ class Students(models.Model):
     profile_pic = models.FileField()
     address = models.TextField()
     objects=models.Manager()
-    course_id = models.ForeignKey(Courses,on_delete=models.CASCADE)
+    course_id = models.ForeignKey(Courses,on_delete=models.CASCADE,default=1)
     session_year_id = models.ForeignKey(SessionYearModel,on_delete=models.CASCADE,default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -154,4 +154,4 @@ def save_user_profile(sender, instance, **kwargs):
     if instance.user_type == 2:
         instance.staff.save()
     if instance.user_type == 3:
-        instance.student.save()
+        instance.students.save()

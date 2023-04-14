@@ -1,3 +1,4 @@
+
 {% extends 'hod_template/base_template.html' %}
 {% load static %}
 {% block page_title %}
@@ -43,7 +44,7 @@ Add Student
             </div>
             <div class="form-group">
                 <label>Course</label>
-                <select class="form-control" name="course">
+                <select class="form-control" name="course_id">
                     {% for course in courses %}
                         <option value="{{course.id}}">{{course.course_name}}</option>
                     {%endfor%}
@@ -58,7 +59,7 @@ Add Student
           </div>
             <div class="form-group">
               <label>Session Year</label>
-              <select class="form-control" name="session_year" id="session_year">
+              <select class="form-control" name="session_year_id" id="session_year_id">
                   {% for session_year in session_years %}
                     <option value="{{ session_year.id }}">{{ session_year.session_start_year }} TO {{ session_year.session_end_year }}</option>
                   {% endfor %}

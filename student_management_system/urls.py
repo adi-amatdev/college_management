@@ -35,7 +35,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     
     
-    path('',views.showloginpage),
+    path('',views.showloginpage,name='show_login'),
     path('get_user_details',views.getuserdetails),
     path('logout_user',views.logout_user),
     path('doLogin',views.doLogin),
@@ -108,8 +108,8 @@ urlpatterns = [
     path('add_subject_form_api',AddSubjectFormAPIView.as_view(),name='add_subject_form_api'),
     path('add_session_form_api', add_session_form_api, name='add_session_form_api'),
     
-     path('courses/<int:course_id>/update/', update_course, name='update-course'),
-     path('staff/<int:staff_id>/update/',update_staff,name='update_staff'),
+    path('courses/<int:course_id>/update/', update_course, name='update-course'),
+    path('staff/<int:staff_id>/update/',update_staff,name='update_staff'),
 
 
     
