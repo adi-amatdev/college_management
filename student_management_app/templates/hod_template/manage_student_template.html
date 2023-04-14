@@ -27,8 +27,9 @@ Manage Student
                                     <th>Address</th>
                                     <th>Gender</th>
                                     <th>Profile Pic</th>
-                                    <th>Start Year</th>
-                                    <th>End Year</th>
+                                    <th>Session Year</th>
+                                    <!--<th>Start Year</th>
+                                    <th>End Year</th>-->
                                     <th>Course</th>
                                     <th>Last Login</th>
                                     <th>Date Joined</th>
@@ -46,8 +47,9 @@ Manage Student
                                     <td>{{student.address}}</td>
                                     <td>{{student.gender}}</td>
                                     <td><img src = "{{ student.profile_pic }}" style = "width:100px"/></td>
-                                    <td>{{student.session_start_year}}</td>
-                                    <td>{{student.session_end_year}}</td>
+                                    <td>{{student.session_year_id}}</td>
+                                    <!--<td>{{student.session_start_year}}</td>
+                                    <td>{{student.session_end_year}}</td>-->
                                     <td>{{student.course_idk.course_name}}</td>
                                     <td>{{student.admin.last_login}}</td>
                                     <td>{{student.admin.date_joined}}</td>
