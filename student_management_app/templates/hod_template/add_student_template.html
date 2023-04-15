@@ -15,7 +15,7 @@ Add Student
           <h3 class="card-title">Add Student</h3>
         </div>
 
-        <form role="form" action="/add_student_form_api" method="post" enctype = "multipart/form-data">
+        <form role="form" action="/add_student_form_api" method="post">
           {% csrf_token %}
           <div class="card-body">
             <div class="form-group">
@@ -59,7 +59,7 @@ Add Student
           </div>
             <div class="form-group"> 
               <label>Session Year</label>
-              <select class="form-control" name="session_year_id" id="session_year_id">
+              <select class="form-control" name="session_year_id_id" id="session_year_id_id">
                   {% for session_year in session_years %}
                     <option value="{{ session_year.id }}">{{ session_year.session_start_year }} TO {{ session_year.session_end_year }}</option>
                   {% endfor %}
@@ -74,10 +74,7 @@ Add Student
               <label>Admin ID</label>
               <input type="text" class="form-control" placeholder="Admin ID" name="admin_id">
           </div>
-          <div class="form-group">
-            <label>Profile Image</label>
-            <input type="file" class="form-control" placeholder="image" name="profile_pic">
-        </div>
+          
             
             <div class="form-group">
               {% if messages %}
