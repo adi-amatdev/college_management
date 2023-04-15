@@ -124,6 +124,7 @@ class AddStudentFormSerializer(serializers.Serializer):
     username = serializers.CharField()
     address = serializers.CharField()
     course_id = serializers.PrimaryKeyRelatedField(queryset=Courses.objects.all())
+    section = serializers.CharField()
     gender = serializers.CharField()
     session_year_id_id = serializers.PrimaryKeyRelatedField(queryset=SessionYearModel.objects.all())
     admin_id = serializers.CharField()
@@ -140,6 +141,7 @@ class AddStudentFormSerializer(serializers.Serializer):
         Students_data = {
             'address': validated_data['address'],
             'course_id':validated_data['course_id'],
+            'section':validated_data['section'],
             'gender': validated_data['gender'],
             'session_year_id':validated_data['session_year_id_id'],
             'admin_id':validated_data['admin_id'],
