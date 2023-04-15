@@ -97,6 +97,14 @@ urlpatterns = [
     path('student/<int:pk>/update/', UpdateStudentAPIView.as_view()), #updates an existing object with the given primary key.
     path('student/<int:pk>/delete/', DestroyStudentAPIView.as_view()), #deletes an existing object with the given primary key.
     path('student/<int:pk>/detail', StudentDetailView.as_view()), #to retrieve a single MyModel object with primary key.
+    path('student_view_attendance',StudentViews.student_view_attendance,name = 'student_view_attendance'),
+    path('student_view_attendance_post',StudentViews.student_view_attendance_post,name = 'student_view_attendance_post'),
+    path('student_apply_leave', StudentViews.student_apply_leave, name="student_apply_leave"),
+    path('student_apply_leave_save', StudentViews.student_apply_leave_save, name="student_apply_leave_save"),
+    path('student_feedback', StudentViews.student_feedback, name="student_feedback"),
+    path('student_feedback_save', StudentViews.student_feedback_save, name="student_feedback_save"),
+    path('student_profile', StudentViews.student_profile, name="student_profile"),
+    path('student_profile_save', StudentViews.student_profile_save, name="student_profile_save"),
 
     path('subject/', SubjectListView.as_view()),    #returns a list of all objects.
     path('subject/create/', CreateSubjectAPIView.as_view()),  #creates a new object.
