@@ -57,7 +57,7 @@ class Students(models.Model):
     profile_pic = models.FileField()
     address = models.TextField()
     objects=models.Manager()
-    course_id = models.ForeignKey(Courses,on_delete=models.CASCADE)
+    course_id = models.ForeignKey(Courses,on_delete=models.CASCADE,default=1)
     session_year_id = models.ForeignKey(SessionYearModel,on_delete=models.CASCADE,default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -97,6 +97,7 @@ class LeaveReportStaff(models.Model):
     staff_id = models.ForeignKey(Staff, on_delete=models.CASCADE)
     leave_date = models.CharField(max_length=60)
     leave_message = models.TextField()
+    leave_status = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects=models.Manager() 
@@ -155,4 +156,4 @@ def save_user_profile(sender, instance, **kwargs):
     if instance.user_type == 2:
         instance.staff.save()
     if instance.user_type == 3:
-        instance.student.save()
+        instance.students.save()
