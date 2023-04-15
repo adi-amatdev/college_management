@@ -54,6 +54,7 @@ class Students(models.Model):
     id = models.AutoField(primary_key=True)
     admin = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
     gender = models.CharField(max_length=255)
+    section = models.CharField(max_length=2,default='A')
     profile_pic = models.FileField()
     address = models.TextField()
     objects=models.Manager()

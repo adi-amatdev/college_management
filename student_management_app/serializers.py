@@ -71,12 +71,12 @@ class AddStaffFormSerializer(serializers.Serializer):
         CustomUser1 = CustomUser.objects.create(**CustomUser_data)
         CustomUser1.set_password(validated_data['password']) 
         CustomUser1.save()
-        Staff1 = Staff.objects.create(admin=CustomUser1, **Staff_data)
+        Staff1 = Staff.objects.create(admin=CustomUser1,**Staff_data)
         Staff1.save()
         return {'CustomUser': CustomUserSerializer(CustomUser1).data, 'Staff': StaffSerializer(Staff1).data}
 
     
-class AddStudentFormSerializer(serializers.Serializer):
+'''class AddStudentFormSerializer(serializers.Serializer):
     email = serializers.CharField()
     password = serializers.CharField()
     first_name = serializers.CharField()
@@ -87,7 +87,7 @@ class AddStudentFormSerializer(serializers.Serializer):
     gender = serializers.CharField()
     #session_start_year = serializers.CharField()
     #session_end_year = serializers.CharField()
-    #session_year_id = serializers.CharField()
+    session_year_id_id = serializers.CharField()
     admin_id = serializers.CharField()
     
     def create(self, validated_data):
@@ -101,9 +101,9 @@ class AddStudentFormSerializer(serializers.Serializer):
         }
         Students_data = {
             'address': validated_data['address'],
+            'course_id':validated_data['course_id'],
             'gender': validated_data['gender'],
-            'session_year_id_id':validated_data['session_year_id'],
-            'course_id':validated_data['course_name'],
+            'session_year_id_id':validated_data['session_year_id_id'],
             'admin_id':validated_data['admin_id'],
         }
         CustomUser1 = CustomUser.objects.create(**CustomUser_data)
@@ -111,8 +111,48 @@ class AddStudentFormSerializer(serializers.Serializer):
         CustomUser1.save()
         Students1 = Students.objects.create(**Students_data)
         Students1.save()
-        return {'CustomUser': CustomUser1, 'Students': Students1}
+        return {'CustomUser': CustomUserSerializer(CustomUser1).data, 'Students': StudentSerializer(Students1).data}'''
+        
+from rest_framework import serializers
+from .models import Students, CustomUser
+
+class AddStudentFormSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    username = serializers.CharField()
+    address = serializers.CharField()
+    course_id = serializers.PrimaryKeyRelatedField(queryset=Courses.objects.all())
+    section = serializers.CharField()
+    gender = serializers.CharField()
+    session_year_id_id = serializers.PrimaryKeyRelatedField(queryset=SessionYearModel.objects.all())
+    admin_id = serializers.CharField()
     
+    def create(self, validated_data):
+        CustomUser_data = {
+            'email': validated_data['email'],
+            'password': validated_data['password'],
+            'first_name': validated_data['first_name'],
+            'last_name': validated_data['last_name'],
+            'username': validated_data['username'], 
+            'user_type':3,       
+        }
+        Students_data = {
+            'address': validated_data['address'],
+            'course_id':validated_data['course_id'],
+            'section':validated_data['section'],
+            'gender': validated_data['gender'],
+            'session_year_id':validated_data['session_year_id_id'],
+            'admin_id':validated_data['admin_id'],
+        }
+        CustomUser1 = CustomUser(**CustomUser_data)
+        CustomUser1.set_password(validated_data['password'])
+        CustomUser1.save()
+        Students_data['admin'] = CustomUser1
+        student = Students.objects.create(**Students_data)
+        return {'CustomUser': CustomUserSerializer(CustomUser1).data, 'Students': StudentSerializer(student).data}
+
 class AddSubjectFormSerializer(serializers.Serializer):
     subject_name = serializers.CharField()
     course = serializers.CharField()
