@@ -21,7 +21,14 @@ from student_management_system import settings
 from student_management_app.HodViews import *
 from student_management_app.StaffViews import *
 from student_management_app.StudentViews import *
-from student_management_app.views import upload_scores
+# from student_management_app.views import upload_scores
+# from .views import UploadStudentTestScoresView
+
+from django.urls import path
+from student_management_app.HodViews import upload_file
+from student_management_app.HodViews import dump_student_n_staff_info
+from student_management_app.HodViews import dump_sub
+
 
 
 from rest_framework.routers import DefaultRouter
@@ -114,9 +121,13 @@ urlpatterns = [
      path('staff/<int:staff_id>/update/',update_staff,name='update_staff'),
 
 
-    path('upload/', upload_scores, name='upload_scores'),
+    # path('upload/', upload_scores, name='upload_scores'),
 
 
+
+    path('upload_marks/', upload_file, name='upload_file'),
+    path('dump_stud_staff/', dump_student_n_staff_info, name='dump_student_n_staff_info'),
+    path('upload_subjects/', dump_sub, name='dump_sub'),
 
 
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)+static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)

@@ -12,6 +12,18 @@ from rest_framework.mixins import ListModelMixin,RetrieveModelMixin
 from rest_framework.generics import GenericAPIView
 from .serializers import *
 from .models import *
+from django.shortcuts import render, redirect
+from .models import StudentTestScore
+import pandas as pd
+from django.shortcuts import render
+from .models import User
+from .models import Subject
+from datetime import datetime
+from datetime import date
+
+
+
+
 
 
 def admin_home(request):
@@ -336,7 +348,74 @@ def update_staff(request, staff_id):
         serializer.save()
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
+
+from django.shortcuts import get_object_or_404
+
+def upload_file(request):
+    if request.method == 'POST':
+        file = request.FILES['file']
+        df = pd.read_excel(file)
+        for index, row in df.iterrows():
+            subject_code = row['subject_code']
+            subject = get_object_or_404(Subject, subject_code=subject_code)
+            username = row['usn']
+            username = get_object_or_404(User, username=username)
+
+            test_date = row['test_date']
+            test_date = date.fromordinal(test_date)
+            test_date_str = test_date.strftime('%Y-%m-%d')
+            test1 = row['test1']
+            test2 = row['test2']
+            test3 = row['test3']
+            attendance = row['attendance']
+            score = StudentTestScore(
+                subject_code=subject,
+                usn=username,
+                test_date=test_date_str,
+                test1=test1,
+                test2=test2,
+                test3=test3,
+                attendance=attendance
+            )
+            score.save()
+        return render(request,'success.html')
+    return render(request, 'upload.html')
+
+def dump_student_n_staff_info(request):
+    if request.method == 'POST' and request.FILES['myfile']:
+        myfile = request.FILES['myfile']
+        df = pd.read_excel(myfile)
+        for index, row in df.iterrows():
+            user = User(
+                password=row['password'],
+                username=row['username'],
+                first_name=row['first_name'],
+                last_name=row['last_name'],
+                email=row['email'],
+                user_type=row['user_type'],
+            )
+            user.save()
+        return render(request, 'success.html')
+    return render(request, 'dump_student_n_staff_info.html')
+
+
+def dump_sub(request):
+    if request.method == 'POST' and request.FILES['myfile']:
+        myfile = request.FILES['myfile']
+        df = pd.read_excel(myfile)                      #for specific sheet include : ,sheet_name='Sheet1' in the paranthesis
+        for index, row in df.iterrows():
+            subject = Subject(
+                subject_name=row['subject_name'],
+                course_id_id=row['course_id_id'],
+                staff_id_id=row['staff_id_id'],
+                subject_code=row['subject_code']
+            )
+            subject.save()
+        return render(request, 'success.html')
+    return render(request, 'dump_sub.html')
+
 
 
 

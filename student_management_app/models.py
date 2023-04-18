@@ -5,6 +5,10 @@ from django.db.models.signals import post_save
 from django.contrib.auth.models import UserManager
 from django.contrib.auth.hashers import make_password
 
+# from student_management_app.models import Subjects, CustomUser
+
+
+
 class SessionYearModel(models.Model):
     id = models.AutoField(primary_key=True)
     session_start_year = models.DateField()
@@ -156,10 +160,51 @@ def save_user_profile(sender, instance, **kwargs):
     if instance.user_type == 3:
         instance.student.save()
 
-class TestScores(models.Model):
+# class TestScores(models.Model):
+#     test1 = models.FloatField()
+#     test2 = models.FloatField()
+#     test3 = models.FloatField()
+#     date_uploaded = models.DateTimeField(auto_now_add=True)
+#     class Meta:
+#         db_table = 'test_scores'
+
+
+
+#a model for the next 3  blocks already exsists , this is for excel dump only
+
+from django.db import models
+class User(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.BooleanField(default=False)
+    username = models.CharField(max_length=150, unique=True,blank=False)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    email = models.EmailField(max_length=254)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    date_joined = models.DateTimeField(auto_now_add=True)
+    user_type = models.CharField(max_length=10)
+
+class Subject(models.Model):
+    id = models.AutoField(primary_key=True)
+    subject_name = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    course_id = models.ForeignKey(Courses, on_delete=models.CASCADE)
+    staff_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    subject_code = models.CharField(max_length=10,unique= True,blank=False)
+
+class StudentTestScore(models.Model):
+    subject_code = models.ForeignKey(Subject, on_delete=models.CASCADE,to_field='subject_code')
+    usn = models.ForeignKey(User, on_delete=models.CASCADE,to_field='username')
+    test_date = models.DateField()
     test1 = models.FloatField()
     test2 = models.FloatField()
     test3 = models.FloatField()
-    date_uploaded = models.DateTimeField(auto_now_add=True)
-    class Meta:
-        db_table = 'test_scores'
+    attendance = models.IntegerField()
+    def __str__(self):
+        return f'{self.subject} - {self.usn.username} - {self.test_date}'
+
+
