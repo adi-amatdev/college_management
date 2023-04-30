@@ -31,16 +31,15 @@ router.register('Staff', DestroyStaffAPIView)
 
 
 urlpatterns = [
-    path('demo',views.showdemopage),
     path('admin/', admin.site.urls),
     
     
     path('',views.showloginpage,name='show_login'),
     path('get_user_details',views.getuserdetails),
     path('logout_user',views.logout_user),
-    path('doLogin',views.doLogin),
-    path('admin_home',HodViews.admin_home),
-    path('student_home',StudentViews.student_home),
+    path('doLogin',views.doLogin,name='do_login'),
+    path('admin_home',HodViews.admin_home,name='admin_home'),
+    path('student_home',StudentViews.student_home,name='student_home'),
     path('add_staff',HodViews.add_staff),
     #path('add_staff_save',HodViews.add_staff_save)
     path('add_course',HodViews.add_course),
@@ -55,9 +54,10 @@ urlpatterns = [
     path('edit_student/<str:student_id>',HodViews.edit_student),
     path('edit_subject/<str:subject_id>',HodViews.edit_subject),
     path('edit_course/<str:course_id>',HodViews.edit_course),
+    path('add_session',HodViews.add_session),
     path('manage_session',HodViews.manage_session),
 
-    path('staff_home',StaffViews.staff_home),
+    path('staff_home',StaffViews.staff_home,name='staff_home'),
     path('staff_take_attendance',StaffViews.staff_take_attendance, name="staff_take_attendance"),
     path('get_students',StaffViews.get_students, name="get_students"),
     path('save_attendance_data',StaffViews.save_attendance_data, name="save_attendance_data"),
@@ -113,6 +113,7 @@ urlpatterns = [
     path('subject/<int:pk>/delete/', DestroySubjectAPIView.as_view()), #deletes an existing object with the given primary key.
     path('subject/<int:pk>/detail', SubjectDetailView.as_view()), #to retrieve a single MyModel object with primary key.
     
+    #working related urls 
     path('add_staff_form_api', AddStaffFormAPIView.as_view(), name='add_staff_form_api'),
     path('add_student_form_api', AddStudentFormAPIView.as_view(), name='add_student_form_api'),
     path('add_course_form_api',add_course_form_api,name='add_course_form_api'),

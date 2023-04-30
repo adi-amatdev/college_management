@@ -14,6 +14,7 @@ from . models import *
 def staff_home(request):
     return render(request,"staff_template/staff_home_template.html")
 
+
 def staff_take_attendance(request):
     subjects = Subjects.objects.all()
     #subjects = Subjects.objects.filter(staff_id=request.user.id)
@@ -59,7 +60,8 @@ def save_attendance_data(request):
         return HttpResponse("OK")
     except:
         return HttpResponse("ERR")
-    
+  
+   
 def update_attendance(request):
     subjects = Subjects.objects.all()
     session_years = SessionYearModel.objects.all()
@@ -129,7 +131,6 @@ def staff_apply_leave(request):
     return render(request,"staff_template/staff_apply_leave.html")
 
 
-
 def staff_apply_leave_save(request):    #http method
     if request.method!="POST":
         return HttpResponseRedirect(reverse("staff_apply_leave"))
@@ -146,14 +147,17 @@ def staff_apply_leave_save(request):    #http method
         except:
             messages.error(request, "Failed To Apply for Leave")
             return HttpResponseRedirect(reverse("staff_apply_leave"))
-        
+ 
+     
 def staff_feedback(request):
     return render(request,"staff_template/staff_feedback.html")
+
 
 def staff_add_result(request):
     subjects = Subjects.objects.all()
     session_years = SessionYearModel.objects.all()
     return render(request,"staff_template/staff_add_result.html",{"subjects":subjects,"session_years":session_years})
+
 
 def staff_edit_result(request):
     #subjects = Subjects.objects.all()

@@ -6,12 +6,11 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 import datetime
 
-from student_management_app.models import Students, Courses, Subjects, CustomUser, Attendance, AttendanceReport, \
-    LeaveReportStudent, NotificationStudent,FeedbackStudent,SessionYearModel
+
+from student_management_app.models import *
     
 def student_home(request):
     return render(request,"student_template/student_home_template.html")
-
 
 
 def student_view_attendance(request):

@@ -12,6 +12,7 @@ from rest_framework.mixins import ListModelMixin,RetrieveModelMixin
 from rest_framework.generics import GenericAPIView
 from .serializers import *
 from .models import *
+from django.contrib.auth.decorators import login_required
 
 
 def admin_home(request):
@@ -266,8 +267,12 @@ def update_course(request, course_id):
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+def add_session(request):
+    return render(request,"hod_template/add_session_template.html")
+
 def manage_session(request):
     return render(request,"hod_template/manage_session_template.html")
+
 
 @api_view(['POST'])
 def add_session_form_api(request):
@@ -278,51 +283,6 @@ def add_session_form_api(request):
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-'''@api_view(['PUT', 'POST'])
-def update_staff(request, staff_id):
-    try:
-        instance1 = Staff.objects.get(id=staff_id)
-        instance2 = CustomUser.objects.get(id=staff_id)
-    except (Staff.DoesNotExist, CustomUser.DoesNotExist):
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    serializer1 = StaffSerializer(instance1, data=request.data)
-    serializer2 = CustomUserSerializer(instance2, data=request.data)
-    serializer1.is_valid()
-    serializer2.is_valid()
-    if serializer1.is_valid() and serializer2.is_valid():
-        serializer1.save()
-        serializer2.save()
-        return Response(serializer1.data, serializer2.data)
-    else:
-        errors = {
-            "staff_errors": serializer1.errors,
-            "customuser_errors": serializer2.errors,
-        }
-        return Response(errors, status=status.HTTP_400_BAD_REQUEST)'''
-        
-'''@api_view(['PUT', 'POST'])
-def update_staff(request, staff_id):
-    try:
-        instance1 = Staff.objects.get(id=staff_id)
-        instance2 = CustomUser.objects.get(id=staff_id)
-    except (Staff.DoesNotExist, CustomUser.DoesNotExist):
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    serializer1 = StaffSerializer(instance1, data=request.data)
-    serializer2 = CustomUserSerializer(instance2, data=request.data)
-    serializer1.is_valid()
-    serializer2.is_valid()
-    if serializer1.is_valid() and serializer2.is_valid():
-        serializer1.save()
-        serializer2.save()
-        return Response(serializer1.data, serializer2.data)
-    else:
-        errors = {
-            "staff_errors": serializer1.errors,
-            "customuser_errors": serializer2.errors,
-        }
-        return Response(errors, status=status.HTTP_400_BAD_REQUEST)'''
  
 @api_view(['PUT', 'PATCH', 'POST', 'OPTIONS'])
 def update_staff(request, staff_id):
