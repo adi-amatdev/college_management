@@ -318,18 +318,55 @@ def edit_staff_form(request):
             user.email=email
             user.username=username
             user.save()
-            print("1")
             
             staff_model = Staff.objects.get(admin=staff_id)
             staff_model.address = address
             staff_model.save()
-            print("2")
             
-            messages.success(request,"Successfully edited")
+            messages.success(request,"SUCCESSFULY UPDATED THE DETAILS")
             return HttpResponseRedirect("/edit_staff/"+staff_id)
         except:
-            messages.error(request,"Failed to edit")
+            messages.error(request,"FAILED TO UPDATE THE DETAILS")
             return HttpResponseRedirect("/edit_staff/"+staff_id) 
+        
+
+def edit_student_form(request):
+    if request.method != 'POST':
+        return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
+    else:
+        student_id = request.POST.get('student_id')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        username = request.POST.get('username')
+        address = request.POST.get("address")
+        course = request.POST.get("course")
+        gender = request.POST.get("gender")
+        session_start_year = request.POST.get('session_start_year')
+        session_end_year = request.POST.get('session_end_year')
+        
+        try:
+            user = CustomUser.objects.get(id=student_id)
+            user.first_name=first_name
+            user.last_name=last_name
+            user.email=email
+            user.username=username
+            user.save()
+            
+            student_model = Students.objects.get(admin=student_id)
+            student_model.address = address
+            student_model.course = course
+            student_model.gender = gender
+            student_model.session_start_year = session_start_year
+            student_model.session_end_year = session_end_year
+            
+            student_model.save()
+            
+            messages.success(request,"SUCCESSFULY UPDATED THE DETAILS")
+            return HttpResponseRedirect("/edit_student/"+student_id)
+        except:
+            messages.error(request,"FAILED TO UPDATE THE DETAILS")
+            return HttpResponseRedirect("/edit_student/"+student_id) 
         
         
         
