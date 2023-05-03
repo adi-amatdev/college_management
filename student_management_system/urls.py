@@ -92,12 +92,14 @@ urlpatterns = [
     path('add_session_form_api', add_session_form_api, name='add_session_form_api'),
     
     path('courses/<int:course_id>/update/', update_course, name='update-course'),
-    #path('staff/<int:staff_id>/update/',update_staff,name='update_staff'),
+    
     
     path('edit_staff/<str:staff_id>',HodViews.edit_staff),
     path('edit_student/<str:student_id>',HodViews.edit_student),
     path('edit_staff_save',HodViews.edit_staff_form,name='edit_staff_save'),
     path('edit_student_save',HodViews.edit_student_form,name='edit_student_save'),
+    path('edit_subject/<str:subject_id>',HodViews.edit_subject),
+    path('edit_subject_save',HodViews.edit_subject_form,name='edit_subject_save'),
 
     
 

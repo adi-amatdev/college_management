@@ -240,7 +240,7 @@ def edit_staff(request,staff_id):
     staff = Staff.objects.get(admin=staff_id)
     return render(request,"hod_template/edit_staff_template.html",{"staff":staff})
 
-def edit_student(request,student_id):   #need to do it thorugh api
+def edit_student(request,student_id):  
     student = Students.objects.get(admin=student_id)
     courses = Courses.objects.all()
     return render(request,"hod_template/edit_student_template.html",{"student":student, "courses":courses})
@@ -284,20 +284,6 @@ def add_session_form_api(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
- 
-@api_view(['PUT', 'PATCH', 'POST', 'OPTIONS'])
-def update_staff(request, staff_id):
-    try:
-        staff = Staff.objects.get(id=staff_id)
-    except Courses.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    serializer = UpdateStaffFormSerializer(staff, data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 def edit_staff_form(request):
@@ -367,6 +353,30 @@ def edit_student_form(request):
         except:
             messages.error(request,"FAILED TO UPDATE THE DETAILS")
             return HttpResponseRedirect("/edit_student/"+student_id) 
+        
+    
+def edit_subject_form(request):
+    if request.method != 'POST':
+        return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
+    else:
+        subject_id = request.POST.get('subject_id')
+        subject_name = request.POST.get("subject_name")
+        staff_id = request.POST.get("staff")
+        course_id = request.POST.get("course")
+        try:
+            subject=Subjects.objects.get(id=subject_id)
+            subject.subject_name= subject_name
+            staff=CustomUser.objects.get(id=staff_id)
+            subject.staff_id = staff
+            course = Courses.objects.get(id=course_id)
+            subject.course_id = course
+            subject.save() 
+            
+            messages.success(request,"SUCCESSFULY UPDATED THE DETAILS")
+            return HttpResponseRedirect("/edit_subject/"+subject_id)
+        except:
+            messages.error(request,"FAILED TO UPDATE THE DETAILS")
+            return HttpResponseRedirect("/edit_subject/"+subject_id) 
         
         
         
