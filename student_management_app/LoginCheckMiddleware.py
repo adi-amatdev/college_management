@@ -1,4 +1,5 @@
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.deprecation import MiddlewareMixin
 
@@ -15,7 +16,7 @@ class LoginCheckMiddleWare(MiddlewareMixin):
                 elif modulename == "student_management_app.views":
                     pass
                 else:
-                    return HttpResponseRedirect(reverse("admin_home"))
+                    return HttpResponseRedirect('admin_home')
             elif user.user_type == "2":
                 if modulename == "student_management_app.StaffViews":
                     pass
