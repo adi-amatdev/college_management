@@ -22,12 +22,6 @@ from student_management_app.HodViews import *
 from student_management_app.StaffViews import *
 from student_management_app.StudentViews import *
 
-from rest_framework.routers import DefaultRouter
-router = DefaultRouter()
-router.register('Staff',CreateStaffAPIView )
-router.register('Staff',RetrieveStaffAPIView)
-router.register('Staff',UpdateStaffAPIView )
-router.register('Staff', DestroyStaffAPIView)
 
 
 urlpatterns = [
@@ -77,26 +71,9 @@ urlpatterns = [
     path('staff_apply_leave_save', StaffViews.staff_apply_leave_save, name="staff_apply_leave_save"), #http
     path('staff_feedback', StaffViews.staff_feedback, name="staff_feedback"),
      
-    path('staff/', StaffListView.as_view()),    #returns a list of all objects.
-    path('staff/create/', CreateStaffAPIView.as_view()),  #creates a new object.
-    path('staff/<int:pk>/', RetrieveStaffAPIView.as_view()), #returns a single object with the given primary key.
-    #path('staff/<int:pk>/update/', UpdateStaffAPIView.as_view()), #updates an existing object with the given primary key.
-    path('staff/<int:pk>/delete/', DestroyStaffAPIView.as_view()), #deletes an existing object with the given primary key.
-    path('staff/<int:pk>/detail', StaffDetailView.as_view()), #to retrieve a single MyModel object with primary key.
+    
+    
 
-    path('course/', CourseListView.as_view()),    #returns a list of all objects.
-    path('course/create/', CreateCourseAPIView.as_view()),  #creates a new object.
-    path('course/<int:pk>/', RetrieveCourseAPIView.as_view()), #returns a single object with the given primary key.
-    #path('course/<int:pk>/update/', UpdateCourseAPIView.as_view()), #updates an existing object with the given primary key.
-    path('course/<int:pk>/delete/', DestroyCourseAPIView.as_view()), #deletes an existing object with the given primary key.
-    path('course/<int:pk>/detail', CourseDetailView.as_view()), #to retrieve a single MyModel object with primary key.
-
-    path('student/', StudentListView.as_view()),    #returns a list of all objects.
-    path('student/create/', CreateStudentAPIView.as_view()),  #creates a new object.
-    path('student/<int:pk>/', RetrieveStudentAPIView.as_view()), #returns a single object with the given primary key.
-    path('student/<int:pk>/update/', UpdateStudentAPIView.as_view()), #updates an existing object with the given primary key.
-    path('student/<int:pk>/delete/', DestroyStudentAPIView.as_view()), #deletes an existing object with the given primary key.
-    path('student/<int:pk>/detail', StudentDetailView.as_view()), #to retrieve a single MyModel object with primary key.
     path('student_view_attendance',StudentViews.student_view_attendance,name = 'student_view_attendance'),
     path('student_view_attendance_post',StudentViews.student_view_attendance_post,name = 'student_view_attendance_post'),
     path('student_apply_leave', StudentViews.student_apply_leave, name="student_apply_leave"),
@@ -106,12 +83,7 @@ urlpatterns = [
     path('student_profile', StudentViews.student_profile, name="student_profile"),
     path('student_profile_save', StudentViews.student_profile_save, name="student_profile_save"),
 
-    path('subject/', SubjectListView.as_view()),    #returns a list of all objects.
-    path('subject/create/', CreateSubjectAPIView.as_view()),  #creates a new object.
-    path('subject/<int:pk>/', RetrieveSubjectAPIView.as_view()), #returns a single object with the given primary key.
-    path('subject/<int:pk>/update/', UpdateSubjectAPIView.as_view()), #updates an existing object with the given primary key.
-    path('subject/<int:pk>/delete/', DestroySubjectAPIView.as_view()), #deletes an existing object with the given primary key.
-    path('subject/<int:pk>/detail', SubjectDetailView.as_view()), #to retrieve a single MyModel object with primary key.
+    
     
     #working related urls 
     path('add_staff_form_api', AddStaffFormAPIView.as_view(), name='add_staff_form_api'),
@@ -121,7 +93,10 @@ urlpatterns = [
     path('add_session_form_api', add_session_form_api, name='add_session_form_api'),
     
     path('courses/<int:course_id>/update/', update_course, name='update-course'),
-    path('staff/<int:staff_id>/update/',update_staff,name='update_staff'),
+    #path('staff/<int:staff_id>/update/',update_staff,name='update_staff'),
+    
+    
+    path('edit_staff_save',HodViews.edit_staff_form,name='edit_staff_save'),
 
 
     

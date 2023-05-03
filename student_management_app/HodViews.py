@@ -1,6 +1,8 @@
 from django.contrib import messages
+from django.forms import modelform_factory
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.urls import reverse
 from student_management_app.models import CustomUser, Staff
 import requests
 from rest_framework import status
@@ -234,7 +236,7 @@ class AddSubjectFormAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
-def edit_staff(request,staff_id):   #need to do it thorugh api
+def edit_staff(request,staff_id):  
     staff = Staff.objects.get(admin=staff_id)
     return render(request,"hod_template/edit_staff_template.html",{"staff":staff})
 
@@ -298,14 +300,36 @@ def update_staff(request, staff_id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-
-
-
-
-
-
-
+def edit_staff_form(request):
+    if request.method != 'POST':
+        return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
+    else:
+        staff_id = request.POST.get('staff_id')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        username = request.POST.get('username')
+        address = request.POST.get("address")
         
-
-
-
+        try:
+            user = CustomUser.objects.get(id=staff_id)
+            user.first_name=first_name
+            user.last_name=last_name
+            user.email=email
+            user.username=username
+            user.save()
+            print("1")
+            
+            staff_model = Staff.objects.get(admin=staff_id)
+            staff_model.address = address
+            staff_model.save()
+            print("2")
+            
+            messages.success(request,"Successfully edited")
+            return HttpResponseRedirect("/edit_staff/"+staff_id)
+        except:
+            messages.error(request,"Failed to edit")
+            return HttpResponseRedirect("/edit_staff/"+staff_id) 
+        
+        
+        
