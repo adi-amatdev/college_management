@@ -1,6 +1,8 @@
 from django.contrib import messages
+from django.forms import modelform_factory
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+from django.urls import reverse
 from student_management_app.models import CustomUser, Staff
 import requests
 from rest_framework import status
@@ -12,6 +14,7 @@ from rest_framework.mixins import ListModelMixin,RetrieveModelMixin
 from rest_framework.generics import GenericAPIView
 from .serializers import *
 from .models import *
+from django.contrib.auth.decorators import login_required
 
 
 def admin_home(request):
@@ -233,11 +236,11 @@ class AddSubjectFormAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     
-def edit_staff(request,staff_id):   #need to do it thorugh api
+def edit_staff(request,staff_id):  
     staff = Staff.objects.get(admin=staff_id)
     return render(request,"hod_template/edit_staff_template.html",{"staff":staff})
 
-def edit_student(request,student_id):   #need to do it thorugh api
+def edit_student(request,student_id):  
     student = Students.objects.get(admin=student_id)
     courses = Courses.objects.all()
     return render(request,"hod_template/edit_student_template.html",{"student":student, "courses":courses})
@@ -266,8 +269,12 @@ def update_course(request, course_id):
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+def add_session(request):
+    return render(request,"hod_template/add_session_template.html")
+
 def manage_session(request):
     return render(request,"hod_template/manage_session_template.html")
+
 
 @api_view(['POST'])
 def add_session_form_api(request):
@@ -278,74 +285,98 @@ def add_session_form_api(request):
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-'''@api_view(['PUT', 'POST'])
-def update_staff(request, staff_id):
-    try:
-        instance1 = Staff.objects.get(id=staff_id)
-        instance2 = CustomUser.objects.get(id=staff_id)
-    except (Staff.DoesNotExist, CustomUser.DoesNotExist):
-        return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer1 = StaffSerializer(instance1, data=request.data)
-    serializer2 = CustomUserSerializer(instance2, data=request.data)
-    serializer1.is_valid()
-    serializer2.is_valid()
-    if serializer1.is_valid() and serializer2.is_valid():
-        serializer1.save()
-        serializer2.save()
-        return Response(serializer1.data, serializer2.data)
+def edit_staff_form(request):
+    if request.method != 'POST':
+        return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
     else:
-        errors = {
-            "staff_errors": serializer1.errors,
-            "customuser_errors": serializer2.errors,
-        }
-        return Response(errors, status=status.HTTP_400_BAD_REQUEST)'''
+        staff_id = request.POST.get('staff_id')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        username = request.POST.get('username')
+        address = request.POST.get("address")
         
-'''@api_view(['PUT', 'POST'])
-def update_staff(request, staff_id):
-    try:
-        instance1 = Staff.objects.get(id=staff_id)
-        instance2 = CustomUser.objects.get(id=staff_id)
-    except (Staff.DoesNotExist, CustomUser.DoesNotExist):
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        try:
+            user = CustomUser.objects.get(id=staff_id)
+            user.first_name=first_name
+            user.last_name=last_name
+            user.email=email
+            user.username=username
+            user.save()
+            
+            staff_model = Staff.objects.get(admin=staff_id)
+            staff_model.address = address
+            staff_model.save()
+            
+            messages.success(request,"SUCCESSFULY UPDATED THE DETAILS")
+            return HttpResponseRedirect("/edit_staff/"+staff_id)
+        except:
+            messages.error(request,"FAILED TO UPDATE THE DETAILS")
+            return HttpResponseRedirect("/edit_staff/"+staff_id) 
+        
 
-    serializer1 = StaffSerializer(instance1, data=request.data)
-    serializer2 = CustomUserSerializer(instance2, data=request.data)
-    serializer1.is_valid()
-    serializer2.is_valid()
-    if serializer1.is_valid() and serializer2.is_valid():
-        serializer1.save()
-        serializer2.save()
-        return Response(serializer1.data, serializer2.data)
+def edit_student_form(request):
+    if request.method != 'POST':
+        return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
     else:
-        errors = {
-            "staff_errors": serializer1.errors,
-            "customuser_errors": serializer2.errors,
-        }
-        return Response(errors, status=status.HTTP_400_BAD_REQUEST)'''
- 
-@api_view(['PUT', 'PATCH', 'POST', 'OPTIONS'])
-def update_staff(request, staff_id):
-    try:
-        staff = Staff.objects.get(id=staff_id)
-    except Courses.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    serializer = UpdateStaffFormSerializer(staff, data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        student_id = request.POST.get('student_id')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        username = request.POST.get('username')
+        address = request.POST.get("address")
+        course = request.POST.get("course")
+        gender = request.POST.get("gender")
+        session_start_year = request.POST.get('session_start_year')
+        session_end_year = request.POST.get('session_end_year')
+        
+        try:
+            user = CustomUser.objects.get(id=student_id)
+            user.first_name=first_name
+            user.last_name=last_name
+            user.email=email
+            user.username=username
+            user.save()
+            
+            student_model = Students.objects.get(admin=student_id)
+            student_model.address = address
+            student_model.course = course
+            student_model.gender = gender
+            student_model.session_start_year = session_start_year
+            student_model.session_end_year = session_end_year
+            
+            student_model.save()
+            
+            messages.success(request,"SUCCESSFULY UPDATED THE DETAILS")
+            return HttpResponseRedirect("/edit_student/"+student_id)
+        except:
+            messages.error(request,"FAILED TO UPDATE THE DETAILS")
+            return HttpResponseRedirect("/edit_student/"+student_id) 
+        
     
-
-
-
-
-
-
-
-
+def edit_subject_form(request):
+    if request.method != 'POST':
+        return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
+    else:
+        subject_id = request.POST.get('subject_id')
+        subject_name = request.POST.get("subject_name")
+        staff_id = request.POST.get("staff")
+        course_id = request.POST.get("course")
+        try:
+            subject=Subjects.objects.get(id=subject_id)
+            subject.subject_name= subject_name
+            staff=CustomUser.objects.get(id=staff_id)
+            subject.staff_id = staff
+            course = Courses.objects.get(id=course_id)
+            subject.course_id = course
+            subject.save() 
+            
+            messages.success(request,"SUCCESSFULY UPDATED THE DETAILS")
+            return HttpResponseRedirect("/edit_subject/"+subject_id)
+        except:
+            messages.error(request,"FAILED TO UPDATE THE DETAILS")
+            return HttpResponseRedirect("/edit_subject/"+subject_id) 
         
-
-
-
+        
+        

@@ -24,7 +24,7 @@ class AdminHOD(models.Model):
 
 class Staff(models.Model):
     id = models.AutoField(primary_key=True)
-    admin = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
+    admin = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     address = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -43,7 +43,7 @@ class Subjects(models.Model):
     id = models.AutoField(primary_key=True)
     subject_name = models.CharField(max_length=255)
     course_id = models.ForeignKey(Courses,on_delete=models.CASCADE)
-    subject_code = models.CharField(max_length=10)
+    subject_code = models.CharField(max_length=10,unique=True)
     staff_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -52,7 +52,7 @@ class Subjects(models.Model):
     
 class Students(models.Model):
     id = models.AutoField(primary_key=True)
-    admin = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
+    admin = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     gender = models.CharField(max_length=255)
     section = models.CharField(max_length=2,default='A')
     profile_pic = models.FileField()
@@ -138,9 +138,21 @@ class NotificationStaff(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects=models.Manager() 
+
+class StudentTestScore(models.Model):
+    subject_code = models.ForeignKey(Subjects, on_delete=models.CASCADE,to_field='subject_code')
+    usn = models.ForeignKey(CustomUser, on_delete=models.CASCADE,to_field='username')
+    test_date = models.DateField()
+    test1 = models.FloatField()
+    test2 = models.FloatField()
+    test3 = models.FloatField()
+    attendance = models.IntegerField()
+    def __str__(self):
+        return f'{self.subject} - {self.usn.username} - {self.test_date}'
+
     
 
-@receiver(post_save, sender=CustomUser)
+'''@receiver(post_save, sender=CustomUser)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         if instance.user_type == 1:
@@ -155,6 +167,6 @@ def save_user_profile(sender, instance, **kwargs):
     if instance.user_type == 1:
         instance.adminhod.save()
     if instance.user_type == 2:
-        instance.staff.save()
+        instance.Staff.save()
     if instance.user_type == 3:
-        instance.students.save()
+        instance.students.save() '''

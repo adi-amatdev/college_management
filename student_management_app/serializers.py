@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import *
 from .models import CustomUser
-
+from django.db import transaction
         
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -54,6 +54,7 @@ class AddStaffFormSerializer(serializers.Serializer):
     username = serializers.CharField()
     address = serializers.CharField()
     admin_id = serializers.CharField()
+    @transaction.atomic
     def create(self, validated_data):
         CustomUser_data = {
             'email': validated_data['email'],
@@ -64,54 +65,19 @@ class AddStaffFormSerializer(serializers.Serializer):
             'user_type': 2,
             'is_staff': 1,
         }
+        CustomUser1 = CustomUser.objects.create(**CustomUser_data)
+        CustomUser1.set_password(validated_data['password']) 
+        CustomUser1.save()
         Staff_data = {
             'address': validated_data['address'],
-            'admin_id': validated_data['admin_id'],
+            'admin': CustomUser1,
         }
-        CustomUser1 = CustomUser.objects.create(**CustomUser_data)
-        CustomUser1.set_password(validated_data['password']) 
-        CustomUser1.save()
-        Staff1 = Staff.objects.create(admin=CustomUser1,**Staff_data)
-        Staff1.save()
-        return {'CustomUser': CustomUserSerializer(CustomUser1).data, 'Staff': StaffSerializer(Staff1).data}
+        Staff1 = Staff.objects.create(**Staff_data)
+        return {
+            'CustomUser': CustomUserSerializer(CustomUser1).data,
+            'Staff': StaffSerializer(Staff1).data
+        }
 
-    
-'''class AddStudentFormSerializer(serializers.Serializer):
-    email = serializers.CharField()
-    password = serializers.CharField()
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
-    username = serializers.CharField()
-    address = serializers.CharField()
-    course_id = serializers.CharField()
-    gender = serializers.CharField()
-    #session_start_year = serializers.CharField()
-    #session_end_year = serializers.CharField()
-    session_year_id_id = serializers.CharField()
-    admin_id = serializers.CharField()
-    
-    def create(self, validated_data):
-        CustomUser_data = {
-            'email': validated_data['email'],
-            'password': validated_data['password'],
-            'first_name': validated_data['first_name'],
-            'last_name': validated_data['last_name'],
-            'username': validated_data['username'], 
-            'user_type':3,       
-        }
-        Students_data = {
-            'address': validated_data['address'],
-            'course_id':validated_data['course_id'],
-            'gender': validated_data['gender'],
-            'session_year_id_id':validated_data['session_year_id_id'],
-            'admin_id':validated_data['admin_id'],
-        }
-        CustomUser1 = CustomUser.objects.create(**CustomUser_data)
-        CustomUser1.set_password(validated_data['password']) 
-        CustomUser1.save()
-        Students1 = Students.objects.create(**Students_data)
-        Students1.save()
-        return {'CustomUser': CustomUserSerializer(CustomUser1).data, 'Students': StudentSerializer(Students1).data}'''
         
 from rest_framework import serializers
 from .models import Students, CustomUser
@@ -128,7 +94,7 @@ class AddStudentFormSerializer(serializers.Serializer):
     gender = serializers.CharField()
     session_year_id_id = serializers.PrimaryKeyRelatedField(queryset=SessionYearModel.objects.all())
     admin_id = serializers.CharField()
-    
+    @transaction.atomic
     def create(self, validated_data):
         CustomUser_data = {
             'email': validated_data['email'],
