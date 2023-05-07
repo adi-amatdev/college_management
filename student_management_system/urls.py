@@ -88,7 +88,8 @@ urlpatterns = [
     path('add_student_form_save',HodViews.add_student_form_save,name='add_student_form_save'),
     path('add_staff_form_save',HodViews.add_staff_form_save,name='add_staff_form_save'),
     path('add_course_form_api',add_course_form_api,name='add_course_form_api'),
-    path('add_subject_form_api',AddSubjectFormAPIView.as_view(),name='add_subject_form_api'),
+    #path('add_subject_form_api',AddSubjectFormAPIView.as_view(),name='add_subject_form_api'),
+    path('add_subject_form_save',HodViews.add_subject_form_save,name='add_subject_form_save'),
     path('add_session_form_api', add_session_form_api, name='add_session_form_api'),
     
     path('courses/<int:course_id>/update/', update_course, name='update-course'),

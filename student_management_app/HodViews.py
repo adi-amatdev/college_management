@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.forms import modelform_factory
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from student_management_app.models import CustomUser, Staff
 import requests
@@ -125,23 +125,20 @@ def add_student_form_save(request):
         admin_id = request.POST.get("admin_id")
         try:
             with transaction.atomic():
-                admin = CustomUser.objects.create_user(
+                user = CustomUser.objects.create_user(
                     email=email, password=password, user_type=3, first_name=first_name, last_name=last_name, username=username)
-                course = Courses.objects.get(id=course_id)
                 student = Students.objects.create(
-                    admin=admin,gender=gender, section=section, address=address, course_id=course, 
+                    admin=user,gender=gender, section=section, address=address, course_id=course_id, 
                     session_year_id_id=session_year_id_id, admin_id=admin_id
                 )
                 
-                
-                
                 messages.success(request, "STUDENT ADDED")
-                return redirect(reverse('/add_student'))
+                return redirect(reverse("/add_student"))
         except Exception as e:
             with transaction.atomic():
                 transaction.set_rollback(True)
-            messages.error(request, "FAILED TO ADD STUDENT " + str(e))
-            return HttpResponseRedirect("/add_student")
+                messages.error(request, "FAILED TO ADD STUDENT " + str(e))
+                return HttpResponseRedirect("/add_student")
 
 
 
@@ -180,6 +177,55 @@ def add_course_form_api(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+'''def add_subject_form_save(request):
+    if request.method != "POST":
+        return HttpResponse("METHOD NOT ALLOWED")
+    else:
+        subject_name = request.POST.get("subject_name")
+        course = request.POST.get("course")
+        staff_id = request.POST.get("staff_id")
+        subject_code = request.POST.get("subject_code")
+        try:
+            with transaction.atomic():
+                course_id = Courses.objects.get(id=course)
+                staff = Staff.objects.get(id=int(staff_id))
+                subject = Subjects.objects.create(subject_code=subject_code,subject_name=subject_name,course_id=course_id,staff_id=staff)
+                messages.success(request, "ADDED SUBJECT DETAILS!")
+                return HttpResponseRedirect("/add_subject")
+        except Exception as e:
+            with transaction.atomic():
+                transaction.set_rollback(True)
+                messages.error(request, "FAILED TO ADD SUBJECT DETAILS - " + str(e))
+            return HttpResponseRedirect("/add_subject")'''
+        
+def add_subject_form_save(request):
+    if request.method != "POST":
+        return HttpResponse("METHOD NOT ALLOWED")
+    else:
+        subject_name = request.POST.get("subject_name")
+        course_id = request.POST.get("course")
+        staff_id = request.POST.get("staff_id")
+        subject_code = request.POST.get("subject_code")
+        try:
+            with transaction.atomic():
+                course = get_object_or_404(Courses, id=course_id)
+                staff = get_object_or_404(CustomUser, id=staff_id)
+                subject = Subjects.objects.create(
+                    subject_code=subject_code,
+                    subject_name=subject_name,
+                    course_id=course,
+                    staff_id=staff,
+                )
+                messages.success(request, "ADDED SUBJECT DETAILS!")
+                return HttpResponseRedirect("/add_subject")
+        except Exception as e:
+            with transaction.atomic():
+                transaction.set_rollback(True)
+                messages.error(request, "FAILED TO ADD SUBJECT DETAILS - " + str(e))
+            return HttpResponseRedirect("/add_subject")
+    
 
 
 
