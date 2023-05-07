@@ -85,8 +85,8 @@ urlpatterns = [
     
     
     #working related urls 
-    path('add_staff_form_api', AddStaffFormAPIView.as_view(), name='add_staff_form_api'),
-    path('add_student_form_api', AddStudentFormAPIView.as_view(), name='add_student_form_api'),
+    path('add_student_form_save',HodViews.add_student_form_save,name='add_student_form_save'),
+    path('add_staff_form_save',HodViews.add_staff_form_save,name='add_staff_form_save'),
     path('add_course_form_api',add_course_form_api,name='add_course_form_api'),
     path('add_subject_form_api',AddSubjectFormAPIView.as_view(),name='add_subject_form_api'),
     path('add_session_form_api', add_session_form_api, name='add_session_form_api'),
@@ -100,6 +100,8 @@ urlpatterns = [
     path('edit_student_save',HodViews.edit_student_form,name='edit_student_save'),
     path('edit_subject/<str:subject_id>',HodViews.edit_subject),
     path('edit_subject_save',HodViews.edit_subject_form,name='edit_subject_save'),
+    path('edit_session/<str:session_year_id>',HodViews.edit_session),
+    path('edit_session_save',HodViews.edit_session_form,name='edit_session_save'),
 
     
 

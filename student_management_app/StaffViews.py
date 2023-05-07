@@ -9,8 +9,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from . serializers import *
 from . models import *
+from django.contrib.auth.decorators import login_required
 
-
+@login_required
 def staff_home(request):
     return render(request,"staff_template/staff_home_template.html")
 
@@ -61,7 +62,7 @@ def save_attendance_data(request):
     except:
         return HttpResponse("ERR")
   
-   
+@login_required
 def update_attendance(request):
     subjects = Subjects.objects.all()
     session_years = SessionYearModel.objects.all()

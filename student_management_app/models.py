@@ -139,16 +139,7 @@ class NotificationStaff(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     objects=models.Manager() 
 
-class StudentTestScore(models.Model):
-    subject_code = models.ForeignKey(Subjects, on_delete=models.CASCADE,to_field='subject_code')
-    usn = models.ForeignKey(CustomUser, on_delete=models.CASCADE,to_field='username')
-    test_date = models.DateField()
-    test1 = models.FloatField()
-    test2 = models.FloatField()
-    test3 = models.FloatField()
-    attendance = models.IntegerField()
-    def __str__(self):
-        return f'{self.subject} - {self.usn.username} - {self.test_date}'
+
 
     
 
