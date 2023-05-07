@@ -10,9 +10,7 @@ class SessionYearModel(models.Model):
     session_start_year = models.DateField()
     session_end_year = models.DateField()
     objects=models.Manager()
-    
-    
-    
+
 
 class CustomUser(AbstractUser):
     user_type_data = ((1,"AdminHOD"),(2,"Staff"),(3,"Student"))

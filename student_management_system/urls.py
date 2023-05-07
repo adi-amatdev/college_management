@@ -101,8 +101,9 @@ urlpatterns = [
     path('edit_student_save',HodViews.edit_student_form,name='edit_student_save'),
     path('edit_subject/<str:subject_id>',HodViews.edit_subject),
     path('edit_subject_save',HodViews.edit_subject_form,name='edit_subject_save'),
-    path('edit_session/<str:session_year_id>',HodViews.edit_session),
-    path('edit_session_save',HodViews.edit_session_form,name='edit_session_save'),
+    path('edit_session/<int:session_year_id>/', HodViews.edit_session, name='edit_session'),
+
+    
 
     
 

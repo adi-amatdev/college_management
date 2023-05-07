@@ -9,8 +9,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import CreateAPIView,RetrieveAPIView,UpdateAPIView,DestroyAPIView
-from rest_framework.mixins import ListModelMixin,RetrieveModelMixin
+from rest_framework.generics import CreateAPIView
 from rest_framework.generics import GenericAPIView
 from .serializers import *
 from .models import *
@@ -24,7 +23,6 @@ def admin_home(request):
 
 def add_staff(request):
     return render(request,"hod_template/add_staff_template.html")
-
 
 
 def add_staff_form_save(request):
@@ -56,41 +54,6 @@ def add_staff_form_save(request):
                 transaction.set_rollback(True)
                 messages.error(request, "FAILED TO ADD STAFF DETAILS - " + str(e))
             return HttpResponseRedirect("/add_staff")
-
-
-class CreateStaffAPIView(CreateAPIView):
-    serializer_class = StaffSerializer
-    queryset = Staff.objects.all()
-
-class RetrieveStaffAPIView(RetrieveAPIView):
-    serializer_class = StaffSerializer
-    queryset = Staff.objects.all()
-    #lookup_field = 'id'
-
-
-class UpdateStaffAPIView(UpdateAPIView):
-    serializer_class = StaffSerializer
-    queryset = Staff.objects.all()
-    #lookup_field = 'id'
-    
-class DestroyStaffAPIView(DestroyAPIView):
-    serializer_class = StaffSerializer
-    queryset = Staff.objects.all()
-    #lookup_field = 'id'
-    
-class StaffListView(ListModelMixin, GenericAPIView):
-    queryset = Staff.objects.all()
-    serializer_class = StaffSerializer
-    
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-    
-class StaffDetailView(RetrieveModelMixin, GenericAPIView):
-    queryset = Staff.objects.all()
-    serializer_class = StaffSerializer
-    
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
 
 def add_course(request):
@@ -211,15 +174,7 @@ def add_course_form_api(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-class AddSubjectFormAPIView(APIView):
-    def post(self, request):
-        serializer = AddSubjectFormSerializer(data=request.data)
-        if serializer.is_valid():
-            data = serializer.save()
-            return Response(data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     
 def edit_staff(request,staff_id):  
     staff = Staff.objects.get(admin=staff_id)
@@ -240,9 +195,23 @@ def edit_course(request,course_id):
     course=Courses.objects.get(id=course_id)
     return render(request,"hod_template/edit_course_template.html",{"course":course})
 
-def edit_session(request,session_year_id):
-    session = SessionYearModel.objects.get(id=session_year_id)
-    return render(request,"hod_template/edit_session_template.html",{"sessionyearmodel":session})
+
+def edit_session(request, session_year_id):
+    session_year = SessionYearModel.objects.get(id=session_year_id)
+    if request.method == 'POST':
+        session_start_year = request.POST.get('session_start_year')
+        session_end_year = request.POST.get('session_end_year')
+        try:
+            #updating to new values
+            session_year.session_start_year = session_start_year
+            session_year.session_end_year = session_end_year
+            session_year.save()
+
+            messages.success(request, 'SESSION YEAR UPDATED!')
+            return HttpResponseRedirect("/edit_session/"+ str(session_year_id))
+        except Exception as e:
+            messages.error(request, 'SESSION YEAR UPDATE FAILED - '+ str(e))
+    return render(request, 'hod_template/edit_session_template.html', {'session_year': session_year})
 
 
 @api_view(['PUT', 'POST'])
@@ -264,9 +233,6 @@ def add_session(request):
 def manage_session(request):
     session = SessionYearModel.objects.all()
     return render(request,"hod_template/manage_session_template.html",{"sessionyearmodel":session})
-
-    
-
 
 @api_view(['POST'])
 def add_session_form_api(request):
@@ -370,8 +336,6 @@ def edit_subject_form(request):
             messages.error(request,"FAILED TO UPDATE THE DETAILS "+str(e))
             return HttpResponseRedirect("/edit_subject/"+subject_id) 
         
-def edit_session_form(request):
-    pass 
         
         
         

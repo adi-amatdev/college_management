@@ -11,23 +11,22 @@ Edit Session Year | Session ID : {{session_year.id}}
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Add Session Year</h3>
+                <h3 class="card-title">Edit Session Year</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" action="/edit_session_save" method="post">
+              <form role="form" action="/edit_session/{{ session_year.id }}/" method="post">
                   {% csrf_token %}
                 <div class="card-body">
                   <div class="form-group">
                     <label>Session Start Year </label>
-                    <input type="date" class="form-control" name="session_start_year" placeholder="Enter Session Start Year">
+                    <input type="text" class="form-control" name="session_start_year" value="{{ session_year.session_start_year|date:"Y-m-d" }}">
                   </div>
 
                  <div class="form-group">
                     <label>Session End Year </label>
-                    <input type="date" class="form-control" name="session_end_year" placeholder="Enter Session End Year">
+                    <input type="text" class="form-control" name="session_end_year" value="{{ session_year.session_end_year|date:"Y-m-d" }}">
                   </div>
-
 
                    <div class="form-group">
                       {% if messages %}
@@ -46,7 +45,7 @@ Edit Session Year | Session ID : {{session_year.id}}
                 <!-- /.card-body -->
 
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary btn-block">Add Session Year</button>
+                  <button type="submit" class="btn btn-primary btn-block">Update Session Year</button>
                 </div>
               </form>
             </div>
