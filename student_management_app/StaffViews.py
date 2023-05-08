@@ -152,13 +152,39 @@ def staff_apply_leave_save(request: HttpRequest):
         except Exception as e:
             messages.error(request, f"LEAVE APPLICATION FAILED - {str(e)}")
             return HttpResponseRedirect(reverse("staff_apply_leave"))
+        
+def staff_send_feedback_save(request):
+    if request.method != "POST":
+        return HttpResponseRedirect(reverse("staff_feedback"))
+    else:
+        feedback_msg = request.POST.get("feedback_msg")
+        print(f"request.user.id: {request.user.id}")
+        staff_obj = get_object_or_404(Staff, admin=request.user.id)
+        print(f"staff_obj: {staff_obj}")
+        try:
+            feedback = FeedbackStaff(
+                staff_id=staff_obj,
+                feedback=feedback_msg,
+                feedback_reply=""  
+            )
+            feedback.save()
+            messages.success(request, "FEEDBACK SUCCESSFULY SENT!")
+            return HttpResponseRedirect(reverse("staff_feedback"))
+        except Exception as e:
+            messages.error(request, f"FAILED TO SEND FEEDBACK - {str(e)}")
+            return HttpResponseRedirect(reverse("staff_feedback"))
+    
 
 
 def staff_apply_leave(request):
-    return render(request,"staff_template/staff_apply_leave.html")
+    staff_obj = Staff.objects.get(admin=request.user.id)
+    leave_data = StaffLeave.objects.filter(staff_id=staff_obj)
+    return render(request,"staff_template/staff_apply_leave.html",{"leave_data":leave_data})
      
 def staff_feedback(request):
-    return render(request,"staff_template/staff_feedback.html")
+    staff_obj = Staff.objects.get(admin=request.user.id)
+    feedback_obj = FeedbackStaff.objects.filter(staff_id=staff_obj)
+    return render(request,"staff_template/staff_feedback.html",{"feedback_obj":feedback_obj})
 
 
 def staff_add_result(request):
