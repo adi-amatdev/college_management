@@ -372,7 +372,39 @@ def staff_feedback_reply_msg(request):
     except:
         return HttpResponse("False")
     
+    
+def student_leave_status(request):
+    leaves=StudentLeave.objects.all()
+    return render(request,"hod_template/student_leave_status.html",{"leaves":leaves})
 
+def staff_leave_status(request):
+    leaves=StaffLeave.objects.all()
+    return render(request,"hod_template/staff_leave_status.html",{"leaves":leaves})
+    
+def approve_student_leave(request,leave_id):
+    leave=StudentLeave.objects.get(id=leave_id)
+    leave.leave_status=1
+    leave.save()
+    return HttpResponseRedirect(reverse("student_leave_status"))
+
+def disapprove_student_leave(request,leave_id):
+    leave=StudentLeave.objects.get(id=leave_id)
+    leave.leave_status=2
+    leave.save()
+    return HttpResponseRedirect(reverse("student_leave_status"))
+
+
+def approve_staff_leave(request,leave_id):
+    leave=StaffLeave.objects.get(id=leave_id)
+    leave.leave_status=1
+    leave.save()
+    return HttpResponseRedirect(reverse("staff_leave_status"))
+
+def disapprove_staff_leave(request,leave_id):
+    leave=StaffLeave.objects.get(id=leave_id)
+    leave.leave_status=2
+    leave.save()
+    return HttpResponseRedirect(reverse("staff_leave_status"))
     
     
 

@@ -83,12 +83,12 @@ class AttendanceReport(models.Model):
     updated_at = models.DateTimeField(auto_now=True)   
     objects=models.Manager() 
     
-class LeaveReportStudent(models.Model):
+class StudentLeave(models.Model):
     id = models.AutoField(primary_key=True)
     student = models.ForeignKey(Students, on_delete=models.CASCADE)
     leave_date = models.CharField(max_length=60)
     leave_message = models.TextField()
-    leave_status = models.IntegerField(default=0)
+    leave_status = models.IntegerField(default=0) # for pending , 1 for approved , 2 for rejected
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects=models.Manager() 

@@ -95,8 +95,6 @@ urlpatterns = [
     path('add_session_form_api', add_session_form_api, name='add_session_form_api'),
     
     path('courses/<int:course_id>/update/', update_course, name='update-course'),
-    
-    
     path('edit_staff/<str:staff_id>',HodViews.edit_staff),
     path('edit_student/<str:student_id>',HodViews.edit_student),
     path('edit_staff_save',HodViews.edit_staff_form,name='edit_staff_save'),
@@ -105,9 +103,13 @@ urlpatterns = [
     path('edit_subject_save',HodViews.edit_subject_form,name='edit_subject_save'),
     path('edit_session/<int:session_year_id>/', HodViews.edit_session, name='edit_session'),
 
-    
+    path("student_leave_status",HodViews.student_leave_status,name="student_leave_status"),
+    path("staff_leave_status",HodViews.staff_leave_status,name="staff_leave_status"),
 
-    
+    path('approve_student_leave/<str:leave_id>',HodViews.approve_student_leave,name="approve_student_leave"),
+    path('disapprove_student_leave/<str:leave_id>',HodViews.disapprove_student_leave,name="disapprove_student_leave"),
+    path("approve_staff_leave/<str:leave_id>",HodViews.approve_staff_leave,name="approve_staff_leave"),
+    path("disapprove_staff_leave/<str:leave_id>",HodViews.disapprove_staff_leave,name="disapprove_staff_leave"),
 
     
     

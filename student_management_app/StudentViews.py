@@ -39,7 +39,7 @@ def student_view_attendance_post(request):
 
 def student_apply_leave(request):
     student_obj = Students.objects.get(admin=request.user.id)
-    leave_obj=LeaveReportStudent.objects.filter(student_id=student_obj)
+    leave_obj=StudentLeave.objects.filter(student_id=student_obj)
     return render(request,"student_template/student_apply_leave.html" ,{"leave_obj":leave_obj})
 
 
@@ -51,7 +51,7 @@ def student_apply_leave_save(request):
         leave_msg = request.POST.get("leave_msg")
         student_obj = Students.objects.get(admin=request.user.id)
         try:
-            leave_report = LeaveReportStudent(student_id=student_obj.id, leave_date=leave_date, leave_message=leave_msg, leave_status=0)
+            leave_report = StudentLeave(student_id=student_obj.id, leave_date=leave_date, leave_message=leave_msg, leave_status=0)
             leave_report.save()
             messages.success(request, "SUCCESSFULY SENT LEAVE APPLICATION!")
         except Exception as e:
