@@ -35,7 +35,6 @@ def add_staff_form_save(request):
         email = request.POST.get("email")
         password = request.POST.get("password")
         address = request.POST.get("address")
-        admin_id = request.POST.get("admin_id")
         try:
             with transaction.atomic():
                 user = CustomUser.objects.create_user(
@@ -46,7 +45,7 @@ def add_staff_form_save(request):
                     email=email,
                     user_type=2,
                 )
-                staff = Staff.objects.create(admin=user, address=address, admin_id=admin_id)
+                staff = Staff.objects.create(admin=user, address=address)
                 messages.success(request, "ADDED STAFF DETAILS!")
                 return HttpResponseRedirect("/add_staff")
         except Exception as e:
@@ -84,7 +83,6 @@ def add_student_form_save(request):
     session_year_id_id = request.POST.get('session_year_id_id')
     section = request.POST.get('section')
     gender = request.POST.get('gender')
-    admin_id = request.POST.get('admin_id')
     # Create a new user
     try:
         user = CustomUser.objects.create_user(email=email, password=password, first_name=first_name, last_name=last_name, username=username,user_type=3)

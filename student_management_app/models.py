@@ -94,7 +94,7 @@ class LeaveReportStudent(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     objects=models.Manager() 
     
-class LeaveReportStaff(models.Model):
+class StaffLeave(models.Model):
     id = models.AutoField(primary_key=True)
     staff_id = models.ForeignKey(Staff, on_delete=models.CASCADE)
     leave_date = models.CharField(max_length=60)
@@ -152,7 +152,7 @@ def create_user_profile(sender, instance, created, **kwargs):
         if instance.user_type == 2:
             Staff.objects.create(admin=instance)
         if instance.user_type == 3:
-            Students.objects.create(admin=instance) 
+            Students.objects.create(admin=instance)
             
 @receiver(post_save, sender=CustomUser)
 def save_user_profile(sender, instance, **kwargs):

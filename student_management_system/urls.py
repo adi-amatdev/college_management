@@ -14,8 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,include
-from student_management_app import EditResultViewClass, views, HodViews,StaffViews,StudentViews
+from django.urls import path
+from student_management_app import views, HodViews,StaffViews,StudentViews
 from django.conf.urls.static import static 
 from student_management_system import settings
 from student_management_app.HodViews import *
@@ -35,9 +35,7 @@ urlpatterns = [
     path('admin_home',HodViews.admin_home,name='admin_home'),
     path('student_home',StudentViews.student_home,name='student_home'),
     path('add_staff',HodViews.add_staff),
-    #path('add_staff_save',HodViews.add_staff_save)
     path('add_course',HodViews.add_course),
-    #path('add_course_save',HodViews.add_course_save),
     path('add_student',HodViews.add_student),
     path('add_subject',HodViews.add_subject),
     path('manage_staff',HodViews.manage_staff),
@@ -59,18 +57,17 @@ urlpatterns = [
     path('staff_add_result', StaffViews.staff_add_result, name="staff_add_result"),
     path('edit_student_result', StaffViews.staff_edit_result, name="staff_edit_result"),
 
-    #path('edit_student_result',EditResultViewClass.as_view(), name="edit_student_result"),
     
     path('get_attendance_dates', StaffViews.get_attendance_dates, name="get_attendance_dates"),
     path('save_attendance_data', StaffViews.save_attendance_data, name="save_attendance_data"),
     path('get_attendance_student', StaffViews.get_attendance_student, name="get_attendance_student"),
     path('save_updateattendance_data', StaffViews.save_updateattendance_data, name="save_updateattendance_data"),
     
+    
+    path('staff_apply_leave_save', StaffViews.staff_apply_leave_save, name="staff_apply_leave_save"),
     path('staff_apply_leave', StaffViews.staff_apply_leave, name="staff_apply_leave"),
-    path('staff_apply_leave_save', StaffViews.staff_apply_leave_save, name="staff_apply_leave_save"), #http
     path('staff_feedback', StaffViews.staff_feedback, name="staff_feedback"),
      
-    
     
 
     path('student_view_attendance',StudentViews.student_view_attendance,name = 'student_view_attendance'),
@@ -88,7 +85,6 @@ urlpatterns = [
     path('add_student_form_save',HodViews.add_student_form_save,name='add_student_form_save'),
     path('add_staff_form_save',HodViews.add_staff_form_save,name='add_staff_form_save'),
     path('add_course_form_api',add_course_form_api,name='add_course_form_api'),
-    #path('add_subject_form_api',AddSubjectFormAPIView.as_view(),name='add_subject_form_api'),
     path('add_subject_form_save',HodViews.add_subject_form_save,name='add_subject_form_save'),
     path('add_session_form_api', add_session_form_api, name='add_session_form_api'),
     
