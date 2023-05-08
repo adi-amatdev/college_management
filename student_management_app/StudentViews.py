@@ -5,10 +5,10 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 import datetime
-
-
 from student_management_app.models import *
-    
+
+
+  
 def student_home(request):
     return render(request,"student_template/student_home_template.html")
 
@@ -37,38 +37,34 @@ def student_view_attendance_post(request):
     return render(request,"student_template/student_attendance_data.html") #,{"attendance_reports":attendance_reports}
 
 
-
-
 def student_apply_leave(request):
-    #staff_obj = Students.objects.get(admin=request.user.id)
-    #leave_data=LeaveReportStudent.objects.filter(student_id=staff_obj)
-    return render(request,"student_template/student_apply_leave.html") #,{"leave_data":leave_data})
+    student_obj = Students.objects.get(admin=request.user.id)
+    leave_obj=LeaveReportStudent.objects.filter(student_id=student_obj)
+    return render(request,"student_template/student_apply_leave.html" ,{"leave_obj":leave_obj})
+
 
 def student_apply_leave_save(request):
-    
-    if request.method!="POST":
+    if request.method != "POST":
         return HttpResponseRedirect(reverse("student_apply_leave"))
     else:
-        leave_date=request.POST.get("leave_date")
-        leave_msg=request.POST.get("leave_msg")
-
-        student_obj=Students.objects.get(admin=request.user.id)
+        leave_date = request.POST.get("leave_date")
+        leave_msg = request.POST.get("leave_msg")
+        student_obj = Students.objects.get(admin=request.user.id)
         try:
-            leave_report=LeaveReportStudent(student_id=student_obj,leave_date=leave_date,leave_message=leave_msg,leave_status=0)
+            leave_report = LeaveReportStudent(student_id=student_obj.id, leave_date=leave_date, leave_message=leave_msg, leave_status=0)
             leave_report.save()
-            messages.success(request, "Successfully Applied for Leave")
-            return HttpResponseRedirect(reverse("student_apply_leave"))
-        except:
-            messages.error(request, "Failed To Apply for Leave")
-            return HttpResponseRedirect(reverse("student_apply_leave"))
+            messages.success(request, "SUCCESSFULY SENT LEAVE APPLICATION!")
+        except Exception as e:
+            messages.error(request, f"FAILED TO SEND LEAVE APPLICATION! - {str(e)}")
+        return HttpResponseRedirect(reverse("student_apply_leave"))
 
 
 def student_feedback(request):
-    #staff_id=Students.objects.get(admin=request.user.id)
-    #feedback_data=FeedBackStudent.objects.filter(student_id=staff_id)
-    return render(request,"student_template/student_feedback.html") #,{"feedback_data":feedback_data}
+    student_obj=Students.objects.get(admin=request.user.id)
+    feedback_obj=FeedbackStudent.objects.filter(student_id=student_obj)
+    return render(request,"student_template/student_feedback.html" , {"feedback_obj":feedback_obj})
 
-def student_feedback_save(request):
+def student_send_feedback_save(request):
     if request.method!="POST":
         return HttpResponseRedirect(reverse("student_feedback"))
     else:
@@ -78,10 +74,10 @@ def student_feedback_save(request):
         try:
             feedback=FeedbackStudent(student_id=student_obj,feedback=feedback_msg,feedback_reply="")
             feedback.save()
-            messages.success(request, "Successfully Sent Feedback")
+            messages.success(request, "FEEDBACK SENT SUCCESSFULY")
             return HttpResponseRedirect(reverse("student_feedback"))
-        except:
-            messages.error(request, "Failed To Send Feedback")
+        except Exception as e:
+            messages.error(request, "FAILED TO SEND FEEDBACK - " , str(e) )
             return HttpResponseRedirect(reverse("student_feedback"))
         
         

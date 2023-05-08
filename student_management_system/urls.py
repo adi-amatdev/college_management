@@ -76,7 +76,7 @@ urlpatterns = [
     path('student_apply_leave', StudentViews.student_apply_leave, name="student_apply_leave"),
     path('student_apply_leave_save', StudentViews.student_apply_leave_save, name="student_apply_leave_save"),
     path('student_feedback', StudentViews.student_feedback, name="student_feedback"),
-    path('student_feedback_save', StudentViews.student_feedback_save, name="student_feedback_save"),
+    path('student_send_feedback_save', StudentViews.student_send_feedback_save, name="student_send_feedback_save"),
     path('student_profile', StudentViews.student_profile, name="student_profile"),
     path('student_profile_save', StudentViews.student_profile_save, name="student_profile_save"),
 
