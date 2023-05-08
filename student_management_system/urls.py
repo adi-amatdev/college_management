@@ -66,10 +66,15 @@ urlpatterns = [
     
     path('staff_apply_leave_save', StaffViews.staff_apply_leave_save, name="staff_apply_leave_save"),
     path('staff_apply_leave', StaffViews.staff_apply_leave, name="staff_apply_leave"),
+    
     path('staff_feedback', StaffViews.staff_feedback, name="staff_feedback"),
     path('staff_send_feedback_save',StaffViews.staff_send_feedback_save,name="staff_send_feedback_save"),
-     
     
+    path("replyto_staff_feedback",HodViews.replyto_staff_feedback,name="replyto_staff_feedback"),
+    path("replyto_student_feedback",HodViews.replyto_student_feedback,name="replyto_student_feedback"),
+     
+    path('student_feedback_reply_msg',HodViews.student_feedback_reply_msg,name="student_feedback_reply_msg"),
+    path('staff_feedback_reply_msg',HodViews.staff_feedback_reply_msg,name="staff_feedback_reply_msg"),
 
     path('student_view_attendance',StudentViews.student_view_attendance,name = 'student_view_attendance'),
     path('student_view_attendance_post',StudentViews.student_view_attendance_post,name = 'student_view_attendance_post'),

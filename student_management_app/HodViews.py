@@ -1,3 +1,4 @@
+from urllib import request
 from django.contrib import messages
 from django.forms import modelform_factory
 from django.http import HttpResponse, HttpResponseRedirect
@@ -15,6 +16,8 @@ from .serializers import *
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.views.decorators.csrf import csrf_exempt
+
 
 
 @login_required
@@ -243,11 +246,11 @@ def add_session_form_api(request):
     
 
 def edit_staff_form(request):
-    if request.method != 'POST':
+    if requests.request.method != 'POST':
         return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
     else:
         staff_id = request.POST.get('staff_id')
-        first_name = request.POST.get('first_name')
+        first_name = requests.request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
         username = request.POST.get('username')
@@ -334,6 +337,45 @@ def edit_subject_form(request):
             messages.error(request,"FAILED TO UPDATE THE DETAILS "+str(e))
             return HttpResponseRedirect("/edit_subject/"+subject_id) 
         
-        
+def replyto_staff_feedback(request):
+    staff_feedback = FeedbackStaff.objects.all()
+    return render(request,"hod_template/replyto_staff_feedback.html",{"staff_feedback":staff_feedback})  
+
+def replyto_student_feedback(request):
+    student_feedback = FeedbackStudent.objects.all()
+    return render(request,"hod_template/replyto_student_feedback.html",{"student_feedback":student_feedback})
+ 
+@csrf_exempt
+def student_feedback_reply_msg(request):
+    feedback_id = request.POST.get("id")
+    feedback_message=request.POST.get("message")
+
+    try:
+        feedback=FeedbackStudent.objects.get(id=feedback_id)
+        feedback.feedback_reply=feedback_message
+        feedback.save()
+        return HttpResponse("True")
+    except:
+        return HttpResponse("False")
+    
+
+@csrf_exempt
+def staff_feedback_reply_msg(request):
+    feedback_id=request.POST.get("id")
+    feedback_message=request.POST.get("message")
+
+    try:
+        feedback=FeedbackStaff.objects.get(id=feedback_id)
+        feedback.feedback_reply=feedback_message
+        feedback.save()
+        return HttpResponse("True")
+    except:
+        return HttpResponse("False")
+    
+
+    
+    
+
+
         
         

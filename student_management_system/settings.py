@@ -144,3 +144,5 @@ AUTHENTICATION_BACKENDS = ["student_management_app.EmailBackEnd.EmailBackEnd"]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+
+
