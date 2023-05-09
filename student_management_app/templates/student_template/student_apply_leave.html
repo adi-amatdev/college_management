@@ -25,7 +25,7 @@ Leave Report and Apply for Leave
                   </div>
                   <div class="form-group">
                     <label>Leave Reason</label>
-                    <textarea class="form-control" rows="6" name="leave_msg"></textarea>
+                    <textarea class="form-control" rows="10" name="leave_msg"></textarea>
                   </div>
                    <div class="form-group">
                       {% if messages %}
@@ -63,11 +63,11 @@ Leave Report and Apply for Leave
                        <th>Leave Message</th>
                        <th>Leave Status</th>
                    </tr>
-                   {% for row in leave_data %}
+                   {% for eachrow in leave_obj %}
                         <tr>
-                            <td>{{ row.id }}</td>
-                            <td>{{ row.leave_date }}</td>
-                            <td>{{ row.leave_message }}</td>
+                            <td>{{ eachrow.id }}</td>
+                            <td>{{ eachrow.leave_date }}</td>
+                            <td>{{ eachrow.leave_message }}</td>
                             <td>
                                 {% if row.leave_status == 1 %}
                                     <span class="alert alert-success">Approved</span>

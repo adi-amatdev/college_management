@@ -158,7 +158,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="/add_staff" class="nav-link">
+            <a href="/replyto_student_feedback" class="nav-link {% if request.path == replyto_student_feedback %} active {% endif %} ">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Student Feedback
@@ -166,7 +166,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="/add_staff" class="nav-link">
+            <a href="/replyto_staff_feedback" class="nav-link {% if request.path == replyto_staff_feedback %} active {% endif %} ">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Staff Feedback
@@ -174,7 +174,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="/add_staff" class="nav-link">
+            <a href="/student_leave_status" class="nav-link {% if request.path == student_leave_status %} active {% endif %}">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Student Leave
@@ -182,7 +182,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="/add_staff" class="nav-link">
+            <a href="/staff_leave_status" class="nav-link {% if request.path == staff_leave_status %} active {% endif %}">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Staff Leave

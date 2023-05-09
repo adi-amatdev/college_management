@@ -1,7 +1,8 @@
+from urllib import request
 from django.contrib import messages
 from django.forms import modelform_factory
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from student_management_app.models import CustomUser, Staff
 import requests
@@ -9,14 +10,17 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.generics import CreateAPIView,RetrieveAPIView,UpdateAPIView,DestroyAPIView
-from rest_framework.mixins import ListModelMixin,RetrieveModelMixin
+from rest_framework.generics import CreateAPIView
 from rest_framework.generics import GenericAPIView
 from .serializers import *
 from .models import *
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
+from django.views.decorators.csrf import csrf_exempt
 
 
+
+@login_required
 def admin_home(request):
     return render(request,"hod_template/home_content.html")
 
@@ -24,39 +28,34 @@ def add_staff(request):
     return render(request,"hod_template/add_staff_template.html")
 
 
-class CreateStaffAPIView(CreateAPIView):
-    serializer_class = StaffSerializer
-    queryset = Staff.objects.all()
-
-class RetrieveStaffAPIView(RetrieveAPIView):
-    serializer_class = StaffSerializer
-    queryset = Staff.objects.all()
-    #lookup_field = 'id'
-
-
-class UpdateStaffAPIView(UpdateAPIView):
-    serializer_class = StaffSerializer
-    queryset = Staff.objects.all()
-    #lookup_field = 'id'
-    
-class DestroyStaffAPIView(DestroyAPIView):
-    serializer_class = StaffSerializer
-    queryset = Staff.objects.all()
-    #lookup_field = 'id'
-    
-class StaffListView(ListModelMixin, GenericAPIView):
-    queryset = Staff.objects.all()
-    serializer_class = StaffSerializer
-    
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-    
-class StaffDetailView(RetrieveModelMixin, GenericAPIView):
-    queryset = Staff.objects.all()
-    serializer_class = StaffSerializer
-    
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
+def add_staff_form_save(request):
+    if request.method != "POST":
+        return HttpResponse("METHOD NOT ALLOWED")
+    else:
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        address = request.POST.get("address")
+        try:
+            with transaction.atomic():
+                user = CustomUser.objects.create_user(
+                    password=password,
+                    username=username,
+                    first_name=first_name,
+                    last_name=last_name,
+                    email=email,
+                    user_type=2,
+                )
+                staff = Staff.objects.create(admin=user, address=address)
+                messages.success(request, "ADDED STAFF DETAILS!")
+                return HttpResponseRedirect("/add_staff")
+        except Exception as e:
+            with transaction.atomic():
+                transaction.set_rollback(True)
+                messages.error(request, "FAILED TO ADD STAFF DETAILS - " + str(e))
+            return HttpResponseRedirect("/add_staff")
 
 
 def add_course(request):
@@ -66,75 +65,46 @@ class CreateCourseAPIView(CreateAPIView):
     serializer_class = CourseSerializer
     queryset = Courses.objects.all()
 
-class RetrieveCourseAPIView(RetrieveAPIView):
-    serializer_class = CourseSerializer
-    queryset = Courses.objects.all()
-    #lookup_field = 'id'
-
-
-class UpdateCourseAPIView(UpdateAPIView):
-    serializer_class = CourseSerializer
-    queryset = Courses.objects.all()
-    
-    
-class DestroyCourseAPIView(DestroyAPIView):
-    serializer_class = CourseSerializer
-    queryset = Courses.objects.all()
-    #lookup_field = 'id'
-    
-class CourseListView(ListModelMixin, GenericAPIView):
-    queryset = Courses.objects.all()
-    serializer_class = CourseSerializer
-    
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-    
-class CourseDetailView(RetrieveModelMixin, GenericAPIView):
-    queryset = Courses.objects.all()
-    serializer_class = CourseSerializer
-    
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
 
 def add_student(request): 
     courses = Courses.objects.all()
     session_years = SessionYearModel.objects.all()
     return render(request,"hod_template/add_student_template.html",{"courses":courses, "session_years":session_years})
 
-class CreateStudentAPIView(CreateAPIView):
-    serializer_class = StudentSerializer
-    queryset = Students.objects.all()
+@login_required(login_url='login')
+def add_student_form_save(request):
+    if request.method != 'POST':
+        return HttpResponse("METHOD NOT ALLOWED")
 
-class RetrieveStudentAPIView(RetrieveAPIView):
-    serializer_class = StudentSerializer
-    queryset = Students.objects.all()
-    #lookup_field = 'id'
+    email = request.POST.get('email')
+    password = request.POST.get('password')
+    first_name = request.POST.get('first_name')
+    last_name = request.POST.get('last_name')
+    username = request.POST.get('username')
+    address = request.POST.get('address')
+    course_id = request.POST.get('course_id')
+    session_year_id_id = request.POST.get('session_year_id_id')
+    section = request.POST.get('section')
+    gender = request.POST.get('gender')
+    # Create a new user
+    try:
+        user = CustomUser.objects.create_user(email=email, password=password, first_name=first_name, last_name=last_name, username=username,user_type=3)
+        user.save()
+    except Exception as e:
+        messages.error(request, "FAILED TO ADD STUDENT - " + str(e))
+        return redirect('/add_student')
+    # Create a new student
+    try:
+        student = Students.objects.create(admin=user, gender=gender, section=section, address=address, course_id_id=course_id, session_year_id_id=session_year_id_id)
+        student.save()
+        messages.success(request, "ADDED STUDENT DETAILS!")
+    except Exception as e:
+        user.delete()  # Delete the user created above
+        messages.error(request, "FAILED TO ADD STUDENT - " + str(e))
+        return redirect('/add_student')
 
+    return redirect('/add_student')
 
-class UpdateStudentAPIView(UpdateAPIView):
-    serializer_class = StudentSerializer
-    queryset = Students.objects.all()
-    #lookup_field = 'id'
-    
-class DestroyStudentAPIView(DestroyAPIView):
-    serializer_class = StudentSerializer
-    queryset = Students.objects.all()
-    #lookup_field = 'id'
-    
-class StudentListView(ListModelMixin, GenericAPIView):
-    queryset = Students.objects.all()
-    serializer_class = StudentSerializer
-    
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-    
-class StudentDetailView(RetrieveModelMixin, GenericAPIView):
-    queryset = Students.objects.all()
-    serializer_class = StudentSerializer
-    
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
 
 
 def add_subject(request):
@@ -142,39 +112,7 @@ def add_subject(request):
     #staffs = CustomUser.objects.filter(user_type=2)
     staffs = CustomUser.objects.all()
     return render(request,"hod_template/add_subject_template.html",{"staffs":staffs, "courses":courses})
-
-class CreateSubjectAPIView(CreateAPIView):
-    serializer_class = SubjectSerializer
-    queryset = Subjects.objects.all()
-
-class RetrieveSubjectAPIView(RetrieveAPIView):
-    serializer_class = SubjectSerializer
-    queryset = Subjects.objects.all()
-    #lookup_field = 'id'
-
-
-class UpdateSubjectAPIView(UpdateAPIView):
-    serializer_class = SubjectSerializer
-    queryset = Subjects.objects.all()
-    #lookup_field = 'id'
     
-class DestroySubjectAPIView(DestroyAPIView):
-    serializer_class = SubjectSerializer
-    queryset = Subjects.objects.all()
-    #lookup_field = 'id'
-    
-class SubjectListView(ListModelMixin, GenericAPIView):
-    queryset = Subjects.objects.all()
-    serializer_class = SubjectSerializer
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-    
-class SubjectDetailView(RetrieveModelMixin, GenericAPIView):
-    queryset = Subjects.objects.all()
-    serializer_class = SubjectSerializer
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-
 
 def manage_staff(request):
     staffs = Staff.objects.all()
@@ -200,23 +138,34 @@ def add_course_form_api(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class AddStaffFormAPIView(APIView):
-    def post(self, request):
-        serializer = AddStaffFormSerializer(data=request.data)
-        if serializer.is_valid():
-            data = serializer.save()
-            return Response(data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-class AddStudentFormAPIView(APIView):
-    def post(self, request):
-        serializer = AddStudentFormSerializer(data=request.data)
-        if serializer.is_valid():
-            data = serializer.save()
-            return Response(data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+def add_subject_form_save(request):
+    if request.method != "POST":
+        return HttpResponse("METHOD NOT ALLOWED")
+    else:
+        subject_name = request.POST.get("subject_name")
+        course_id = request.POST.get("course")
+        staff_id = request.POST.get("staff_id")
+        subject_code = request.POST.get("subject_code")
+        try:
+            with transaction.atomic():
+                course = get_object_or_404(Courses, id=course_id)
+                staff = get_object_or_404(CustomUser, id=staff_id)
+                subject = Subjects.objects.create(
+                    subject_code=subject_code,
+                    subject_name=subject_name,
+                    course_id=course,
+                    staff_id=staff,
+                )
+                messages.success(request, "ADDED SUBJECT DETAILS!")
+                return HttpResponseRedirect("/add_subject")
+        except Exception as e:
+            with transaction.atomic():
+                transaction.set_rollback(True)
+                messages.error(request, "FAILED TO ADD SUBJECT DETAILS - " + str(e))
+            return HttpResponseRedirect("/add_subject")
+    
     
 @api_view(['POST'])
 def add_course_form_api(request):
@@ -226,15 +175,7 @@ def add_course_form_api(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-class AddSubjectFormAPIView(APIView):
-    def post(self, request):
-        serializer = AddSubjectFormSerializer(data=request.data)
-        if serializer.is_valid():
-            data = serializer.save()
-            return Response(data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
     
 def edit_staff(request,staff_id):  
     staff = Staff.objects.get(admin=staff_id)
@@ -256,6 +197,24 @@ def edit_course(request,course_id):
     return render(request,"hod_template/edit_course_template.html",{"course":course})
 
 
+def edit_session(request, session_year_id):
+    session_year = SessionYearModel.objects.get(id=session_year_id)
+    if request.method == 'POST':
+        session_start_year = request.POST.get('session_start_year')
+        session_end_year = request.POST.get('session_end_year')
+        try:
+            #updating to new values
+            session_year.session_start_year = session_start_year
+            session_year.session_end_year = session_end_year
+            session_year.save()
+
+            messages.success(request, 'SESSION YEAR UPDATED!')
+            return HttpResponseRedirect("/edit_session/"+ str(session_year_id))
+        except Exception as e:
+            messages.error(request, 'SESSION YEAR UPDATE FAILED - '+ str(e))
+    return render(request, 'hod_template/edit_session_template.html', {'session_year': session_year})
+
+
 @api_view(['PUT', 'POST'])
 def update_course(request, course_id):
     try:
@@ -273,8 +232,8 @@ def add_session(request):
     return render(request,"hod_template/add_session_template.html")
 
 def manage_session(request):
-    return render(request,"hod_template/manage_session_template.html")
-
+    session = SessionYearModel.objects.all()
+    return render(request,"hod_template/manage_session_template.html",{"sessionyearmodel":session})
 
 @api_view(['POST'])
 def add_session_form_api(request):
@@ -287,11 +246,11 @@ def add_session_form_api(request):
     
 
 def edit_staff_form(request):
-    if request.method != 'POST':
+    if requests.request.method != 'POST':
         return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
     else:
         staff_id = request.POST.get('staff_id')
-        first_name = request.POST.get('first_name')
+        first_name = requests.request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
         username = request.POST.get('username')
@@ -311,8 +270,8 @@ def edit_staff_form(request):
             
             messages.success(request,"SUCCESSFULY UPDATED THE DETAILS")
             return HttpResponseRedirect("/edit_staff/"+staff_id)
-        except:
-            messages.error(request,"FAILED TO UPDATE THE DETAILS")
+        except Exception as e:
+            messages.error(request,"FAILED TO UPDATE THE DETAILS " +str(e))
             return HttpResponseRedirect("/edit_staff/"+staff_id) 
         
 
@@ -350,8 +309,8 @@ def edit_student_form(request):
             
             messages.success(request,"SUCCESSFULY UPDATED THE DETAILS")
             return HttpResponseRedirect("/edit_student/"+student_id)
-        except:
-            messages.error(request,"FAILED TO UPDATE THE DETAILS")
+        except Exception as e:
+            messages.error(request,"FAILED TO UPDATE THE DETAILS "+str(e))
             return HttpResponseRedirect("/edit_student/"+student_id) 
         
     
@@ -374,9 +333,81 @@ def edit_subject_form(request):
             
             messages.success(request,"SUCCESSFULY UPDATED THE DETAILS")
             return HttpResponseRedirect("/edit_subject/"+subject_id)
-        except:
-            messages.error(request,"FAILED TO UPDATE THE DETAILS")
+        except Exception as e:
+            messages.error(request,"FAILED TO UPDATE THE DETAILS "+str(e))
             return HttpResponseRedirect("/edit_subject/"+subject_id) 
         
+def replyto_staff_feedback(request):
+    staff_feedback = FeedbackStaff.objects.all()
+    return render(request,"hod_template/replyto_staff_feedback.html",{"staff_feedback":staff_feedback})  
+
+def replyto_student_feedback(request):
+    student_feedback = FeedbackStudent.objects.all()
+    return render(request,"hod_template/replyto_student_feedback.html",{"student_feedback":student_feedback})
+ 
+@csrf_exempt
+def student_feedback_reply_msg(request):
+    feedback_id = request.POST.get("id")
+    feedback_message=request.POST.get("message")
+
+    try:
+        feedback=FeedbackStudent.objects.get(id=feedback_id)
+        feedback.feedback_reply=feedback_message
+        feedback.save()
+        return HttpResponse("True")
+    except:
+        return HttpResponse("False")
+    
+
+@csrf_exempt
+def staff_feedback_reply_msg(request):
+    feedback_id=request.POST.get("id")
+    feedback_message=request.POST.get("message")
+
+    try:
+        feedback=FeedbackStaff.objects.get(id=feedback_id)
+        feedback.feedback_reply=feedback_message
+        feedback.save()
+        return HttpResponse("True")
+    except:
+        return HttpResponse("False")
+    
+    
+def student_leave_status(request):
+    leaves=StudentLeave.objects.all()
+    return render(request,"hod_template/student_leave_status.html",{"leaves":leaves})
+
+def staff_leave_status(request):
+    leaves=StaffLeave.objects.all()
+    return render(request,"hod_template/staff_leave_status.html",{"leaves":leaves})
+    
+def approve_student_leave(request,leave_id):
+    leave=StudentLeave.objects.get(id=leave_id)
+    leave.leave_status=1
+    leave.save()
+    return HttpResponseRedirect(reverse("student_leave_status"))
+
+def disapprove_student_leave(request,leave_id):
+    leave=StudentLeave.objects.get(id=leave_id)
+    leave.leave_status=2
+    leave.save()
+    return HttpResponseRedirect(reverse("student_leave_status"))
+
+
+def approve_staff_leave(request,leave_id):
+    leave=StaffLeave.objects.get(id=leave_id)
+    leave.leave_status=1
+    leave.save()
+    return HttpResponseRedirect(reverse("staff_leave_status"))
+
+def disapprove_staff_leave(request,leave_id):
+    leave=StaffLeave.objects.get(id=leave_id)
+    leave.leave_status=2
+    leave.save()
+    return HttpResponseRedirect(reverse("staff_leave_status"))
+    
+    
+
+
         
         

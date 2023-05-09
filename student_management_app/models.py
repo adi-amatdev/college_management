@@ -83,17 +83,17 @@ class AttendanceReport(models.Model):
     updated_at = models.DateTimeField(auto_now=True)   
     objects=models.Manager() 
     
-class LeaveReportStudent(models.Model):
+class StudentLeave(models.Model):
     id = models.AutoField(primary_key=True)
     student = models.ForeignKey(Students, on_delete=models.CASCADE)
     leave_date = models.CharField(max_length=60)
     leave_message = models.TextField()
-    leave_status = models.IntegerField(default=0)
+    leave_status = models.IntegerField(default=0) # for pending , 1 for approved , 2 for rejected
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects=models.Manager() 
     
-class LeaveReportStaff(models.Model):
+class StaffLeave(models.Model):
     id = models.AutoField(primary_key=True)
     staff_id = models.ForeignKey(Staff, on_delete=models.CASCADE)
     leave_date = models.CharField(max_length=60)
@@ -115,7 +115,7 @@ class FeedbackStudent(models.Model):
     
 class FeedbackStaff(models.Model):
     id = models.AutoField(primary_key=True)
-    student_id = models.ForeignKey(Students, on_delete=models.CASCADE)
+    staff_id = models.ForeignKey(Staff, on_delete=models.CASCADE)
     feedback = models.TextField()
     feedback_reply = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -139,16 +139,7 @@ class NotificationStaff(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     objects=models.Manager() 
 
-class StudentTestScore(models.Model):
-    subject_code = models.ForeignKey(Subjects, on_delete=models.CASCADE,to_field='subject_code')
-    usn = models.ForeignKey(CustomUser, on_delete=models.CASCADE,to_field='username')
-    test_date = models.DateField()
-    test1 = models.FloatField()
-    test2 = models.FloatField()
-    test3 = models.FloatField()
-    attendance = models.IntegerField()
-    def __str__(self):
-        return f'{self.subject} - {self.usn.username} - {self.test_date}'
+
 
     
 
@@ -160,7 +151,7 @@ def create_user_profile(sender, instance, created, **kwargs):
         if instance.user_type == 2:
             Staff.objects.create(admin=instance)
         if instance.user_type == 3:
-            Students.objects.create(admin=instance) 
+            Students.objects.create(admin=instance)
             
 @receiver(post_save, sender=CustomUser)
 def save_user_profile(sender, instance, **kwargs):
