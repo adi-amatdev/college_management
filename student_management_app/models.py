@@ -48,14 +48,34 @@ class Subjects(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects=models.Manager()
-    
-    
+     
+
+'''class Students(models.Model):
+    id = models.AutoField(primary_key=True)
+    admin = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    gender = models.CharField(max_length=255)
+    section = models.CharField(max_length=2,default='A')
+    profile_pic = models.FileField()
+    address = models.TextField()
+    objects=models.Manager()
+    course_id = models.ForeignKey(Courses,on_delete=models.CASCADE,default=1)
+    session_year_id = models.ForeignKey(SessionYearModel,on_delete=models.CASCADE,default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)'''
+
 class Students(models.Model):
     id = models.AutoField(primary_key=True)
     admin = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     gender = models.CharField(max_length=255)
     section = models.CharField(max_length=2,default='A')
     profile_pic = models.FileField()
+    father_name = models.CharField(max_length=100,default=None)
+    father_num = models.IntegerField(default=0)
+    mother_name = models.CharField(max_length=100,default=None)
+    mother_num = models.IntegerField(default=0)
+    gaurdian_name=models.CharField(max_length=100,default=None)
+    gaurdian_num = models.IntegerField(default=0)
+    parent_or_gaurdian_email = models.EmailField(max_length=100,default=None)
     address = models.TextField()
     objects=models.Manager()
     course_id = models.ForeignKey(Courses,on_delete=models.CASCADE,default=1)

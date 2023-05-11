@@ -1,0 +1,98 @@
+{% extends 'student_template/base_template.html' %}
+{% load static %}
+{% block page_title %}
+Edit Profile
+{% endblock page_title %}
+{% block main_content %}
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+      <div class="card card-primary">
+        <div class="card-header">
+          <h3 class="card-title">{{ user.username }} Profile</h3>
+        </div>
+
+        <form role="form" action="{% url 'student_profile_save' %}" method="post">
+          {% csrf_token %}
+        <div class="card-body">
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" class="form-control" name="username" value="{{ user.username }}" disabled="disabled">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" class="form-control" name="email" value="{{ user.email }}" disabled="disabled">
+          </div>
+           <div class="form-group">
+            <label>First Name</label>
+            <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}">
+          </div>
+           <div class="form-group">
+            <label>Address</label>
+            <input type="text" class="form-control" name="address" value="{{ student.address }}">
+          </div>
+          <div class="form-group">
+            <label>Father Name</label>
+            <input type="text" class="form-control"  name="father_name" value="{{ user.father_name }}">
+          </div>
+          <div class="form-group">
+            <label>Father's Phone Number</label>
+            <input type="text" class="form-control"  name="father_num" value="{{ user.father_num }}">
+          </div>
+          <div class="form-group">
+            <label>Mother Name</label>
+            <input type="text" class="form-control"  name="mother_name" value="{{ user.mother_name }}">
+          </div>
+          <div class="form-group">
+            <label>Mother's Phone Number</label>
+            <input type="text" class="form-control"  name="mother_num" value="{{ user.mother_num }}">
+          </div>
+          <div class="form-group">
+            <label>Guardian Name</label>
+            <input type="text" class="form-control"  name="gaurdian_name" value="{{ user.gaurdian_name }}">
+          </div>
+          <div class="form-group">
+            <label>Guardian's Phone Number</label>
+            <input type="text" class="form-control"  name="gaurdian_num" value="{{ user.gaurdian_num }}">
+          </div>
+          <div class="form-group">
+            <label>Parent/Guardian Email</label>
+            <input type="text" class="form-control"  name="parent_or_gaurdian_email" value="{{ user.parent_or_gaurdian_email }}">
+          </div>
+           <div class="form-group">
+            <label>Change Password?</label>
+            <input type="text" class="form-control" name="password" placeholder="Fill Only If You want to Change Password">
+          </div>
+           <div class="form-group">
+              {% if messages %}
+                {% for message in messages %}
+                {% if message.tags == 'error' %}
+                <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                {% endif %}
+                {% if message.tags == 'success' %}
+                <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                {% endif %}
+                {% endfor %}
+              {% endif %}
+            </div>
+
+        </div>
+          <div class="card-footer">
+            <button type="submit" class="btn btn-primary btn-block">Save Profile</button>
+          </div>
+        </form>
+      </div>
+        </div>
+      </div>
+      
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+
+{% endblock main_content %}

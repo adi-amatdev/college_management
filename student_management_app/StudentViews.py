@@ -86,6 +86,11 @@ def student_profile(request):
     #student=Students.objects.get(admin=user)
     return render(request,"student_template/student_profile.html") #,{"user":user,"student":student})
 
+def student_edit_profile(request):
+    #user=CustomUser.objects.get(id=request.user.id)
+    #student=Students.objects.get(admin=user)
+    return render(request,"student_template/student_edit_profile.html") #,{"user":user,"student":student})
+
 def student_profile_save(request):
     if request.method!="POST":
         return HttpResponseRedirect(reverse("student_profile"))

@@ -32,8 +32,8 @@ urlpatterns = [
     path('get_user_details',views.getuserdetails),
     path('logout_user',views.logout_user),
     path('doLogin',views.doLogin,name='do_login'),
-    path('admin_home',HodViews.admin_home,name='admin_home'),
-    path('student_home',StudentViews.student_home,name='student_home'),
+    path('admin_home',HodViews.hod_profile,name='hod_profile'),
+    path('student_home',StudentViews.student_profile,name='student_profile'),
     path('add_staff',HodViews.add_staff),
     path('add_course',HodViews.add_course),
     path('add_student',HodViews.add_student),
@@ -42,13 +42,18 @@ urlpatterns = [
     path('manage_student',HodViews.manage_student),
     path('manage_course',HodViews.manage_course),
     path('manage_subject',HodViews.manage_subject),
+    path('delete_course/<str:course_id>/',delete_course_save, name='delete_course_save'),
+    path('hod_profile', HodViews.hod_profile, name="hod_profile"),
+    path('hod_profile_save', HodViews.hod_profile_save, name="hod_profile_save"),
+    path('edit_profile', HodViews.hod_edit_profile, name="hod_edit_profile"),
+     
     
     path('edit_subject/<str:subject_id>',HodViews.edit_subject),
     path('edit_course/<str:course_id>',HodViews.edit_course),
     path('add_session',HodViews.add_session),
     path('manage_session',HodViews.manage_session),
 
-    path('staff_home',StaffViews.staff_home,name='staff_home'),
+    path('staff_home',StaffViews.staff_profile,name='staff_profile'),
     path('staff_take_attendance',StaffViews.staff_take_attendance, name="staff_take_attendance"),
     path('get_students',StaffViews.get_students, name="get_students"),
     path('save_attendance_data',StaffViews.save_attendance_data, name="save_attendance_data"),
@@ -66,9 +71,11 @@ urlpatterns = [
     
     path('staff_apply_leave_save', StaffViews.staff_apply_leave_save, name="staff_apply_leave_save"),
     path('staff_apply_leave', StaffViews.staff_apply_leave, name="staff_apply_leave"),
-    
     path('staff_feedback', StaffViews.staff_feedback, name="staff_feedback"),
     path('staff_send_feedback_save',StaffViews.staff_send_feedback_save,name="staff_send_feedback_save"),
+    path('staff_profile', StaffViews.staff_profile, name="staff_profile"),
+    path('staff_profile_save', StaffViews.staff_profile_save, name="staff_profile_save"),
+    path('staff_edit_profile', StaffViews.staff_edit_profile, name="staff_edit_profile"),
     
     path("replyto_staff_feedback",HodViews.replyto_staff_feedback,name="replyto_staff_feedback"),
     path("replyto_student_feedback",HodViews.replyto_student_feedback,name="replyto_student_feedback"),
@@ -83,6 +90,7 @@ urlpatterns = [
     path('student_feedback', StudentViews.student_feedback, name="student_feedback"),
     path('student_send_feedback_save', StudentViews.student_send_feedback_save, name="student_send_feedback_save"),
     path('student_profile', StudentViews.student_profile, name="student_profile"),
+    path('student_edit_profile', StudentViews.student_edit_profile, name="student_edit_profile"),
     path('student_profile_save', StudentViews.student_profile_save, name="student_profile_save"),
 
     

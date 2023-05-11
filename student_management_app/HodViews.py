@@ -1,7 +1,7 @@
 from urllib import request
 from django.contrib import messages
 from django.forms import modelform_factory
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from student_management_app.models import CustomUser, Staff
@@ -406,6 +406,54 @@ def disapprove_staff_leave(request,leave_id):
     leave.save()
     return HttpResponseRedirect(reverse("staff_leave_status"))
     
+def hod_profile(request):
+    return render(request,"hod_template/hod_profile.html")
+
+def hod_profile_save(request):
+    if request.method!="POST":
+        return HttpResponseRedirect(reverse("hod_profile"))
+    else:
+        first_name=request.POST.get("first_name")
+        last_name=request.POST.get("last_name")
+        password=request.POST.get("password")
+        try:
+            customuser=CustomUser.objects.get(id=request.user.id)
+            customuser.first_name=first_name
+            customuser.last_name=last_name
+            if password!=None and password!="":
+                customuser.set_password(password)
+            customuser.save()
+
+            hod=AdminHOD.objects.get(admin=customuser)
+            #staff.address=address
+            hod.save()
+            messages.success(request, "Successfully Updated Profile")
+            return HttpResponseRedirect(reverse("hod_profile"))
+        except:
+            messages.error(request, "Failed to Update Profile")
+            return HttpResponseRedirect(reverse("hod_profile")) 
+
+def hod_edit_profile(request):
+    return render(request,"hod_template/hod_edit_profile.html")  
+
+@csrf_exempt
+def delete_course_save(request, course_id):
+    try:
+        course = Courses.objects.get(id=course_id)
+    except Courses.DoesNotExist:
+        return JsonResponse({'error': f'Course object with id {course_id} does not exist'}, status=404)
+    
+    #if request.method == 'DELETE':
+    course.delete()
+    return JsonResponse({'success': f'Course object with id {course_id} has been deleted'})
+    #messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
+    #return HttpResponseRedirect("/delete_course/"+course_id)
+    #else:
+        #return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+
+def delete_course(request,course_id):
+    course=Courses.objects.get(id=course_id)
+    return render(request,"hod_template/delete_course_template.html",{"course":course})
     
 
 
