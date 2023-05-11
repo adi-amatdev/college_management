@@ -14,11 +14,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,include
-from student_management_app import views, HodViews
+from django.urls import path
+from student_management_app import views, HodViews,StaffViews,StudentViews
 from django.conf.urls.static import static 
 from student_management_system import settings
 from student_management_app.HodViews import *
+from student_management_app.StaffViews import *
+from student_management_app.StudentViews import *
 
 from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
@@ -31,25 +33,92 @@ router.register('Staff',StaffDetailView)
 
 
 urlpatterns = [
-    path('demo',views.showdemopage),
     path('admin/', admin.site.urls),
     
     
-    path('',views.showloginpage),
+    path('',views.showloginpage,name='show_login'),
     path('get_user_details',views.getuserdetails),
     path('logout_user',views.logout_user),
-    path('doLogin',views.doLogin),
-    path('admin_home',HodViews.admin_home),
+    path('doLogin',views.doLogin,name='do_login'),
+    path('admin_home',HodViews.admin_home,name='admin_home'),
+    path('student_home',StudentViews.student_home,name='student_home'),
     path('add_staff',HodViews.add_staff),
-    #path('add_staff_save',HodViews.add_staff_save)
+    path('add_course',HodViews.add_course),
+    path('add_student',HodViews.add_student),
+    path('add_subject',HodViews.add_subject),
+    path('manage_staff',HodViews.manage_staff),
+    path('manage_student',HodViews.manage_student),
+    path('manage_course',HodViews.manage_course),
+    path('manage_subject',HodViews.manage_subject),
     
-    path('staff/', StaffListView.as_view()),    #returns a list of all objects.
-    path('staff/create/', CreateStaffAPIView.as_view()),  #creates a new object.
-    path('staff/<int:pk>/', RetrieveStaffAPIView.as_view()), #returns a single object with the given primary key.
-    path('staff/<int:pk>/update/', UpdateStaffAPIView.as_view()), #updates an existing object with the given primary key.
-    path('staff/<int:pk>/delete/', DestroyStaffAPIView.as_view()), #deletes an existing object with the given primary key.
-    path('staff/<int:pk>/detail', StaffDetailView.as_view()), #to retrieve a single MyModel object with primary key.
+    path('edit_subject/<str:subject_id>',HodViews.edit_subject),
+    path('edit_course/<str:course_id>',HodViews.edit_course),
+    path('add_session',HodViews.add_session),
+    path('manage_session',HodViews.manage_session),
+
+    path('staff_home',StaffViews.staff_home,name='staff_home'),
+    path('staff_take_attendance',StaffViews.staff_take_attendance, name="staff_take_attendance"),
+    path('get_students',StaffViews.get_students, name="get_students"),
+    path('save_attendance_data',StaffViews.save_attendance_data, name="save_attendance_data"),
+    path('staff_update_attendance',StaffViews.update_attendance,name="staff_update_attendance"),
+    path('get_attendance_data',StaffViews.save_attendance_data,name='save_attendance_data'), 
+    path('staff_add_result', StaffViews.staff_add_result, name="staff_add_result"),
+    path('edit_student_result', StaffViews.staff_edit_result, name="staff_edit_result"),
+
     
+    path('get_attendance_dates', StaffViews.get_attendance_dates, name="get_attendance_dates"),
+    path('save_attendance_data', StaffViews.save_attendance_data, name="save_attendance_data"),
+    path('get_attendance_student', StaffViews.get_attendance_student, name="get_attendance_student"),
+    path('save_updateattendance_data', StaffViews.save_updateattendance_data, name="save_updateattendance_data"),
+    
+    
+    path('staff_apply_leave_save', StaffViews.staff_apply_leave_save, name="staff_apply_leave_save"),
+    path('staff_apply_leave', StaffViews.staff_apply_leave, name="staff_apply_leave"),
+    
+    path('staff_feedback', StaffViews.staff_feedback, name="staff_feedback"),
+    path('staff_send_feedback_save',StaffViews.staff_send_feedback_save,name="staff_send_feedback_save"),
+    
+    path("replyto_staff_feedback",HodViews.replyto_staff_feedback,name="replyto_staff_feedback"),
+    path("replyto_student_feedback",HodViews.replyto_student_feedback,name="replyto_student_feedback"),
+     
+    path('student_feedback_reply_msg',HodViews.student_feedback_reply_msg,name="student_feedback_reply_msg"),
+    path('staff_feedback_reply_msg',HodViews.staff_feedback_reply_msg,name="staff_feedback_reply_msg"),
+
+    path('student_view_attendance',StudentViews.student_view_attendance,name = 'student_view_attendance'),
+    path('student_view_attendance_post',StudentViews.student_view_attendance_post,name = 'student_view_attendance_post'),
+    path('student_apply_leave', StudentViews.student_apply_leave, name="student_apply_leave"),
+    path('student_apply_leave_save', StudentViews.student_apply_leave_save, name="student_apply_leave_save"),
+    path('student_feedback', StudentViews.student_feedback, name="student_feedback"),
+    path('student_send_feedback_save', StudentViews.student_send_feedback_save, name="student_send_feedback_save"),
+    path('student_profile', StudentViews.student_profile, name="student_profile"),
+    path('student_profile_save', StudentViews.student_profile_save, name="student_profile_save"),
+
+    
+    
+    #working related urls 
+    path('add_student_form_save',HodViews.add_student_form_save,name='add_student_form_save'),
+    path('add_staff_form_save',HodViews.add_staff_form_save,name='add_staff_form_save'),
+    path('add_course_form_api',add_course_form_api,name='add_course_form_api'),
+    path('add_subject_form_save',HodViews.add_subject_form_save,name='add_subject_form_save'),
+    path('add_session_form_api', add_session_form_api, name='add_session_form_api'),
+    
+    path('courses/<int:course_id>/update/', update_course, name='update-course'),
+    path('edit_staff/<str:staff_id>',HodViews.edit_staff),
+    path('edit_student/<str:student_id>',HodViews.edit_student),
+    path('edit_staff_save',HodViews.edit_staff_form,name='edit_staff_save'),
+    path('edit_student_save',HodViews.edit_student_form,name='edit_student_save'),
+    path('edit_subject/<str:subject_id>',HodViews.edit_subject),
+    path('edit_subject_save',HodViews.edit_subject_form,name='edit_subject_save'),
+    path('edit_session/<int:session_year_id>/', HodViews.edit_session, name='edit_session'),
+
+    path("student_leave_status",HodViews.student_leave_status,name="student_leave_status"),
+    path("staff_leave_status",HodViews.staff_leave_status,name="staff_leave_status"),
+
+    path('approve_student_leave/<str:leave_id>',HodViews.approve_student_leave,name="approve_student_leave"),
+    path('disapprove_student_leave/<str:leave_id>',HodViews.disapprove_student_leave,name="disapprove_student_leave"),
+    path("approve_staff_leave/<str:leave_id>",HodViews.approve_staff_leave,name="approve_staff_leave"),
+    path("disapprove_staff_leave/<str:leave_id>",HodViews.disapprove_staff_leave,name="disapprove_staff_leave"),
+
     
     
     
