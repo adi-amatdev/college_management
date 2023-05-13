@@ -227,7 +227,7 @@ def staff_profile_save(request):
             return HttpResponseRedirect(reverse("staff_profile"))   
 
 def staff_edit_profile(request):
-    return render(request,"staff_template/staff_edit_profile.html")     
+    return render(request,"staff_template/staff_edit_profile.html")      
 
 
     

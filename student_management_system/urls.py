@@ -91,6 +91,7 @@ urlpatterns = [
     path('student_send_feedback_save', StudentViews.student_send_feedback_save, name="student_send_feedback_save"),
     path('student_profile', StudentViews.student_profile, name="student_profile"),
     path('student_edit_profile', StudentViews.student_edit_profile, name="student_edit_profile"),
+    path('student_edit_profile_save', StudentViews.edit_student_profile_save, name="edit_student_profile_save"),
     path('student_profile_save', StudentViews.student_profile_save, name="student_profile_save"),
 
     

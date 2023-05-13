@@ -20,23 +20,26 @@ class AdminHOD(models.Model):
     admin = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
+    gender = models.CharField(max_length=255,blank=True)
     objects=models.Manager()
 
-class Staff(models.Model):
-    id = models.AutoField(primary_key=True)
-    admin = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
-    address = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    objects=models.Manager()
-    
-    
+
 class Courses(models.Model):
     id = models.AutoField(primary_key=True)
     course_name = models.CharField(max_length=120)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects=models.Manager()
+
+class Staff(models.Model):
+    id = models.AutoField(primary_key=True)
+    admin = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    address = models.TextField()
+    gender = models.CharField(max_length=255,blank=True)
+    department = models.ForeignKey(Courses,on_delete=models.CASCADE,blank=True,null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects=models.Manager() 
     
     
 class Subjects(models.Model):
@@ -69,13 +72,13 @@ class Students(models.Model):
     gender = models.CharField(max_length=255)
     section = models.CharField(max_length=2,default='A')
     profile_pic = models.FileField()
-    father_name = models.CharField(max_length=100,default=None)
-    father_num = models.IntegerField(default=0)
-    mother_name = models.CharField(max_length=100,default=None)
-    mother_num = models.IntegerField(default=0)
-    gaurdian_name=models.CharField(max_length=100,default=None)
-    gaurdian_num = models.IntegerField(default=0)
-    parent_or_gaurdian_email = models.EmailField(max_length=100,default=None)
+    father_name = models.CharField(max_length=100,blank=True,null=True)
+    father_num = models.BigIntegerField(default=0)
+    mother_name = models.CharField(max_length=100,blank=True,null=True)
+    mother_num = models.BigIntegerField(default=0)
+    gaurdian_name=models.CharField(max_length=100,blank=True,null=True)
+    gaurdian_num = models.BigIntegerField(default=0)
+    parent_or_gaurdian_email = models.EmailField(max_length=100,blank=True,null=True)
     address = models.TextField()
     objects=models.Manager()
     course_id = models.ForeignKey(Courses,on_delete=models.CASCADE,default=1)

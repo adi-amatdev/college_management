@@ -82,23 +82,39 @@ def student_send_feedback_save(request):
         
         
 def student_profile(request):
-    #user=CustomUser.objects.get(id=request.user.id)
-    #student=Students.objects.get(admin=user)
-    return render(request,"student_template/student_profile.html") #,{"user":user,"student":student})
+    user=CustomUser.objects.get(id=request.user.id)
+    student=Students.objects.get(admin=user)
+    return render(request,"student_template/student_profile.html" ,{"user":user,"student":student})
 
 def student_edit_profile(request):
-    #user=CustomUser.objects.get(id=request.user.id)
-    #student=Students.objects.get(admin=user)
-    return render(request,"student_template/student_edit_profile.html") #,{"user":user,"student":student})
+    user=CustomUser.objects.get(id=request.user.id)
+    student=Students.objects.get(admin=user)
+    return render(request,"student_template/student_edit_profile.html",{"user":user,"student":student})
 
 def student_profile_save(request):
     if request.method!="POST":
         return HttpResponseRedirect(reverse("student_profile"))
     else:
+        student_id = request.POST.get('student_id')
+        username = request.POST.get('username')
+        email = request.POST.get('email')
         first_name=request.POST.get("first_name")
         last_name=request.POST.get("last_name")
         password=request.POST.get("password")
         address=request.POST.get("address")
+        
+        
+        course = request.POST.get("course")
+        #gender = request.POST.get("gender")
+        session_start_year = request.POST.get('session_start_year')
+        session_end_year = request.POST.get('session_end_year')
+        father_name = request.POST.get('father_name')
+        father_num =  request.POST.get('father_num')
+        mother_name = request.POST.get('mother_name')
+        mother_num = request.POST.get('mother_num')
+        gaurdian_name= request.POST.get('gaurdian_name')
+        gaurdian_num = request.POST.get('gaurdian_num')
+        parent_or_gaurdian_email = request.POST.get('parent_or_gaurdian_email')
         try:
             customuser=CustomUser.objects.get(id=request.user.id)
             customuser.first_name=first_name
@@ -109,9 +125,75 @@ def student_profile_save(request):
 
             student=Students.objects.get(admin=customuser)
             student.address=address
+            student.email=email
+            student.username=username
+            student.course=course
+            #student.gender=gender
+            student.session_start_year=session_start_year
+            student.session_end_year=session_end_year
+            student.father_name=father_name
+            student.father_num=father_num
+            student.mother_name=mother_name
+            student.mother_num=mother_num
+            student.gaurdian_name=gaurdian_name
+            student.gaurdian_num=gaurdian_num
+            student.parent_or_gaurdian_email=parent_or_gaurdian_email
+            
             student.save()
             messages.success(request, "Successfully Updated Profile")
             return HttpResponseRedirect(reverse("student_profile"))
-        except:
-            messages.error(request, "Failed to Update Profile")
-            return HttpResponseRedirect(reverse("student_profile"))        
+        except Exception as e:
+            messages.error(request,"FAILED TO UPDATE THE DETAILS "+str(e))
+            return HttpResponseRedirect("/edit_student/"+student_id)      
+
+def edit_student_profile_save(request):
+    if request.method != 'POST':
+        return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
+    else:
+        student_id = request.POST.get('student_id')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        username = request.POST.get('username')
+        address = request.POST.get("address")
+        course = request.POST.get("course")
+        gender = request.POST.get("gender")
+        session_start_year = request.POST.get('session_start_year')
+        session_end_year = request.POST.get('session_end_year')
+        father_name = request.POST.get('father_name')
+        father_num =  request.POST.get('father_num')
+        mother_name = request.POST.get('mother_name')
+        mother_num = request.POST.get('mother_num')
+        gaurdian_name= request.POST.get('gaurdian_name')
+        gaurdian_num = request.POST.get('gaurdian_num')
+        parent_or_gaurdian_email = request.POST.get('parent_or_gaurdian_email')
+            
+        try:
+            user = CustomUser.objects.get(id=student_id)
+            user.first_name=first_name
+            user.last_name=last_name
+            user.email=email
+            user.username=username
+            user.save()
+            
+            student_model = Students.objects.get(admin=student_id)
+            student_model.address = address
+            student_model.course = course
+            student_model.gender = gender
+            student_model.session_start_year = session_start_year
+            student_model.session_end_year = session_end_year
+            student_model.father_name = father_name
+            student_model.father_num = father_num
+            student_model.mother_name = mother_name
+            student_model.mother_num = mother_num
+            student_model.gaurdian_name = gaurdian_name
+            student_model.gaurdian_num = gaurdian_num
+            student_model.parent_or_gaurdian_email = parent_or_gaurdian_email
+            
+            student_model.save()
+            
+            messages.success(request,"SUCCESSFULY UPDATED THE DETAILS")
+            return HttpResponseRedirect("/edit_student/"+student_id)
+        except Exception as e:
+            messages.error(request,"FAILED TO UPDATE THE DETAILS "+str(e))
+            return HttpResponseRedirect("/edit_student/"+student_id)  

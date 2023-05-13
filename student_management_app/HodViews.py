@@ -86,6 +86,13 @@ def add_student_form_save(request):
     session_year_id_id = request.POST.get('session_year_id_id')
     section = request.POST.get('section')
     gender = request.POST.get('gender')
+    father_name = request.POST.get('father_name')
+    father_num =  request.POST.get('father_num')
+    mother_name = request.POST.get('mother_name')
+    mother_num = request.POST.get('mother_num')
+    gaurdian_name= request.POST.get('gaurdian_name')
+    gaurdian_num = request.POST.get('gaurdian_num')
+    parent_or_gaurdian_email = request.POST.get('parent_or_gaurdian_email')
     # Create a new user
     try:
         user = CustomUser.objects.create_user(email=email, password=password, first_name=first_name, last_name=last_name, username=username,user_type=3)
@@ -95,7 +102,7 @@ def add_student_form_save(request):
         return redirect('/add_student')
     # Create a new student
     try:
-        student = Students.objects.create(admin=user, gender=gender, section=section, address=address, course_id_id=course_id, session_year_id_id=session_year_id_id)
+        student = Students.objects.create(admin=user, gender=gender, section=section, address=address, course_id_id=course_id, session_year_id_id=session_year_id_id,father_name=father_name,father_num=father_num,mother_name=mother_name,mother_num=mother_num,gaurdian_name=gaurdian_name,gaurdian_num=gaurdian_num,parent_or_gaurdian_email=parent_or_gaurdian_email)
         student.save()
         messages.success(request, "ADDED STUDENT DETAILS!")
     except Exception as e:
@@ -289,7 +296,14 @@ def edit_student_form(request):
         gender = request.POST.get("gender")
         session_start_year = request.POST.get('session_start_year')
         session_end_year = request.POST.get('session_end_year')
-        
+        father_name = request.POST.get('father_name')
+        father_num =  request.POST.get('father_num')
+        mother_name = request.POST.get('mother_name')
+        mother_num = request.POST.get('mother_num')
+        gaurdian_name= request.POST.get('gaurdian_name')
+        gaurdian_num = request.POST.get('gaurdian_num')
+        parent_or_gaurdian_email = request.POST.get('parent_or_gaurdian_email')
+            
         try:
             user = CustomUser.objects.get(id=student_id)
             user.first_name=first_name
@@ -297,13 +311,20 @@ def edit_student_form(request):
             user.email=email
             user.username=username
             user.save()
-            
+             
             student_model = Students.objects.get(admin=student_id)
             student_model.address = address
             student_model.course = course
             student_model.gender = gender
             student_model.session_start_year = session_start_year
             student_model.session_end_year = session_end_year
+            student_model.father_name = father_name
+            student_model.father_num = father_num
+            student_model.mother_name = mother_name
+            student_model.mother_num = mother_num
+            student_model.gaurdian_name = gaurdian_name
+            student_model.gaurdian_num = gaurdian_num
+            student_model.parent_or_gaurdian_email = parent_or_gaurdian_email
             
             student_model.save()
             
