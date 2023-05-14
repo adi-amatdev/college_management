@@ -19,7 +19,7 @@ from django.db import transaction
 from django.views.decorators.csrf import csrf_exempt
 
 
-
+ 
 @login_required
 def admin_home(request):
     return render(request,"hod_template/home_content.html")
@@ -29,7 +29,8 @@ def add_admin(request):
     return render(request,"hod_template/add_admin_template.html")
 
 def add_staff(request):
-    return render(request,"hod_template/add_staff_template.html")
+    courses = Courses.objects.all()
+    return render(request,"hod_template/add_staff_template.html",{"courses":courses})
 
 
 def add_staff_form_save(request):
@@ -42,7 +43,7 @@ def add_staff_form_save(request):
         gender = request.POST.get('gender')
         email = request.POST.get("email")
         password = request.POST.get("password")
-        department_id = request.POST.get("department_id")
+        department = request.POST.get("department")
         address = request.POST.get("address")
         try:
             with transaction.atomic():
@@ -54,7 +55,7 @@ def add_staff_form_save(request):
                     email=email,
                     user_type=2,
                 )
-                staff = Staff.objects.create(admin=user, address=address,gender=gender,department_id=department_id)
+                staff = Staff.objects.create(admin=user, address=address,gender=gender,department=department)
                 messages.success(request, "ADDED STAFF DETAILS!")
                 return HttpResponseRedirect("/add_staff")
         except Exception as e:
