@@ -232,7 +232,7 @@ def edit_admin(request,admin_id):
     return render(request,"hod_template/edit_admin_template.html",{"admin":admin})
     
 def edit_staff(request,staff_id):  
-    staff = Staff.objects.get(admin=staff_id)
+    staff = Staff.objects.get(admin=staff_id) 
     courses = Courses.objects.all()
     return render(request,"hod_template/edit_staff_template.html",{"staff":staff,'courses':courses})
 
@@ -510,9 +510,9 @@ def disapprove_staff_leave(request,leave_id):
     return HttpResponseRedirect(reverse("staff_leave_status"))
     
 def hod_profile(request):
-    user=CustomUser.objects.get(id=request.user.id)
-    hod=AdminHOD.objects.get(admin=user)
-    return render(request,"hod_template/hod_profile.html",{"user":user,"hod":hod})
+    #user=CustomUser.objects.get(id=request.user.id)
+    #hod=AdminHOD.objects.get(admin=user)
+    return render(request,"hod_template/hod_profile.html")#,{"user":user,"hod":hod})
 
 def edit_hod_profile_form(request):
     if request.method!="POST":
