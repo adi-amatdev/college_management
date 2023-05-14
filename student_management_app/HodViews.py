@@ -43,7 +43,7 @@ def add_staff_form_save(request):
         gender = request.POST.get('gender')
         email = request.POST.get("email")
         password = request.POST.get("password")
-        department = request.POST.get("department")
+        department_id = request.POST.get("department_id")
         address = request.POST.get("address")
         try:
             with transaction.atomic():
@@ -55,7 +55,7 @@ def add_staff_form_save(request):
                     email=email,
                     user_type=2,
                 )
-                staff = Staff.objects.create(admin=user, address=address,gender=gender,department=department)
+                staff = Staff.objects.create(admin=user, address=address,gender=gender,department_id=department_id)
                 messages.success(request, "ADDED STAFF DETAILS!")
                 return HttpResponseRedirect("/add_staff")
         except Exception as e:
@@ -231,7 +231,8 @@ def edit_admin(request,admin_id):
     
 def edit_staff(request,staff_id):  
     staff = Staff.objects.get(admin=staff_id)
-    return render(request,"hod_template/edit_staff_template.html",{"staff":staff})
+    courses = Courses.objects.all()
+    return render(request,"hod_template/edit_staff_template.html",{"staff":staff,'courses':courses})
 
 def edit_student(request,student_id):  
     student = Students.objects.get(admin=student_id)
@@ -337,7 +338,7 @@ def edit_staff_form(request):
         email = request.POST.get('email')
         username = request.POST.get('username')
         gender = request.POST.get('gender')
-        department = request.POST.get('department')
+        department_id = request.POST.get('department_id')
         address = request.POST.get("address")
         
         try:
@@ -351,7 +352,7 @@ def edit_staff_form(request):
             staff_model = Staff.objects.get(admin=staff_id)
             staff_model.address = address
             staff_model.gender = gender
-            staff_model.department = department
+            staff_model.department_id = department_id
             staff_model.save()
             
             messages.success(request,"SUCCESSFULY UPDATED THE DETAILS")

@@ -39,7 +39,7 @@ Add Staff
             </div>
             <div class="form-group">
               <label>Course</label>
-              <select class="form-control" name="department">
+              <select class="form-control" name="department_id">
                   {% for course in courses %}
                       <option value="{{course.id}}">{{course.course_name}}</option>
                   {%endfor%}
