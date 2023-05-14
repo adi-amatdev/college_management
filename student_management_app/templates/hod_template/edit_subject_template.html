@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 {% load static %}
 {% block page_title %}
-Edit Subject | Subject ID : {{course.id}}
+Edit Subject | Subject ID : {{subject.id}}
 {% endblock page_title %}
 {% block main_content %}
 <!-- Main content -->
@@ -14,13 +14,13 @@ Edit Subject | Subject ID : {{course.id}}
           <h3 class="card-title">Edit Subject</h3>
         </div>
 
-        <form role="form" action="/add_subject_save" method="post">
+        <form role="form" action="/edit_subject_save" method="post">
           {% csrf_token %}
           <div class="card-body">
             <div class="form-group">
               <label>Subject Name</label>
               <input type="text" class="form-control" name="subject_name" placeholder="Enter subject name" value ="{{subject.subject_name }}">
-              <input type="hidden"  name="course_id"  value ="{{subject.id}}">
+              <input type="hidden"  name="subject_id"  value ="{{subject.id}}">
            
             </div>
             <div class="form-group">

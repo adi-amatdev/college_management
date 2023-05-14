@@ -1,63 +1,52 @@
-
-k{% extends 'hod_template/base_template.html' %}
+{% extends 'hod_template/base_template.html' %}
+{% load static %}
 {% block page_title %}
-Add Session Year
+Manage Session
 {% endblock page_title %}
 {% block main_content %}
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-          <div class="row">
-              <div class="col-md-12">
-            <!-- general form elements -->
-            <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title">Add Session Year</h3>
-              </div>
-              <!-- /.card-header -->
-              <!-- form start -->
-              <form role="form" action="/add_session_form_api" method="post">
-                  {% csrf_token %}
-                <div class="card-body">
-                  <div class="form-group">
-                    <label>Session Start Year </label>
-                    <input type="date" class="form-control" name="session_start_year" placeholder="Enter Session Start Year">
-                  </div>
-
-                 <div class="form-group">
-                    <label>Session End Year </label>
-                    <input type="date" class="form-control" name="session_end_year" placeholder="Enter Session End Year">
-                  </div>
-
-
-                   <div class="form-group">
-                      {% if messages %}
-                        {% for message in messages %}
-                        {% if message.tags == 'error' %}
-                        <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
-                        {% endif %}
-                        {% if message.tags == 'success' %}
-                        <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
-                        {% endif %}
-                        {% endfor %}
-                      {% endif %}
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Session Details</h3>
                     </div>
-
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Session Start Year</th>
+                                    <th>Session End Year</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for session_year in sessionyearmodel %}
+                                <tr>
+                                    <td>{{session_year.id }}</td>
+                                    <td>{{session_year.session_start_year}}</td>
+                                    <td>{{session_year.session_end_year}}</td>
+                                    <th><a href = "/edit_session/{{session_year.id}}"class="btn btn-success">Edit</a></th>
+                                </tr>
+                                {% endfor %}
+                                    
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <!-- /.card-body -->
-
-                <div class="card-footer">
-                  <button type="submit" class="btn btn-primary btn-block">Add Session Year</button>
-                </div>
-              </form>
             </div>
-            <!-- /.card -->
+        </div>
 
+          
+      
+      
+      
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
 
-
-          </div>
-          </div>
-      </div>
-    </section>
-    <!-- /.content -->
 {% endblock main_content %}

@@ -15,7 +15,7 @@
           <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">{{user.username}}</a>
+          <a href="/hod_profile" class="d-block">{{user.username}}</a>
         </div>
       </div>
 
@@ -65,6 +65,14 @@
               </li>
             </ul>
           </li>-->
+          <li class="nav-item">
+            <a href="/edit_profile" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Edit Profile
+              </p>
+            </a>
+          </li>
           <li class="nav-item">
             <a href="/add_staff" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
@@ -132,6 +140,15 @@
             </a>
           </li>
           <li class="nav-item">
+            {% url 'add_session' as add_session %}
+            <a href="/add_session" class="nav-link {% if request.path == add_session %} active {% endif %} ">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Add Session Year
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
             {% url 'manage_session' as manage_session %}
             <a href="/manage_session" class="nav-link {% if request.path == manage_session %} active {% endif %} ">
               <i class="nav-icon fas fa-th"></i>
@@ -149,7 +166,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="/add_staff" class="nav-link">
+            <a href="/replyto_student_feedback" class="nav-link {% if request.path == replyto_student_feedback %} active {% endif %} ">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Student Feedback
@@ -157,7 +174,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="/add_staff" class="nav-link">
+            <a href="/replyto_staff_feedback" class="nav-link {% if request.path == replyto_staff_feedback %} active {% endif %} ">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Staff Feedback
@@ -165,7 +182,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="/add_staff" class="nav-link">
+            <a href="/student_leave_status" class="nav-link {% if request.path == student_leave_status %} active {% endif %}">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Student Leave
@@ -173,7 +190,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="/add_staff" class="nav-link">
+            <a href="/staff_leave_status" class="nav-link {% if request.path == staff_leave_status %} active {% endif %}">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Staff Leave

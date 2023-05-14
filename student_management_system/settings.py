@@ -34,7 +34,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR,"media")
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR,"static")
 
-
+LOGIN_URL = 'main_login'
 
 # Application definition
 
@@ -57,7 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #'student_management_app.LoginCheckMiddleware.LoginCheckMiddleWare',
+    'student_management_app.LoginCheckMiddleware.LoginCheckMiddleWare',
 ]
 
 ROOT_URLCONF = 'student_management_system.urls'
@@ -142,5 +142,7 @@ AUTHENTICATION_BACKENDS = ["student_management_app.EmailBackEnd.EmailBackEnd"]
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
 
 

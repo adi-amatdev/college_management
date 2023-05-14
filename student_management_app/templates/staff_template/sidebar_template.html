@@ -67,11 +67,20 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            {% url 'staff_home' as staff_home %}
-            <a href="/staff_home" class="nav-link {% if request.path == staff_home %} active {% endif %}">
+            {% url 'staff_profile' as staff_profile %}
+            <a href="/staff_profile" class="nav-link {% if request.path == staff_profile %} active {% endif %}">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Home
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            {% url 'staff_edit_profile' as staff_edit_profile %}
+            <a href="{{ staff_edit_profile }}" class="nav-link {% if request.path == staff_edit_profile %} active {% endif %}">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Edit Profile
               </p>
             </a>
           </li>

@@ -9,17 +9,18 @@ from rest_framework.decorators import api_view
 from rest_framework import status 
 from rest_framework.response import Response
 
+
 import requests
 
 from .serializers import *
 from .models import *
 from django.http import JsonResponse
 
-def showdemopage(request):
-    return render(request,"demo.html")
+
 
 def showloginpage(request):
     return render(request,"main_login.html")
+
 
 def doLogin(request):
     if request.method != 'POST':
