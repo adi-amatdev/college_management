@@ -198,5 +198,36 @@ def staff_edit_result(request):
     #session_years = SessionYearModel.objects.all()
     return render(request,"staff_template/edit_student_result.html")
 
+def staff_profile(request):
+    return render(request,"staff_template/staff_profile.html")
+
+def staff_profile_save(request):
+    if request.method!="POST":
+        return HttpResponseRedirect(reverse("staff_profile"))
+    else:
+        first_name=request.POST.get("first_name")
+        last_name=request.POST.get("last_name")
+        password=request.POST.get("password")
+        address=request.POST.get("address")
+        try:
+            customuser=CustomUser.objects.get(id=request.user.id)
+            customuser.first_name=first_name
+            customuser.last_name=last_name
+            if password!=None and password!="":
+                customuser.set_password(password)
+            customuser.save()
+
+            staff=Staff.objects.get(admin=customuser)
+            staff.address=address
+            staff.save()
+            messages.success(request, "Successfully Updated Profile")
+            return HttpResponseRedirect(reverse("staff_profile"))
+        except:
+            messages.error(request, "Failed to Update Profile")
+            return HttpResponseRedirect(reverse("staff_profile"))   
+
+def staff_edit_profile(request):
+    return render(request,"staff_template/staff_edit_profile.html")      
+
 
     

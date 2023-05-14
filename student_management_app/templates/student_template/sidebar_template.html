@@ -25,8 +25,8 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            {% url 'student_home' as student_home %}
-            <a href="{{ student_home }}" class="nav-link {% if request.path == student_home %} active {% endif %}">
+            {% url 'student_profile' as student_profile %}
+            <a href="{{ student_profile }}" class="nav-link {% if request.path == student_home %} active {% endif %}">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Home
@@ -34,8 +34,8 @@
             </a>
           </li>
           <li class="nav-item">
-            {% url 'student_profile' as student_profile %}
-            <a href="{{ student_profile }}" class="nav-link {% if request.path == student_profile %} active {% endif %}">
+            {% url 'student_edit_profile' as student_edit_profile %}
+            <a href="{{ student_edit_profile }}" class="nav-link {% if request.path == student_edit_profile %} active {% endif %}">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Edit Profile

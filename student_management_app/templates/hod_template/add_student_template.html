@@ -48,7 +48,7 @@ Add Student
                     {% for course in courses %}
                         <option value="{{course.id}}">{{course.course_name}}</option>
                     {%endfor%}
-                </select>
+                </select> 
             </div>
             <div class="form-group">
               <label>Section</label>
@@ -69,6 +69,34 @@ Add Student
                   {% endfor %}
               </select>
                 <!--<input type="date" class="form-control" placeholder="Session Start Year" name="session_start_year">-->
+            </div>
+            <div class="form-group">
+              <label>Father Name</label>
+              <input type="text" class="form-control" placeholder="Father Name" name="father_name">
+            </div>
+            <div class="form-group">
+              <label>Father's Phone Number</label>
+              <input type="number" class="form-control" placeholder="Father's Phone Number" name="father_num">
+            </div>
+            <div class="form-group">
+              <label>Mother Name</label>
+              <input type="text" class="form-control" placeholder="Mother Name" name="mother_name">
+            </div>
+            <div class="form-group">
+              <label>Mother's Phone Number</label>
+              <input type="number" class="form-control" placeholder="Mother's Phone Number" name="mother_num">
+            </div>
+            <div class="form-group">
+              <label>Guardian Name</label>
+              <input type="text" class="form-control" placeholder="Guardian Name" name="gaurdian_name">
+            </div>
+            <div class="form-group">
+              <label>Guardian's Phone Number</label>
+              <input type="number" class="form-control" placeholder="Guardian's Phone Number" name="gaurdian_num" value="0">
+            </div>
+            <div class="form-group">
+              <label>Parent/Guardian Email</label>
+              <input type="email" class="form-control" placeholder="Email id" name="parent_or_gaurdian_email">
             </div>
             
           

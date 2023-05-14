@@ -32,23 +32,30 @@ urlpatterns = [
     path('get_user_details',views.getuserdetails),
     path('logout_user',views.logout_user),
     path('doLogin',views.doLogin,name='do_login'),
-    path('admin_home',HodViews.admin_home,name='admin_home'),
-    path('student_home',StudentViews.student_home,name='student_home'),
+    path('admin_home',HodViews.hod_profile,name='hod_profile'),
+    path('student_home',StudentViews.student_profile,name='student_profile'),
+    path('add_admin',HodViews.add_admin),
     path('add_staff',HodViews.add_staff),
     path('add_course',HodViews.add_course),
     path('add_student',HodViews.add_student),
     path('add_subject',HodViews.add_subject),
     path('manage_staff',HodViews.manage_staff),
+    path('manage_admin',HodViews.manage_admin),
     path('manage_student',HodViews.manage_student),
     path('manage_course',HodViews.manage_course),
     path('manage_subject',HodViews.manage_subject),
+    path('delete_course/<str:course_id>/',delete_course_save, name='delete_course_save'),
+    path('hod_profile', HodViews.hod_profile, name="hod_profile"),
+    path('edit_hod_profile_form', HodViews.edit_hod_profile_form, name="edit_hod_profile_form"),
+    path('hod_edit_profile', HodViews.hod_edit_profile, name="hod_edit_profile"),
+     
     
     path('edit_subject/<str:subject_id>',HodViews.edit_subject),
     path('edit_course/<str:course_id>',HodViews.edit_course),
     path('add_session',HodViews.add_session),
     path('manage_session',HodViews.manage_session),
 
-    path('staff_home',StaffViews.staff_home,name='staff_home'),
+    path('staff_home',StaffViews.staff_profile,name='staff_profile'),
     path('staff_take_attendance',StaffViews.staff_take_attendance, name="staff_take_attendance"),
     path('get_students',StaffViews.get_students, name="get_students"),
     path('save_attendance_data',StaffViews.save_attendance_data, name="save_attendance_data"),
@@ -66,9 +73,11 @@ urlpatterns = [
     
     path('staff_apply_leave_save', StaffViews.staff_apply_leave_save, name="staff_apply_leave_save"),
     path('staff_apply_leave', StaffViews.staff_apply_leave, name="staff_apply_leave"),
-    
     path('staff_feedback', StaffViews.staff_feedback, name="staff_feedback"),
     path('staff_send_feedback_save',StaffViews.staff_send_feedback_save,name="staff_send_feedback_save"),
+    path('staff_profile', StaffViews.staff_profile, name="staff_profile"),
+    path('staff_profile_save', StaffViews.staff_profile_save, name="staff_profile_save"),
+    path('staff_edit_profile', StaffViews.staff_edit_profile, name="staff_edit_profile"),
     
     path("replyto_staff_feedback",HodViews.replyto_staff_feedback,name="replyto_staff_feedback"),
     path("replyto_student_feedback",HodViews.replyto_student_feedback,name="replyto_student_feedback"),
@@ -83,6 +92,8 @@ urlpatterns = [
     path('student_feedback', StudentViews.student_feedback, name="student_feedback"),
     path('student_send_feedback_save', StudentViews.student_send_feedback_save, name="student_send_feedback_save"),
     path('student_profile', StudentViews.student_profile, name="student_profile"),
+    path('student_edit_profile', StudentViews.student_edit_profile, name="student_edit_profile"),
+    path('student_edit_profile_save', StudentViews.edit_student_profile_save, name="edit_student_profile_save"),
     path('student_profile_save', StudentViews.student_profile_save, name="student_profile_save"),
 
     
@@ -90,13 +101,17 @@ urlpatterns = [
     #working related urls 
     path('add_student_form_save',HodViews.add_student_form_save,name='add_student_form_save'),
     path('add_staff_form_save',HodViews.add_staff_form_save,name='add_staff_form_save'),
+    path('add_admin_form_save',HodViews.add_admin_form_save,name='add_admin_form_save'),
     path('add_course_form_api',add_course_form_api,name='add_course_form_api'),
     path('add_subject_form_save',HodViews.add_subject_form_save,name='add_subject_form_save'),
     path('add_session_form_api', add_session_form_api, name='add_session_form_api'),
     
     path('courses/<int:course_id>/update/', update_course, name='update-course'),
+    
+    path('edit_admin/<str:admin_id>',HodViews.edit_admin,name='edit_admin'),
     path('edit_staff/<str:staff_id>',HodViews.edit_staff),
     path('edit_student/<str:student_id>',HodViews.edit_student),
+    path('edit_admin_save',HodViews.edit_admin_form,name='edit_admin_save'),
     path('edit_staff_save',HodViews.edit_staff_form,name='edit_staff_save'),
     path('edit_student_save',HodViews.edit_student_form,name='edit_student_save'),
     path('edit_subject/<str:subject_id>',HodViews.edit_subject),
