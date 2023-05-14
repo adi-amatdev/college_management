@@ -21,6 +21,7 @@ class AdminHOD(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now_add=True)
     gender = models.CharField(max_length=255,blank=True)
+    address = models.CharField(max_length=500,blank=True)
     objects=models.Manager()
 
 
@@ -77,7 +78,7 @@ class Students(models.Model):
     mother_name = models.CharField(max_length=100,blank=True,null=True)
     mother_num = models.BigIntegerField(default=0)
     gaurdian_name=models.CharField(max_length=100,blank=True,null=True)
-    gaurdian_num = models.BigIntegerField(default=0)
+    gaurdian_num = models.BigIntegerField(blank=True,null=True)
     parent_or_gaurdian_email = models.EmailField(max_length=100,blank=True,null=True)
     address = models.TextField()
     objects=models.Manager()

@@ -24,6 +24,10 @@ from django.views.decorators.csrf import csrf_exempt
 def admin_home(request):
     return render(request,"hod_template/home_content.html")
 
+
+def add_admin(request):
+    return render(request,"hod_template/add_admin_template.html")
+
 def add_staff(request):
     return render(request,"hod_template/add_staff_template.html")
 
@@ -35,8 +39,10 @@ def add_staff_form_save(request):
         first_name = request.POST.get("first_name")
         last_name = request.POST.get("last_name")
         username = request.POST.get("username")
+        gender = request.POST.get('gender')
         email = request.POST.get("email")
         password = request.POST.get("password")
+        department_id = request.POST.get("department_id")
         address = request.POST.get("address")
         try:
             with transaction.atomic():
@@ -48,7 +54,7 @@ def add_staff_form_save(request):
                     email=email,
                     user_type=2,
                 )
-                staff = Staff.objects.create(admin=user, address=address)
+                staff = Staff.objects.create(admin=user, address=address,gender=gender,department_id=department_id)
                 messages.success(request, "ADDED STAFF DETAILS!")
                 return HttpResponseRedirect("/add_staff")
         except Exception as e:
@@ -56,6 +62,38 @@ def add_staff_form_save(request):
                 transaction.set_rollback(True)
                 messages.error(request, "FAILED TO ADD STAFF DETAILS - " + str(e))
             return HttpResponseRedirect("/add_staff")
+        
+
+def add_admin_form_save(request):
+    if request.method != "POST":
+        return HttpResponse("METHOD NOT ALLOWED")
+    else:
+        first_name = request.POST.get("first_name")
+        last_name = request.POST.get("last_name")
+        username = request.POST.get("username")
+        gender = request.POST.get('gender')
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        address = request.POST.get("address")
+        try:
+            with transaction.atomic():
+                user = CustomUser.objects.create_user(
+                    password=password,
+                    username=username,
+                    first_name=first_name,
+                    last_name=last_name,
+                    email=email,
+                    user_type=1,
+                    is_superuser = 1,
+                )
+                admin = AdminHOD.objects.create(admin=user, address=address,gender=gender)
+                messages.success(request, "ADDED ADMIN DETAILS!")
+                return HttpResponseRedirect("/add_admin")
+        except Exception as e:
+            with transaction.atomic():
+                transaction.set_rollback(True)
+                messages.error(request, "FAILED TO ADD ADMIN DETAILS - " + str(e))
+            return HttpResponseRedirect("/add_admin")
 
 
 def add_course(request):
@@ -119,7 +157,10 @@ def add_subject(request):
     #staffs = CustomUser.objects.filter(user_type=2)
     staffs = CustomUser.objects.all()
     return render(request,"hod_template/add_subject_template.html",{"staffs":staffs, "courses":courses})
-    
+
+def manage_admin(request):
+    admins = AdminHOD.objects.all()
+    return render(request,"hod_template/manage_admin_template.html",{ "admins":admins})  
 
 def manage_staff(request):
     staffs = Staff.objects.all()
@@ -183,6 +224,9 @@ def add_course_form_api(request):
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+def edit_admin(request,admin_id):  
+    admin = AdminHOD.objects.get(admin=admin_id)
+    return render(request,"hod_template/edit_admin_template.html",{"admin":admin})
     
 def edit_staff(request,staff_id):  
     staff = Staff.objects.get(admin=staff_id)
@@ -250,17 +294,49 @@ def add_session_form_api(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-
-def edit_staff_form(request):
-    if requests.request.method != 'POST':
+   
+def edit_admin_form(request):
+    if request.method != 'POST':
         return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
     else:
-        staff_id = request.POST.get('staff_id')
-        first_name = requests.request.POST.get('first_name')
+        admin_id = request.POST.get('staff_id')
+        first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
         username = request.POST.get('username')
+        gender = request.POST.get('gender')
+        address = request.POST.get("address")
+        
+        try:
+            user = CustomUser.objects.get(id=admin_id)
+            user.first_name=first_name
+            user.last_name=last_name
+            user.email=email
+            user.username=username
+            user.save()
+            
+            admin_model = AdminHOD.objects.get(admin=admin_id)
+            admin_model.address = address
+            admin_model.gender = gender
+            admin_model.save()
+            
+            messages.success(request,"SUCCESSFULY UPDATED THE DETAILS")
+            return HttpResponseRedirect("/edit_admin/"+admin_id)
+        except Exception as e:
+            messages.error(request,"FAILED TO UPDATE THE DETAILS " +str(e))
+            return HttpResponseRedirect("/edit_admin/"+admin_id)  
+
+def edit_staff_form(request):
+    if request.method != 'POST':
+        return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
+    else:
+        staff_id = request.POST.get('staff_id')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        username = request.POST.get('username')
+        gender = request.POST.get('gender')
+        department = request.POST.get('department')
         address = request.POST.get("address")
         
         try:
@@ -273,6 +349,8 @@ def edit_staff_form(request):
             
             staff_model = Staff.objects.get(admin=staff_id)
             staff_model.address = address
+            staff_model.gender = gender
+            staff_model.department = department
             staff_model.save()
             
             messages.success(request,"SUCCESSFULY UPDATED THE DETAILS")
@@ -430,24 +508,20 @@ def disapprove_staff_leave(request,leave_id):
 def hod_profile(request):
     return render(request,"hod_template/hod_profile.html")
 
-def hod_profile_save(request):
+def edit_hod_profile_form(request):
     if request.method!="POST":
         return HttpResponseRedirect(reverse("hod_profile"))
     else:
         first_name=request.POST.get("first_name")
         last_name=request.POST.get("last_name")
-        password=request.POST.get("password")
+        
         try:
-            customuser=CustomUser.objects.get(id=request.user.id)
-            customuser.first_name=first_name
-            customuser.last_name=last_name
-            if password!=None and password!="":
-                customuser.set_password(password)
-            customuser.save()
+            user=CustomUser.objects.get(id=request.user.id)
+            user.first_name=first_name
+            user.last_name=last_name
+            
+            user.save()
 
-            hod=AdminHOD.objects.get(admin=customuser)
-            #staff.address=address
-            hod.save()
             messages.success(request, "Successfully Updated Profile")
             return HttpResponseRedirect(reverse("hod_profile"))
         except:

@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 {% load static %}
 {% block page_title %}
-Manage Staff
+Manage Admin
 {% endblock page_title %}
 {% block main_content %}
 <!-- Main content -->
@@ -12,7 +12,7 @@ Manage Staff
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Staff Details</h3>
+                        <h3 class="card-title">Admin Details</h3>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -32,18 +32,18 @@ Manage Staff
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for staff in staffs %}
+                                {% for admin in admins %}
                                 <tr>
-                                    <td>{{ staff.admin.id }}</td>
-                                    <td>{{staff.admin.first_name}}</td>
-                                    <td>{{staff.admin.last_name}}</td>
-                                    <td>{{staff.admin.username}}</td>
-                                    <td>{{staff.admin.email}}</td>
-                                    <td>{{staff.gender}}</td>
-                                    <td>{{staff.address}}</td>
-                                    <td>{{staff.admin.last_login}}</td>
-                                    <td>{{staff.admin.date_joined}}</td>
-                                    <th><a href = "/edit_staff/{{staff.admin.id}}"class="btn btn-success">Edit</a></th>
+                                    <td>{{admin.id }}</td>
+                                    <td>{{admin.admin.first_name}}</td>
+                                    <td>{{admin.admin.last_name}}</td>
+                                    <td>{{admin.admin.username}}</td>
+                                    <td>{{admin.admin.email}}</td>
+                                    <td>{{admin.gender}}</td>
+                                    <td>{{admin.address}}</td>
+                                    <td>{{admin.admin.last_login}}</td>
+                                    <td>{{admin.admin.date_joined}}</td>
+                                    <th><a href = "/edit_admin/{{admin.admin.id}}"class="btn btn-success">Edit</a></th>
                                 </tr>
                                 {% endfor %}
                                     
