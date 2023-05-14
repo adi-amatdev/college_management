@@ -26,7 +26,8 @@ def admin_home(request):
 
 
 def add_admin(request):
-    return render(request,"hod_template/add_admin_template.html")
+    courses = Courses.objects.all()
+    return render(request,"hod_template/add_admin_template.html",{"courses":courses})
 
 def add_staff(request):
     courses = Courses.objects.all()
@@ -75,6 +76,7 @@ def add_admin_form_save(request):
         gender = request.POST.get('gender')
         email = request.POST.get("email")
         password = request.POST.get("password")
+        department_id = request.POST.get("department_id")
         address = request.POST.get("address")
         try:
             with transaction.atomic():
@@ -87,7 +89,7 @@ def add_admin_form_save(request):
                     user_type=1,
                     is_superuser = 1,
                 )
-                admin = AdminHOD.objects.create(admin=user, address=address,gender=gender)
+                admin = AdminHOD.objects.create(admin=user, address=address,gender=gender,department_id=department_id)
                 messages.success(request, "ADDED ADMIN DETAILS!")
                 return HttpResponseRedirect("/add_admin")
         except Exception as e:
@@ -508,11 +510,13 @@ def disapprove_staff_leave(request,leave_id):
     return HttpResponseRedirect(reverse("staff_leave_status"))
     
 def hod_profile(request):
-    return render(request,"hod_template/hod_profile.html")
+    user=CustomUser.objects.get(id=request.user.id)
+    hod=AdminHOD.objects.get(admin=user)
+    return render(request,"hod_template/hod_profile.html",{"user":user,"hod":hod})
 
 def edit_hod_profile_form(request):
     if request.method!="POST":
-        return HttpResponseRedirect(reverse("hod_profile"))
+        return HttpResponseRedirect(reverse("edit_hod_profile_form"))
     else:
         first_name=request.POST.get("first_name")
         last_name=request.POST.get("last_name")
@@ -524,11 +528,11 @@ def edit_hod_profile_form(request):
             
             user.save()
 
-            messages.success(request, "Successfully Updated Profile")
-            return HttpResponseRedirect(reverse("hod_profile"))
-        except:
-            messages.error(request, "Failed to Update Profile")
-            return HttpResponseRedirect(reverse("hod_profile")) 
+            messages.success(request, "SUCCESSFULY UPDATED DETAILS!")
+            return HttpResponseRedirect(reverse("hod_edit_profile"))
+        except Exception as e:
+            messages.error(request, "FAILED TO UPDATE DETAILS - " +str(e))
+            return HttpResponseRedirect(reverse("hod_edit_profile")) 
 
 def hod_edit_profile(request):
     return render(request,"hod_template/hod_edit_profile.html")  

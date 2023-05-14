@@ -15,21 +15,22 @@ class CustomUser(AbstractUser):
     user_type_data = ((1,"AdminHOD"),(2,"Staff"),(3,"Student"))
     user_type=models.CharField(default=1,choices=user_type_data,max_length=10)
 
-class AdminHOD(models.Model):
-    id = models.AutoField(primary_key=True)
-    admin = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now_add=True)
-    gender = models.CharField(max_length=255,blank=True)
-    address = models.CharField(max_length=500,blank=True)
-    objects=models.Manager()
-
 
 class Courses(models.Model):
     id = models.AutoField(primary_key=True)
     course_name = models.CharField(max_length=120)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    objects=models.Manager()
+    
+class AdminHOD(models.Model):
+    id = models.AutoField(primary_key=True)
+    admin = models.OneToOneField(CustomUser,on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
+    gender = models.CharField(max_length=255,blank=True)
+    department = models.ForeignKey(Courses,on_delete=models.CASCADE,blank=True,null=True)
+    address = models.CharField(max_length=500,blank=True)
     objects=models.Manager()
 
 class Staff(models.Model):

@@ -15,7 +15,7 @@ Edit Profile
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form role="form" action="{% url 'edit_admin_form' %}" method="post">
+              <form role="form"  method="post">
                   {% csrf_token %}
                 <div class="card-body">
                   <div class="form-group">
@@ -53,6 +53,12 @@ Edit Profile
 
                 </div>
                 <!-- /.card-body -->
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary btn-block">Save Profile</button>
+                </div>
+                
+              </form>
+            </div>
 
                 
               </form>

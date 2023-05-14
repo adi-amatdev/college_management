@@ -199,7 +199,9 @@ def staff_edit_result(request):
     return render(request,"staff_template/edit_student_result.html")
 
 def staff_profile(request):
-    return render(request,"staff_template/staff_profile.html")
+    user=CustomUser.objects.get(id=request.user.id)
+    staff=Staff.objects.get(admin=user)
+    return render(request,"staff_template/staff_profile.html",{"user":user,"staff":staff})
 
 def staff_profile_save(request):
     if request.method!="POST":
@@ -227,6 +229,8 @@ def staff_profile_save(request):
             return HttpResponseRedirect(reverse("staff_profile"))   
 
 def staff_edit_profile(request):
+    user=CustomUser.objects.get(id=request.user.id)
+    staff=Staff.objects.get(admin=user)
     return render(request,"staff_template/staff_edit_profile.html")      
 
 
