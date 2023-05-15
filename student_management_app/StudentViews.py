@@ -6,43 +6,31 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 import datetime
 from student_management_app.models import *
+from django.contrib.auth.decorators import login_required
 
 
-  
+@login_required
 def student_home(request):
     return render(request,"student_template/student_home_template.html")
 
-
+@login_required
 def student_view_attendance(request):
    # student=Students.objects.get(admin=request.user.id)
     #course=student.course_id
     #subjects=Subjects.objects.filter(course_id=course)
     return render(request,"student_template/student_view_attendance.html")#,{"subjects":subjects}
 
-
+@login_required
 def student_view_attendance_post(request):
-    '''subject_id=request.POST.get("subject")
-    start_date=request.POST.get("start_date")
-    end_date=request.POST.get("end_date")
-    
-    
-    start_data_parse=datetime.datetime.strptime(start_date,"%Y-%m-%d").date()
-    end_data_parse=datetime.datetime.strptime(end_date,"%Y-%m-%d").date()
-    subject_obj=Subjects.objects.get(id=subject_id)
-    user_object=CustomUser.objects.get(id=request.user.id)
-    stud_obj=Students.objects.get(admin=user_object)
-
-    attendance=Attendance.objects.filter(attendance_date__range=(start_data_parse,end_data_parse),subject_id=subject_obj)
-    attendance_reports=AttendanceReport.objects.filter(attendance_id__in=attendance,student_id=stud_obj)'''
     return render(request,"student_template/student_attendance_data.html") #,{"attendance_reports":attendance_reports}
 
-
+@login_required
 def student_apply_leave(request):
     student_obj = Students.objects.get(admin=request.user.id)
     leave_obj=StudentLeave.objects.filter(student_id=student_obj)
     return render(request,"student_template/student_apply_leave.html" ,{"leave_obj":leave_obj})
 
-
+@login_required
 def student_apply_leave_save(request):
     if request.method != "POST":
         return HttpResponseRedirect(reverse("student_apply_leave"))
@@ -58,12 +46,13 @@ def student_apply_leave_save(request):
             messages.error(request, f"FAILED TO SEND LEAVE APPLICATION! - {str(e)}")
         return HttpResponseRedirect(reverse("student_apply_leave"))
 
-
+@login_required
 def student_feedback(request):
     student_obj=Students.objects.get(admin=request.user.id)
     feedback_obj=FeedbackStudent.objects.filter(student_id=student_obj)
     return render(request,"student_template/student_feedback.html" , {"feedback_obj":feedback_obj})
 
+@login_required
 def student_send_feedback_save(request):
     if request.method!="POST":
         return HttpResponseRedirect(reverse("student_feedback"))
@@ -80,17 +69,19 @@ def student_send_feedback_save(request):
             messages.error(request, "FAILED TO SEND FEEDBACK - " , str(e) )
             return HttpResponseRedirect(reverse("student_feedback"))
         
-        
+@login_required      
 def student_profile(request):
     user=CustomUser.objects.get(id=request.user.id)
     student=Students.objects.get(admin=user)
     return render(request,"student_template/student_profile.html" ,{"user":user,"student":student})
 
+@login_required
 def student_edit_profile(request):
     user=CustomUser.objects.get(id=request.user.id)
     student=Students.objects.get(admin=user)
     return render(request,"student_template/student_edit_profile.html",{"user":user,"student":student})
 
+@login_required
 def student_profile_save(request):
     if request.method!="POST":
         return HttpResponseRedirect(reverse("student_profile"))
@@ -102,10 +93,8 @@ def student_profile_save(request):
         last_name=request.POST.get("last_name")
         password=request.POST.get("password")
         address=request.POST.get("address")
-        
-        
         course = request.POST.get("course")
-        #gender = request.POST.get("gender")
+        gender = request.POST.get("gender")
         session_start_year = request.POST.get('session_start_year')
         session_end_year = request.POST.get('session_end_year')
         father_name = request.POST.get('father_name')
@@ -128,7 +117,7 @@ def student_profile_save(request):
             student.email=email
             student.username=username
             student.course=course
-            #student.gender=gender
+            student.gender=gender
             student.session_start_year=session_start_year
             student.session_end_year=session_end_year
             student.father_name=father_name
@@ -146,6 +135,7 @@ def student_profile_save(request):
             messages.error(request,"FAILED TO UPDATE THE DETAILS "+str(e))
             return HttpResponseRedirect("/edit_student/"+student_id)      
 
+@login_required
 def edit_student_profile_save(request):
     if request.method != 'POST':
         return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")

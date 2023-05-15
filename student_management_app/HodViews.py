@@ -24,16 +24,17 @@ from django.views.decorators.csrf import csrf_exempt
 def admin_home(request):
     return render(request,"hod_template/home_content.html")
 
-
+@login_required
 def add_admin(request):
     courses = Courses.objects.all()
     return render(request,"hod_template/add_admin_template.html",{"courses":courses})
 
+@login_required
 def add_staff(request):
     courses = Courses.objects.all()
     return render(request,"hod_template/add_staff_template.html",{"courses":courses})
 
-
+@login_required
 def add_staff_form_save(request):
     if request.method != "POST":
         return HttpResponse("METHOD NOT ALLOWED")
@@ -65,7 +66,7 @@ def add_staff_form_save(request):
                 messages.error(request, "FAILED TO ADD STAFF DETAILS - " + str(e))
             return HttpResponseRedirect("/add_staff")
         
-
+@login_required
 def add_admin_form_save(request):
     if request.method != "POST":
         return HttpResponse("METHOD NOT ALLOWED")
@@ -98,15 +99,16 @@ def add_admin_form_save(request):
                 messages.error(request, "FAILED TO ADD ADMIN DETAILS - " + str(e))
             return HttpResponseRedirect("/add_admin")
 
-
+@login_required
 def add_course(request):
     return render(request,"hod_template/add_course_template.html")
+
 
 class CreateCourseAPIView(CreateAPIView):
     serializer_class = CourseSerializer
     queryset = Courses.objects.all()
 
-
+@login_required
 def add_student(request): 
     courses = Courses.objects.all()
     session_years = SessionYearModel.objects.all()
@@ -154,29 +156,34 @@ def add_student_form_save(request):
     return redirect('/add_student')
 
 
-
+@login_required
 def add_subject(request):
     courses = Courses.objects.all()
     #staffs = CustomUser.objects.filter(user_type=2)
     staffs = CustomUser.objects.all()
     return render(request,"hod_template/add_subject_template.html",{"staffs":staffs, "courses":courses})
 
+@login_required
 def manage_admin(request):
     admins = AdminHOD.objects.all()
     return render(request,"hod_template/manage_admin_template.html",{ "admins":admins})  
 
+@login_required
 def manage_staff(request):
     staffs = Staff.objects.all()
     return render(request,"hod_template/manage_staff_template.html",{ "staffs":staffs})
 
+@login_required
 def manage_student(request):
     students = Students.objects.all()
     return render(request,"hod_template/manage_student_template.html",{ "students":students})
 
+@login_required
 def manage_course(request):
     courses = Courses.objects.all()
     return render(request,"hod_template/manage_course_template.html",{ "courses":courses})
 
+@login_required
 def manage_subject(request):
     subjects = Subjects.objects.all()
     return render(request,"hod_template/manage_subject_template.html",{ "subjects":subjects})
@@ -190,7 +197,7 @@ def add_course_form_api(request):
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-        
+@login_required   
 def add_subject_form_save(request):
     if request.method != "POST":
         return HttpResponse("METHOD NOT ALLOWED")
@@ -217,7 +224,7 @@ def add_subject_form_save(request):
                 messages.error(request, "FAILED TO ADD SUBJECT DETAILS - " + str(e))
             return HttpResponseRedirect("/add_subject")
     
-    
+@login_required 
 @api_view(['POST'])
 def add_course_form_api(request):
     serializer = CourseSerializer(data=request.data)
@@ -227,31 +234,36 @@ def add_course_form_api(request):
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@login_required
 def edit_admin(request,admin_id):  
     admin = AdminHOD.objects.get(admin=admin_id)
     return render(request,"hod_template/edit_admin_template.html",{"admin":admin})
-    
+
+@login_required    
 def edit_staff(request,staff_id):  
     staff = Staff.objects.get(admin=staff_id) 
     courses = Courses.objects.all()
     return render(request,"hod_template/edit_staff_template.html",{"staff":staff,'courses':courses})
 
+@login_required
 def edit_student(request,student_id):  
     student = Students.objects.get(admin=student_id)
     courses = Courses.objects.all()
     return render(request,"hod_template/edit_student_template.html",{"student":student, "courses":courses})
 
+@login_required
 def edit_subject(request,subject_id):
     subject=Subjects.objects.get(id=subject_id)
     courses=Courses.objects.all()
     staffs=CustomUser.objects.filter(user_type=2)
     return render(request,"hod_template/edit_subject_template.html",{"subject":subject,"staffs":staffs,"courses":courses})
 
+@login_required
 def edit_course(request,course_id):
     course=Courses.objects.get(id=course_id)
     return render(request,"hod_template/edit_course_template.html",{"course":course})
 
-
+@login_required
 def edit_session(request, session_year_id):
     session_year = SessionYearModel.objects.get(id=session_year_id)
     if request.method == 'POST':
@@ -283,9 +295,11 @@ def update_course(request, course_id):
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@login_required
 def add_session(request):
     return render(request,"hod_template/add_session_template.html")
 
+@login_required
 def manage_session(request):
     session = SessionYearModel.objects.all()
     return render(request,"hod_template/manage_session_template.html",{"sessionyearmodel":session})
@@ -298,7 +312,8 @@ def add_session_form_api(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-   
+ 
+@login_required  
 def edit_admin_form(request):
     if request.method != 'POST':
         return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
@@ -330,6 +345,7 @@ def edit_admin_form(request):
             messages.error(request,"FAILED TO UPDATE THE DETAILS " +str(e))
             return HttpResponseRedirect("/edit_admin/"+admin_id)  
 
+@login_required
 def edit_staff_form(request):
     if request.method != 'POST':
         return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
@@ -363,7 +379,7 @@ def edit_staff_form(request):
             messages.error(request,"FAILED TO UPDATE THE DETAILS " +str(e))
             return HttpResponseRedirect("/edit_staff/"+staff_id) 
         
-
+@login_required
 def edit_student_form(request):
     if request.method != 'POST':
         return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
@@ -416,7 +432,7 @@ def edit_student_form(request):
             messages.error(request,"FAILED TO UPDATE THE DETAILS "+str(e))
             return HttpResponseRedirect("/edit_student/"+student_id) 
         
-    
+@login_required   
 def edit_subject_form(request):
     if request.method != 'POST':
         return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
@@ -439,11 +455,13 @@ def edit_subject_form(request):
         except Exception as e:
             messages.error(request,"FAILED TO UPDATE THE DETAILS "+str(e))
             return HttpResponseRedirect("/edit_subject/"+subject_id) 
-        
+
+@login_required        
 def replyto_staff_feedback(request):
     staff_feedback = FeedbackStaff.objects.all()
     return render(request,"hod_template/replyto_staff_feedback.html",{"staff_feedback":staff_feedback})  
 
+@login_required
 def replyto_student_feedback(request):
     student_feedback = FeedbackStudent.objects.all()
     return render(request,"hod_template/replyto_student_feedback.html",{"student_feedback":student_feedback})
@@ -475,45 +493,51 @@ def staff_feedback_reply_msg(request):
     except:
         return HttpResponse("False")
     
-    
+@login_required    
 def student_leave_status(request):
     leaves=StudentLeave.objects.all()
     return render(request,"hod_template/student_leave_status.html",{"leaves":leaves})
 
+@login_required
 def staff_leave_status(request):
     leaves=StaffLeave.objects.all()
     return render(request,"hod_template/staff_leave_status.html",{"leaves":leaves})
-    
+  
+@login_required  
 def approve_student_leave(request,leave_id):
     leave=StudentLeave.objects.get(id=leave_id)
     leave.leave_status=1
     leave.save()
     return HttpResponseRedirect(reverse("student_leave_status"))
 
+@login_required
 def disapprove_student_leave(request,leave_id):
     leave=StudentLeave.objects.get(id=leave_id)
     leave.leave_status=2
     leave.save()
     return HttpResponseRedirect(reverse("student_leave_status"))
 
-
+@login_required
 def approve_staff_leave(request,leave_id):
     leave=StaffLeave.objects.get(id=leave_id)
     leave.leave_status=1
     leave.save()
     return HttpResponseRedirect(reverse("staff_leave_status"))
 
+@login_required
 def disapprove_staff_leave(request,leave_id):
     leave=StaffLeave.objects.get(id=leave_id)
     leave.leave_status=2
     leave.save()
     return HttpResponseRedirect(reverse("staff_leave_status"))
-    
+ 
+@login_required   
 def hod_profile(request):
     user=CustomUser.objects.get(id=request.user.id)
     hod=AdminHOD.objects.get(admin=user)
     return render(request,"hod_template/hod_profile.html" ,{"user":user,"hod":hod})
 
+@login_required
 def edit_hod_profile_form(request):
     if request.method!="POST":
         return HttpResponseRedirect(reverse("edit_hod_profile_form"))
@@ -544,6 +568,7 @@ def edit_hod_profile_form(request):
             messages.error(request, "FAILED TO UPDATE DETAILS - " +str(e))
             return HttpResponseRedirect(reverse("hod_edit_profile")) 
 
+@login_required
 def hod_edit_profile(request):
     user=CustomUser.objects.get(id=request.user.id)
     hod=AdminHOD.objects.get(admin=user)
@@ -565,6 +590,7 @@ def delete_course_save(request, course_id):
     #else:
         #return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
 
+@login_required
 def delete_course(request,course_id):
     course=Courses.objects.get(id=course_id)
     return render(request,"hod_template/delete_course_template.html",{"course":course})
