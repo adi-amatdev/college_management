@@ -510,9 +510,9 @@ def disapprove_staff_leave(request,leave_id):
     return HttpResponseRedirect(reverse("staff_leave_status"))
     
 def hod_profile(request):
-    #user=CustomUser.objects.get(id=request.user.id)
-    #hod=AdminHOD.objects.get(admin=user)
-    return render(request,"hod_template/hod_profile.html")#,{"user":user,"hod":hod})
+    user=CustomUser.objects.get(id=request.user.id)
+    hod=AdminHOD.objects.get(admin=user)
+    return render(request,"hod_template/hod_profile.html" ,{"user":user,"hod":hod})
 
 def edit_hod_profile_form(request):
     if request.method!="POST":
@@ -520,13 +520,23 @@ def edit_hod_profile_form(request):
     else:
         first_name=request.POST.get("first_name")
         last_name=request.POST.get("last_name")
-        
+        email = request.POST.get("email")
+        gender = request.POST.get("gender")
+        department_id = request.POST.get("department_id")
+        address = request.POST.get("address"),
         try:
             user=CustomUser.objects.get(id=request.user.id)
             user.first_name=first_name
             user.last_name=last_name
+            user.email = email
+            
+            hod = AdminHOD.objects.get(admin=user)
+            hod.gender = gender
+            hod.department_id = department_id
+            hod.address = address
             
             user.save()
+            hod.save()
 
             messages.success(request, "SUCCESSFULY UPDATED DETAILS!")
             return HttpResponseRedirect(reverse("hod_edit_profile"))
@@ -535,7 +545,10 @@ def edit_hod_profile_form(request):
             return HttpResponseRedirect(reverse("hod_edit_profile")) 
 
 def hod_edit_profile(request):
-    return render(request,"hod_template/hod_edit_profile.html")  
+    user=CustomUser.objects.get(id=request.user.id)
+    hod=AdminHOD.objects.get(admin=user)
+    return render(request,"hod_template/hod_edit_profile.html" ,{"user":user,"hod":hod})
+
 
 @csrf_exempt
 def delete_course_save(request, course_id):
