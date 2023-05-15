@@ -47,7 +47,7 @@ urlpatterns = [
     path('delete_course/<str:course_id>/',delete_course_save, name='delete_course_save'),
     path('hod_profile', HodViews.hod_profile, name="hod_profile"),
     path('edit_hod_profile_form', HodViews.edit_hod_profile_form, name="edit_hod_profile_form"),
-    path('hod_edit_profile', HodViews.hod_edit_profile, name="hod_edit_profile"),
+    path('hod_edit_profile', HodViews.hod_edit_profile, name="hod_edit_profile"), 
      
     
     path('edit_subject/<str:subject_id>',HodViews.edit_subject),
