@@ -15,7 +15,7 @@ Feedback Message
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-               <form action="{% url 'student_feedback_save' %}" method="post">
+               <form action="{% url 'student_send_feedback_save' %}" method="post">
                 <div class="card-body">
 
                     {% csrf_token %}
@@ -58,11 +58,11 @@ Feedback Message
                        <th>Feedback Message</th>
                        <th>Feedback Reply</th>
                    </tr>
-                   {% for row in feedback_data %}
+                   {% for eachrow in feedback_obj %}
                         <tr>
-                            <td>{{ row.id }}</td>
-                            <td>{{ row.feedback }}</td>
-                            <td>{{ row.feedback_reply }}</td>
+                            <td>{{ eachrow.id }}</td>
+                            <td>{{ eachrow.feedback }}</td>
+                            <td>{{ eachrow.feedback_reply }}</td>
                         </tr>
                    {% endfor %}
                </table>
