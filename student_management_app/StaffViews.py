@@ -9,18 +9,23 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from . serializers import *
 from student_management_app.models import *
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404, HttpResponseRedirect, reverse
+from django.contrib import messages
+from django.http import HttpRequest
+from .models import Staff, StaffLeave
 
 @login_required
 def staff_home(request):
     return render(request,"staff_template/staff_home_template.html")
 
-
+@login_required
 def staff_take_attendance(request):
     subjects = Subjects.objects.all()
     #subjects = Subjects.objects.filter(staff_id=request.user.id)
     session_years = SessionYearModel.objects.all()
     return render(request,"staff_template/staff_take_attendance.html",{"subjects":subjects,"session_years":session_years})
 
+@login_required
 @csrf_exempt
 def get_students(request):
     subject_id=request.POST.get("subject")
@@ -36,6 +41,7 @@ def get_students(request):
         list_data.append(data_small)
     return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
 
+@login_required
 @csrf_exempt
 def save_attendance_data(request):
     student_ids=request.POST.get("student_ids")
@@ -81,6 +87,7 @@ def get_attendance_dates(request):
 
     return JsonResponse(json.dumps(attendance_obj),safe=False)
 
+@login_required
 @csrf_exempt
 def get_attendance_student(request):
     attendance_date=request.POST.get("attendance_date")
@@ -94,6 +101,7 @@ def get_attendance_student(request):
         list_data.append(data_small)
     return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
 
+@login_required
 @csrf_exempt
 def save_updateattendance_data(request):
     student_ids=request.POST.get("student_ids")
@@ -109,7 +117,8 @@ def save_updateattendance_data(request):
         return HttpResponse("OK")
     except:
         return HttpResponse("ERR")
-    
+   
+@login_required 
 @csrf_exempt
 def get_attendance_student(request):
     attendance_date=request.POST.get("attendance_date")
@@ -124,12 +133,7 @@ def get_attendance_student(request):
     return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
 
 
-
-from django.shortcuts import render, get_object_or_404, HttpResponseRedirect, reverse
-from django.contrib import messages
-from django.http import HttpRequest
-from .models import Staff, StaffLeave
-
+@login_required
 def staff_apply_leave_save(request: HttpRequest):
     if request.method != "POST":
         return HttpResponseRedirect(reverse("staff_apply_leave"))
@@ -152,7 +156,8 @@ def staff_apply_leave_save(request: HttpRequest):
         except Exception as e:
             messages.error(request, f"LEAVE APPLICATION FAILED - {str(e)}")
             return HttpResponseRedirect(reverse("staff_apply_leave"))
-        
+     
+@login_required   
 def staff_send_feedback_save(request):
     if request.method != "POST":
         return HttpResponseRedirect(reverse("staff_feedback"))
@@ -175,34 +180,37 @@ def staff_send_feedback_save(request):
             return HttpResponseRedirect(reverse("staff_feedback"))
     
 
-
+@login_required
 def staff_apply_leave(request):
     staff_obj = Staff.objects.get(admin=request.user.id)
     leave_data = StaffLeave.objects.filter(staff_id=staff_obj)
     return render(request,"staff_template/staff_apply_leave.html",{"leave_data":leave_data})
-     
+  
+@login_required   
 def staff_feedback(request):
     staff_obj = Staff.objects.get(admin=request.user.id)
     feedback_obj = FeedbackStaff.objects.filter(staff_id=staff_obj)
     return render(request,"staff_template/staff_feedback.html",{"feedback_obj":feedback_obj})
 
-
+@login_required
 def staff_add_result(request):
     subjects = Subjects.objects.all()
     session_years = SessionYearModel.objects.all()
     return render(request,"staff_template/staff_add_result.html",{"subjects":subjects,"session_years":session_years})
 
-
+@login_required
 def staff_edit_result(request):
     #subjects = Subjects.objects.all()
     #session_years = SessionYearModel.objects.all()
     return render(request,"staff_template/edit_student_result.html")
 
+@login_required
 def staff_profile(request):
     user=CustomUser.objects.get(id=request.user.id)
     staff=Staff.objects.get(admin=user)
     return render(request,"staff_template/staff_profile.html",{"user":user,"staff":staff})
 
+@login_required
 def staff_profile_save(request):
     if request.method!="POST":
         return HttpResponseRedirect(reverse("staff_profile"))
@@ -228,10 +236,11 @@ def staff_profile_save(request):
             messages.error(request, "Failed to Update Profile")
             return HttpResponseRedirect(reverse("staff_profile"))   
 
+@login_required
 def staff_edit_profile(request):
     user=CustomUser.objects.get(id=request.user.id)
     staff=Staff.objects.get(admin=user)
-    return render(request,"staff_template/staff_edit_profile.html")      
+    return render(request,"staff_template/staff_edit_profile.html",{"user":user,"staff":staff})      
 
 
     
