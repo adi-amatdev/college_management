@@ -35,14 +35,27 @@ Edit Staff | username : {{staff.admin.username}} | ID : {{staff.admin.id}}
               <input type="text" class="form-control" placeholder="Username" name="username" value="{{staff.admin.username}}">
             </div>
             <div class="form-group">
+              <label>Gender</label>
+              <select class="form-control" name="gender" value="{{staff.admin.gender}}">
+                      <option>F</option>
+                      <option>M</option>
+              </select>
+          </div>
+          <div class="form-group">
+            <label>Department</label>
+            <select class="form-control" name="department_id">
+                {% for course in courses %}
+                    <option value="{{course.id}}">{{course.course_name}}</option>
+                {%endfor%}
+            </select> 
+        </div>
+          <div class="form-group">
+            <div class="form-group">
               <label>Address</label>
               <input type="text" class="form-control" placeholder="Address" name="address" value="{{staff.address}}">
             </div>
             <div class="form-group">
-              <label>Admin ID</label>
-              <input type="text" class="form-control" placeholder="Admin ID" name="admin_id" value="{{staff.admin.admin_id}}">
-            </div>
-            <div class="form-group">
+
               {% if messages %}
               <!-- /.col -->
               <div class="col-12">
