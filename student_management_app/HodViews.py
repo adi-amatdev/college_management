@@ -183,10 +183,28 @@ def manage_course(request):
     courses = Courses.objects.all()
     return render(request,"hod_template/manage_course_template.html",{ "courses":courses})
 
-@login_required
+'''@login_required
 def manage_subject(request):
     subjects = Subjects.objects.all()
-    return render(request,"hod_template/manage_subject_template.html",{ "subjects":subjects})
+    return render(request,"hod_template/manage_subject_template.html",{ "subjects":subjects})'''
+
+def get_subjects_list(request):
+    departments = Courses.objects.all()
+    return render(request,"hod_template/get_subjects_template.html",{"departments":departments})
+
+def manage_subject(request):
+    dept_name = request.POST.get('department')
+    semester = request.POST.get('semester')
+    course = Courses.objects.get(course_name=dept_name)
+    subjects = Subjects.objects.filter(course_id=course, sem=semester)
+    return render(request, "hod_template/manage_subject_template.html", {"subjects": subjects})
+
+def get_subjects(request,department_name,sem):
+    department = Courses.objects.get(name=department_name)
+    courses = Courses.objects.filter(course_name=department)
+    subjects = Subjects.objects.filter(subject_name=courses, sem=sem)
+
+    return render(request,"hod_template/manage_subject_template.html",{ "department":department ,"courses":courses, "subjects":subjects})
     
 @api_view(['POST'])
 def add_course_form_api(request):
@@ -206,6 +224,7 @@ def add_subject_form_save(request):
         course_id = request.POST.get("course")
         staff_id = request.POST.get("staff_id")
         subject_code = request.POST.get("subject_code")
+        sem = request.POST.get("sem")
         try:
             with transaction.atomic():
                 course = get_object_or_404(Courses, id=course_id)
@@ -215,6 +234,7 @@ def add_subject_form_save(request):
                     subject_name=subject_name,
                     course_id=course,
                     staff_id=staff,
+                    sem = sem,
                 )
                 messages.success(request, "ADDED SUBJECT DETAILS!")
                 return HttpResponseRedirect("/add_subject")

@@ -155,9 +155,8 @@
             </a>
           </li>
           <li class="nav-item">
-            {% url 'manage_subject' as manage_subject %}
-            {% url 'edit_subject' subject_id=id as edit_subject %}
-            <a href="/manage_subject" class="nav-link {% if request.path == manage_subject %} active {% endif %} {% if request.path == edit_subject %} active {% endif %} ">
+            {% url 'get_subjects_list' as get_subjects_list %}
+            <a href="/get_subjects_list" class="nav-link {% if request.path == get_subjects_list %} active {% endif %} {% if request.path == get_subjects_list %} active {% endif %} ">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 Manage Subject

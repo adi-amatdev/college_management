@@ -22,6 +22,7 @@ Manage Subject
                                     <th>ID</th>
                                     <th>Subject Name</th>
                                     <th>Course Name</th>
+                                    <th>Semester</th>
                                     <th>Course ID</th>
                                     <th>Staff Name</th>
                                     <th>Action</th>
@@ -33,6 +34,7 @@ Manage Subject
                                     <td>{{subject.id }}</td>
                                     <td>{{subject.subject_name}}</td>
                                     <td>{{subject.course_id.course_name}}</td>
+                                    <td>{{subject.sem}}</td>
                                     <td>{{subject.course_id.id}}</td>
                                     <td>{{subject.staff_id.first_name}} {{subject.staff_id.last_name}}</td>
                                     <th><a href = "/edit_subject/{{subject.id}}"class="btn btn-success">Edit</a></th>

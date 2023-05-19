@@ -47,6 +47,7 @@ class Staff(models.Model):
 class Subjects(models.Model):
     id = models.AutoField(primary_key=True)
     subject_name = models.CharField(max_length=255)
+    sem = models.IntegerField(default=0)
     course_id = models.ForeignKey(Courses,on_delete=models.CASCADE)
     subject_code = models.CharField(max_length=10,unique=True)
     staff_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
