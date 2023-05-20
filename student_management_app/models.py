@@ -165,9 +165,15 @@ class NotificationStaff(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     objects=models.Manager() 
 
+class TestDetails(models.Model):
+    id = models.AutoField(primary_key=True)
+    subject_code = models.ForeignKey(Subjects, on_delete=models.CASCADE,null = True)
+    semester = models.IntegerField()
+    test1_date = models.DateField()
+    test2_date = models.DateField()
+    test3_date = models.DateField()
 
 
-    
 
 '''@receiver(post_save, sender=CustomUser)
 def create_user_profile(sender, instance, created, **kwargs):

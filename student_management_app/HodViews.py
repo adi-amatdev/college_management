@@ -594,6 +594,43 @@ def hod_edit_profile(request):
     hod=AdminHOD.objects.get(admin=user)
     return render(request,"hod_template/hod_edit_profile.html" ,{"user":user,"hod":hod})
 
+@login_required
+def add_results(request):
+    subjects = Subjects.objects.all()
+    return render(request,"hod_template/add_results_template.html",{"subjects":subjects})
+
+
+
+@login_required
+def add_testdetails_form_save(request):
+    if request.method != "POST":
+        return HttpResponse("METHOD NOT ALLOWED")
+    else:
+        subject_code = request.POST.get("subject_code")
+        semester = request.POST.get("semester")
+        test1_date = request.POST.get("test1_date")
+        test2_date = request.POST.get("test2_date")
+        test3_date = request.POST.get("test3_date")
+        
+        try:
+            with transaction.atomic():
+                subject = Subjects.objects.get(subject_code=subject_code)  # Fetch the Subjects instance
+                testdetails = TestDetails.objects.create(
+                    subject_code=subject,  # Assign the Subjects instance
+                    semester=semester,
+                    test1_date=test1_date,
+                    test2_date=test2_date,
+                    test3_date=test3_date,
+                )
+                messages.success(request, "ADDED TEST DETAILS!")
+                return HttpResponseRedirect("/add_results")
+        except Exception as e:
+            with transaction.atomic():
+                transaction.set_rollback(True)
+                messages.error(request, "FAILED TO ADD TEST DETAILS - " + str(e))
+            return HttpResponseRedirect("/add_results")
+
+
 
 @csrf_exempt
 def delete_course_save(request, course_id):

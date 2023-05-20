@@ -39,6 +39,7 @@ urlpatterns = [
     path('add_course',HodViews.add_course),
     path('add_student',HodViews.add_student),
     path('add_subject',HodViews.add_subject),
+    path('add_results',HodViews.add_results),
     path('manage_staff',HodViews.manage_staff),
     path('manage_admin',HodViews.manage_admin),
     path('manage_student',HodViews.manage_student),
@@ -105,6 +106,7 @@ urlpatterns = [
     path('add_course_form_api',add_course_form_api,name='add_course_form_api'),
     path('add_subject_form_save',HodViews.add_subject_form_save,name='add_subject_form_save'),
     path('add_session_form_api', add_session_form_api, name='add_session_form_api'),
+    path('add_testdetails_form_save',HodViews.add_testdetails_form_save,name='add_testdetails_form_save'),
     
     path('courses/<int:course_id>/update/', update_course, name='update-course'),
     
