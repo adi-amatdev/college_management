@@ -1,9 +1,14 @@
+import pandas as pd
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.auth.models import UserManager
 from django.contrib.auth.hashers import make_password
+
+
+
+
 
 class SessionYearModel(models.Model):
     id = models.AutoField(primary_key=True)
@@ -114,7 +119,7 @@ class StudentLeave(models.Model):
     student = models.ForeignKey(Students, on_delete=models.CASCADE)
     leave_date = models.CharField(max_length=60)
     leave_message = models.TextField()
-    leave_status = models.IntegerField(default=0) # for pending , 1 for approved , 2 for rejected
+    leave_status = models.IntegerField(default=0) #  0 for pending , 1 for approved , 2 for rejected
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects=models.Manager() 
@@ -172,6 +177,20 @@ class TestDetails(models.Model):
     test1_date = models.DateField()
     test2_date = models.DateField()
     test3_date = models.DateField()
+    
+class TestScores(models.Model):
+    id = models.AutoField(primary_key=True)
+    subject_code = models.ForeignKey(Subjects, on_delete=models.CASCADE,to_field='subject_code')
+    usn = models.ForeignKey(CustomUser,on_delete = models.CASCADE,to_field ='username',null =  True)
+    test1 = models.FloatField(default = '0.0')
+    test2 = models.FloatField(default = '0.0')
+    test3 = models.FloatField(default = '0.0')
+    final = models.FloatField(default = '0.0')
+    attendance = models.FloatField(default = '0.0')
+
+    #removes the composite key problem , allowing constraints in combinations
+    class Meta:
+        unique_together = ('subject_code', 'usn')
 
 
 

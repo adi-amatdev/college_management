@@ -18,7 +18,41 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.views.decorators.csrf import csrf_exempt
 
+from django.db import transaction
+#import xlrd
+from django.shortcuts import get_object_or_404
+import time
 
+@transaction.atomic
+def excel_dump_view(request):
+    if request.method == 'POST':
+        file = request.FILES['file']
+
+        # Read the Excel file into a pandas DataFrame
+        df = pd.read_excel(file, sheet_name='Sheet1')
+
+        # Iterate over the rows of the DataFrame and create TestScores objects
+        for index, row in df.iterrows():
+            subject_code = row['subject_code']
+            subjects = get_object_or_404(Subjects, subject_code=subject_code)
+            username = row['usn']
+            usernames = get_object_or_404(CustomUser, username=username)
+
+            testscore = TestScores(
+                    subject_code=subjects,
+                    usn=usernames,
+                    test1=row['test1'],
+                    test2=row['test2'],
+                    test3=row['test3'],
+                    final=row['final'],
+                    attendance=row['attendance']
+            )
+            testscore.save()
+
+        time.sleep(1)
+        return JsonResponse({'text':"rendered"})
+    else:
+        return render(request,"hod_template/add_results_template.html")
  
 @login_required
 def admin_home(request):
@@ -193,9 +227,9 @@ def get_subjects_list(request):
     return render(request,"hod_template/get_subjects_template.html",{"departments":departments})
 
 def manage_subject(request):
-    dept_name = request.POST.get('department')
+    department = request.POST.get('department')
     semester = request.POST.get('semester')
-    course = Courses.objects.get(course_name=dept_name)
+    course = Courses.objects.get(course_name=department)
     subjects = Subjects.objects.filter(course_id=course, sem=semester)
     return render(request, "hod_template/manage_subject_template.html", {"subjects": subjects})
 

@@ -21,7 +21,7 @@ from student_management_system import settings
 from student_management_app.HodViews import *
 from student_management_app.StaffViews import *
 from student_management_app.StudentViews import *
-
+from student_management_app.HodViews import excel_dump_view
 
 
 urlpatterns = [
@@ -131,7 +131,7 @@ urlpatterns = [
     path("get_subjects",HodViews.get_subjects,name="get_subjects"),
     path("get_subjects_list",HodViews.get_subjects_list,name="get_subjects_list"),
 
-    
+    path('excel_dump_view', HodViews.excel_dump_view, name='excel_dump_view'),
     
     
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)+static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)

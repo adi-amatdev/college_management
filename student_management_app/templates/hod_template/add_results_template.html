@@ -90,13 +90,13 @@ Add Results
           <h3 class="card-title">Enter Test Scores</h3>
         </div>
 
-        <form role="form" action="/add_results_form_save" method="post">
+        <form role="form" action="{% url 'excel_dump_view' %}" method="POST" enctype="multipart/form-data">
           {% csrf_token %}
           <div class="card-body">
             <div class="form-group">
             <div>
             <label>Upload Excel File Containing Marks</label>
-            <input type="file" class="form-control" placeholder="Upload Excel File" name=" ">
+            <input type="file" class="form-control" placeholder="Upload Excel File" name="file">
             </div>
               {% if messages %}
               <!-- /.col -->
