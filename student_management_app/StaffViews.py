@@ -107,11 +107,6 @@ def staff_feedback(request):
     feedback_obj = FeedbackStaff.objects.filter(staff_id=staff_obj)
     return render(request,"staff_template/staff_feedback.html",{"feedback_obj":feedback_obj})
 
-@login_required
-def staff_add_result(request):
-    subjects = Subjects.objects.all()
-    session_years = SessionYearModel.objects.all()
-    return render(request,"staff_template/staff_add_result.html",{"subjects":subjects,"session_years":session_years})
 
 def staff_view_test_details(request):
     subjects = Subjects.objects.all()
@@ -168,36 +163,46 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 import time
 
-@transaction.atomic
 def excel_dump_view(request):
     if request.method == 'POST':
         file = request.FILES['file']
+        
+        try:
+            with transaction.atomic():
+                # Read the Excel file into a pandas DataFrame
+                df = pd.read_excel(file, sheet_name='Sheet1')
 
-        # Read the Excel file into a pandas DataFrame
-        df = pd.read_excel(file, sheet_name='Sheet1')
+                # Iterate over the rows of the DataFrame and create TestScores objects
+                for index, row in df.iterrows():
+                    subject_code = row['subject_code']
+                    subjects = get_object_or_404(Subjects, subject_code=subject_code)
+                    username = row['usn']
+                    usernames = get_object_or_404(CustomUser, username=username)
 
-        # Iterate over the rows of the DataFrame and create TestScores objects
-        for index, row in df.iterrows():
-            subject_code = row['subject_code']
-            subjects = get_object_or_404(Subjects, subject_code=subject_code)
-            username = row['usn']
-            usernames = get_object_or_404(CustomUser, username=username)
+                    testscore = TestScores(
+                        subject_code=subjects,
+                        usn=usernames,
+                        test1=row['test1'],
+                        test2=row['test2'],
+                        test3=row['test3'],
+                        final=row['final'],
+                        attendance=row['attendance']
+                    )
+                    testscore.save()
 
-            testscore = TestScores(
-                    subject_code=subjects,
-                    usn=usernames,
-                    test1=row['test1'],
-                    test2=row['test2'],
-                    test3=row['test3'],
-                    final=row['final'],
-                    attendance=row['attendance']
-            )
-            testscore.save()
-
-        time.sleep(1)
-        return JsonResponse({'text':"rendered"})
+            time.sleep(1)
+            messages.success(request, "ADDED TEST SCORES!")
+            return HttpResponseRedirect("/add_results")
+            
+        
+        except Exception as e:
+            with transaction.atomic():
+                transaction.set_rollback(True)
+                messages.error(request, "FAILED TO ADD TEST SCORES - " + str(e))
+            return HttpResponseRedirect("/add_results")    
+    
     else:
-        return render(request,"staff_template/add_results_template.html")
+        return render(request, "staff_template/add_results_template.html")
 
 @login_required
 def add_results(request):
@@ -232,5 +237,35 @@ def add_testdetails_form_save(request):
                 transaction.set_rollback(True)
                 messages.error(request, "FAILED TO ADD TEST DETAILS - " + str(e))
             return HttpResponseRedirect("/add_results")
+        
+@login_required
+def edit_testdetails_form(request):
+    test = TestDetails.objects.all()
+    return render(request,"staff_template/edit_testdetails.html" ,{"test":test})
+        
+def edit_testdetails(request):
+    if request.method != 'POST':
+        return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
+    else:
+        testdetails_id = request.POST.get('testdetails_id')
+        semester = request.POST.get("semester")
+        test1_date = request.POST.get("test1_date")
+        test2_date = request.POST.get("test2_date")
+        test3_date = request.POST.get("test3_date")
+        
+        try:
+            testdetails = TestDetails.objects.get(id=testdetails_id)
+            testdetails.semester = semester
+            testdetails.test1_date = test1_date
+            testdetails.test2_date = test2_date
+            testdetails.test3_date = test3_date
+            testdetails.save()
+            
+            messages.success(request, "SUCCESSFULLY UPDATED THE DETAILS")
+            return HttpResponseRedirect("/edit_testdetails_form/" + testdetails_id)
+        
+        except Exception as e:
+            messages.error(request, "FAILED TO UPDATE THE DETAILS - " + str(e))
+            return HttpResponseRedirect("/edit_testdetails_form/" + testdetails_id)   
         
     
