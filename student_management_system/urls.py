@@ -21,7 +21,6 @@ from student_management_system import settings
 from student_management_app.HodViews import *
 from student_management_app.StaffViews import *
 from student_management_app.StudentViews import *
-from student_management_app.HodViews import excel_dump_view
 
 
 urlpatterns = [
@@ -39,7 +38,7 @@ urlpatterns = [
     path('add_course',HodViews.add_course),
     path('add_student',HodViews.add_student),
     path('add_subject',HodViews.add_subject),
-    path('add_results',HodViews.add_results),
+    path('add_results',StaffViews.add_results),
     path('manage_staff',HodViews.manage_staff),
     path('manage_admin',HodViews.manage_admin),
     path('manage_student',HodViews.manage_student),
@@ -59,18 +58,9 @@ urlpatterns = [
     path('staff_home',StaffViews.staff_profile,name='staff_profile'),
     path('staff_take_attendance',StaffViews.staff_take_attendance, name="staff_take_attendance"),
     path('get_students',StaffViews.get_students, name="get_students"),
-    path('save_attendance_data',StaffViews.save_attendance_data, name="save_attendance_data"),
-    path('staff_update_attendance',StaffViews.update_attendance,name="staff_update_attendance"),
-    path('get_attendance_data',StaffViews.save_attendance_data,name='save_attendance_data'), 
     path('staff_add_result', StaffViews.staff_add_result, name="staff_add_result"),
+    path('staff_view_test_details',StaffViews.staff_view_test_details,name="staff_view_test_details"),
     path('edit_student_result', StaffViews.staff_edit_result, name="staff_edit_result"),
-
-    
-    path('get_attendance_dates', StaffViews.get_attendance_dates, name="get_attendance_dates"),
-    path('save_attendance_data', StaffViews.save_attendance_data, name="save_attendance_data"),
-    path('get_attendance_student', StaffViews.get_attendance_student, name="get_attendance_student"),
-    path('save_updateattendance_data', StaffViews.save_updateattendance_data, name="save_updateattendance_data"),
-    
     
     path('staff_apply_leave_save', StaffViews.staff_apply_leave_save, name="staff_apply_leave_save"),
     path('staff_apply_leave', StaffViews.staff_apply_leave, name="staff_apply_leave"),
@@ -106,7 +96,7 @@ urlpatterns = [
     path('add_course_form_api',add_course_form_api,name='add_course_form_api'),
     path('add_subject_form_save',HodViews.add_subject_form_save,name='add_subject_form_save'),
     path('add_session_form_api', add_session_form_api, name='add_session_form_api'),
-    path('add_testdetails_form_save',HodViews.add_testdetails_form_save,name='add_testdetails_form_save'),
+    path('add_testdetails_form_save',StaffViews.add_testdetails_form_save,name='add_testdetails_form_save'),
     
     path('courses/<int:course_id>/update/', update_course, name='update-course'),
     
@@ -131,7 +121,7 @@ urlpatterns = [
     path("get_subjects",HodViews.get_subjects,name="get_subjects"),
     path("get_subjects_list",HodViews.get_subjects_list,name="get_subjects_list"),
 
-    path('excel_dump_view', HodViews.excel_dump_view, name='excel_dump_view'),
+    path('excel_dump_view', StaffViews.excel_dump_view, name='excel_dump_view'),
     
     
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)+static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)

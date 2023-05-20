@@ -18,41 +18,6 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.views.decorators.csrf import csrf_exempt
 
-from django.db import transaction
-#import xlrd
-from django.shortcuts import get_object_or_404
-import time
-
-@transaction.atomic
-def excel_dump_view(request):
-    if request.method == 'POST':
-        file = request.FILES['file']
-
-        # Read the Excel file into a pandas DataFrame
-        df = pd.read_excel(file, sheet_name='Sheet1')
-
-        # Iterate over the rows of the DataFrame and create TestScores objects
-        for index, row in df.iterrows():
-            subject_code = row['subject_code']
-            subjects = get_object_or_404(Subjects, subject_code=subject_code)
-            username = row['usn']
-            usernames = get_object_or_404(CustomUser, username=username)
-
-            testscore = TestScores(
-                    subject_code=subjects,
-                    usn=usernames,
-                    test1=row['test1'],
-                    test2=row['test2'],
-                    test3=row['test3'],
-                    final=row['final'],
-                    attendance=row['attendance']
-            )
-            testscore.save()
-
-        time.sleep(1)
-        return JsonResponse({'text':"rendered"})
-    else:
-        return render(request,"hod_template/add_results_template.html")
  
 @login_required
 def admin_home(request):
@@ -627,44 +592,6 @@ def hod_edit_profile(request):
     user=CustomUser.objects.get(id=request.user.id)
     hod=AdminHOD.objects.get(admin=user)
     return render(request,"hod_template/hod_edit_profile.html" ,{"user":user,"hod":hod})
-
-@login_required
-def add_results(request):
-    subjects = Subjects.objects.all()
-    return render(request,"hod_template/add_results_template.html",{"subjects":subjects})
-
-
-
-@login_required
-def add_testdetails_form_save(request):
-    if request.method != "POST":
-        return HttpResponse("METHOD NOT ALLOWED")
-    else:
-        subject_code = request.POST.get("subject_code")
-        semester = request.POST.get("semester")
-        test1_date = request.POST.get("test1_date")
-        test2_date = request.POST.get("test2_date")
-        test3_date = request.POST.get("test3_date")
-        
-        try:
-            with transaction.atomic():
-                subject = Subjects.objects.get(subject_code=subject_code)  # Fetch the Subjects instance
-                testdetails = TestDetails.objects.create(
-                    subject_code=subject,  # Assign the Subjects instance
-                    semester=semester,
-                    test1_date=test1_date,
-                    test2_date=test2_date,
-                    test3_date=test3_date,
-                )
-                messages.success(request, "ADDED TEST DETAILS!")
-                return HttpResponseRedirect("/add_results")
-        except Exception as e:
-            with transaction.atomic():
-                transaction.set_rollback(True)
-                messages.error(request, "FAILED TO ADD TEST DETAILS - " + str(e))
-            return HttpResponseRedirect("/add_results")
-
-
 
 @csrf_exempt
 def delete_course_save(request, course_id):

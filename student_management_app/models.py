@@ -178,6 +178,9 @@ class TestDetails(models.Model):
     test2_date = models.DateField()
     test3_date = models.DateField()
     
+    class Meta:
+        unique_together = ('subject_code', 'semester')
+    
 class TestScores(models.Model):
     id = models.AutoField(primary_key=True)
     subject_code = models.ForeignKey(Subjects, on_delete=models.CASCADE,to_field='subject_code')
