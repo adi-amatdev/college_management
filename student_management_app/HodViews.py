@@ -158,8 +158,7 @@ def add_student_form_save(request):
 @login_required
 def add_subject(request):
     courses = Courses.objects.all()
-    #staffs = CustomUser.objects.filter(user_type=2)
-    staffs = CustomUser.objects.all()
+    staffs = CustomUser.objects.filter(user_type=2)
     return render(request,"hod_template/add_subject_template.html",{"staffs":staffs, "courses":courses})
 
 @login_required
