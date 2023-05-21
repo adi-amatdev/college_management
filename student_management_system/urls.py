@@ -38,7 +38,6 @@ urlpatterns = [
     path('add_course',HodViews.add_course),
     path('add_student',HodViews.add_student),
     path('add_subject',HodViews.add_subject),
-    path('manage_staff',HodViews.manage_staff),
     path('manage_admin',HodViews.manage_admin),
     path('manage_course',HodViews.manage_course),
     
@@ -122,8 +121,9 @@ urlpatterns = [
     
     path('manage_students',HodViews.manage_students,name='manage_students'),
     path("get_students_list",HodViews.get_students_list,name="get_students_list"),
-
-
+    
+    path('manage_staff',HodViews.manage_staff,name='manage_staff'),
+    path("get_staff_list",HodViews.get_staff_list,name="get_staff_list"),
 
     path('edit_testdetails/<int:testdetails_id>/', StaffViews.edit_testdetails, name='edit_testdetails'),
     path('add_testdetails_form_save',StaffViews.add_testdetails_form_save,name='add_testdetails_form_save'),

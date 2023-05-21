@@ -186,7 +186,6 @@ def get_subjects_list(request):
 def manage_subject(request):
     department = request.POST.get('department')
     semester = request.POST.get('semester')
-
     subjects = Subjects.objects.filter(course_id__course_name=department, sem=semester)
     return render(request, "hod_template/manage_subject_template.html", {"subjects": subjects})
     
@@ -197,6 +196,7 @@ def get_students_list(request):
     session_years = SessionYearModel.objects.all()
     return render(request,"hod_template/get_students_template.html",{"students":students , "departments":departments,"session_years":session_years})
 
+@login_required
 def manage_students(request):
     department = request.POST.get('department')
     sessionyear = request.POST.get('session_year_id_id')
@@ -205,6 +205,18 @@ def manage_students(request):
     session_years = SessionYearModel.objects.all()
     return render(request, "hod_template/manage_student_template.html", {"students": students, "departments": departments, "session_years": session_years, "selected_department": department, "selected_session_year": sessionyear})
 
+@login_required
+def get_staff_list(request):
+    departments = Courses.objects.all()
+    return render(request,"hod_template/get_staff_template.html",{"departments":departments})
+
+@login_required
+def manage_staff(request):
+    department = request.POST.get('department')
+    staffs = Staff.objects.filter(department__course_name=department)
+    return render(request, "hod_template/manage_staff_template.html", {"staffs": staffs})
+
+    
 @api_view(['POST'])
 def add_course_form_api(request):
     serializer = CourseSerializer(data=request.data)
