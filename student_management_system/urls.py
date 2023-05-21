@@ -48,7 +48,11 @@ urlpatterns = [
     path('hod_profile', HodViews.hod_profile, name="hod_profile"),
     path('edit_hod_profile_form', HodViews.edit_hod_profile_form, name="edit_hod_profile_form"),
     path('hod_edit_profile', HodViews.hod_edit_profile, name="hod_edit_profile"), 
-     
+    path('delete_staff', HodViews.delete_staff, name="delete_staff"), 
+    path('delete_student/<str:student_id>', HodViews.delete_student, name="delete_student"),
+    path('delete_subject/<str:subject_id>', HodViews.delete_subject, name="delete_subject"),
+    path('delete_session/<str:session_id>', HodViews.delete_session, name="delete_session"),
+    path('delete_staff_confirm/<str:staff_id>', HodViews.delete_staff_confirm, name="delete_staff_confirm"),
     
     path('edit_subject/<str:subject_id>',HodViews.edit_subject),
     path('edit_course/<str:course_id>',HodViews.edit_course),

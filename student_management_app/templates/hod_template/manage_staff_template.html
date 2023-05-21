@@ -29,12 +29,13 @@ Manage Staff
                                     <th>Last Login</th>
                                     <th>Date Joined</th>
                                     <th>Action</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for staff in staffs %}
                                 <tr>
-                                    <td>{{ staff.admin.id }}</td>
+                                    <td>{{ staff.id }}</td>
                                     <td>{{staff.admin.first_name}}</td>
                                     <td>{{staff.admin.last_name}}</td>
                                     <td>{{staff.admin.username}}</td>
@@ -44,6 +45,7 @@ Manage Staff
                                     <td>{{staff.admin.last_login}}</td>
                                     <td>{{staff.admin.date_joined}}</td>
                                     <th><a href = "/edit_staff/{{staff.admin.id}}"class="btn btn-success">Edit</a></th>
+                                    <th><a href = "/delete_staff_confirm/{{staff.admin.id}}"class="btn btn-danger">Delete</a></th>
                                 </tr>
                                 {% endfor %}
                                     

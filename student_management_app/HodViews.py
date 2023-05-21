@@ -533,9 +533,9 @@ def disapprove_staff_leave(request,leave_id):
  
 @login_required   
 def hod_profile(request):
-    user=CustomUser.objects.get(id=request.user.id)
-    hod=AdminHOD.objects.get(admin=user)
-    return render(request,"hod_template/hod_profile.html" ,{"user":user,"hod":hod})
+    #user=CustomUser.objects.get(id=request.user.id)
+    #hod=AdminHOD.objects.get(admin=user)
+    return render(request,"hod_template/hod_profile.html")# ,{"user":user,"hod":hod})
 
 @login_required
 def edit_hod_profile_form(request):
@@ -585,15 +585,121 @@ def delete_course_save(request, course_id):
     #if request.method == 'DELETE':
     course.delete()
     return JsonResponse({'success': f'Course object with id {course_id} has been deleted'})
-    #messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
+    '''messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
     #return HttpResponseRedirect("/delete_course/"+course_id)
     #else:
-        #return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+        #return JsonResponse({'error': 'Invalid HTTP method'}, status=405)'''
 
 @login_required
 def delete_course(request,course_id):
     course=Courses.objects.get(id=course_id)
     return render(request,"hod_template/delete_course_template.html",{"course":course})
+
+    
+
+@csrf_exempt
+def delete_staff(request):
+    staff_id = request.POST.get('staff_id')
+    try:
+        # Get the staff member
+        staff = Staff.objects.get(id=staff_id)
+        
+        # Get the associated user
+        user = CustomUser.objects.get(id=staff.admin.id)
+
+        # Delete the staff member
+        staff.delete()
+
+        # Delete the associated user
+        user.delete()
+
+        #return JsonResponse({'message': 'Staff member deleted successfully.'})
+        messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
+        return HttpResponseRedirect("/delete_staff_confirm/"+staff_id)
+        #return redirect("hod_template/delete_staff_template.html")
+    except Staff.DoesNotExist:
+        return JsonResponse({'message': f'Staff member with id {staff_id} does not exist.'}, status=404)
+    except CustomUser.DoesNotExist:
+        return JsonResponse({'message': f'CustomUser for staff member with id {staff_id} does not exist.'}, status=404)
+    except Exception as e:
+        messages.error(request,"FAILED TO DELETE THE DETAILS " +str(e))
+        return HttpResponseRedirect("/delete_staff_confirm/"+staff_id)
+        #return JsonResponse({'message': str(e)}, status=500)
+    
+
+@csrf_exempt
+def delete_student(request, student_id):
+    try:
+        # Get the student
+        student = Students.objects.get(id=student_id)
+        
+        # Get the associated user
+        user = CustomUser.objects.get(id=student.admin.id)
+
+        # Delete the student
+        student.delete()
+
+        # Delete the associated user
+        user.delete()
+
+        return JsonResponse({'message': 'Student deleted successfully.'})
+    except Students.DoesNotExist:
+        return JsonResponse({'message': 'Student does not exist.'}, status=404)
+    except CustomUser.DoesNotExist:
+        return JsonResponse({'message': 'CustomUser for student does not exist.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'message': str(e)}, status=500)
+    
+
+
+@csrf_exempt
+def delete_subject(request, subject_id):
+    try:
+        # Get the subject
+        subject = Subjects.objects.get(id=subject_id)
+        
+        # Delete the subject
+        subject.delete()
+
+        messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
+        return HttpResponseRedirect("/delete_session/"+subject_id)
+    except Exception as e:
+            messages.error(request,"Subject does not exist "+str(e))
+            return HttpResponseRedirect("/delete_session/"+subject_id) 
+
+
+    '''return JsonResponse({'message': 'Subject deleted successfully.'})
+    except Subjects.DoesNotExist:
+        return JsonResponse({'message': 'Subject does not exist.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'message': str(e)}, status=500)'''
+    
+
+@csrf_exempt
+def delete_session(request, session_id):
+    try:
+        # Get the session
+        session = SessionYearModel.objects.get(id=session_id)
+
+        # Delete the session
+        session.delete()
+
+        return JsonResponse({'message': 'Session deleted successfully.'})
+    except SessionYearModel.DoesNotExist:
+        return JsonResponse({'message': 'Session does not exist.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'message': str(e)}, status=500)
+    
+def delete_staff_confirm(request,staff_id):
+    staff = Staff.objects.get(admin=staff_id) 
+    courses = Courses.objects.all()
+    return render(request,"hod_template/delete_staff_template.html",{"staff":staff,"courses":courses})
+
+
+
+
+
+
     
 
 
