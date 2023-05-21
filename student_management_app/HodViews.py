@@ -193,8 +193,10 @@ def get_subjects_list(request):
 def manage_subject(request):
     department = request.POST.get('department')
     semester = request.POST.get('semester')
-    course = Courses.objects.get(course_name=department)
-    subjects = Subjects.objects.filter(course_id=course, sem=semester)
+    
+    # Filter subjects based on department and semester
+    subjects = Subjects.objects.filter(course_id__course_name=department, sem=semester)
+    
     return render(request, "hod_template/manage_subject_template.html", {"subjects": subjects})
 
 def get_subjects(request,department_name,sem):
