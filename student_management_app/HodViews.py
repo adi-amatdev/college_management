@@ -171,41 +171,40 @@ def manage_staff(request):
     staffs = Staff.objects.all()
     return render(request,"hod_template/manage_staff_template.html",{ "staffs":staffs})
 
-@login_required
-def manage_student(request):
-    students = Students.objects.all()
-    return render(request,"hod_template/manage_student_template.html",{ "students":students})
 
 @login_required
 def manage_course(request):
     courses = Courses.objects.all()
     return render(request,"hod_template/manage_course_template.html",{ "courses":courses})
 
-'''@login_required
-def manage_subject(request):
-    subjects = Subjects.objects.all()
-    return render(request,"hod_template/manage_subject_template.html",{ "subjects":subjects})'''
-
+@login_required
 def get_subjects_list(request):
     departments = Courses.objects.all()
     return render(request,"hod_template/get_subjects_template.html",{"departments":departments})
 
+@login_required
 def manage_subject(request):
     department = request.POST.get('department')
     semester = request.POST.get('semester')
-    
-    # Filter subjects based on department and semester
+
     subjects = Subjects.objects.filter(course_id__course_name=department, sem=semester)
-    
     return render(request, "hod_template/manage_subject_template.html", {"subjects": subjects})
-
-def get_subjects(request,department_name,sem):
-    department = Courses.objects.get(name=department_name)
-    courses = Courses.objects.filter(course_name=department)
-    subjects = Subjects.objects.filter(subject_name=courses, sem=sem)
-
-    return render(request,"hod_template/manage_subject_template.html",{ "department":department ,"courses":courses, "subjects":subjects})
     
+@login_required
+def get_students_list(request):
+    departments = Courses.objects.all()
+    students = Students.objects.all()
+    session_years = SessionYearModel.objects.all()
+    return render(request,"hod_template/get_students_template.html",{"students":students , "departments":departments,"session_years":session_years})
+
+def manage_students(request):
+    department = request.POST.get('department')
+    sessionyear = request.POST.get('session_year_id_id')
+    students = Students.objects.filter(course_id__course_name=department, session_year_id=sessionyear)
+    departments = Courses.objects.all()
+    session_years = SessionYearModel.objects.all()
+    return render(request, "hod_template/manage_student_template.html", {"students": students, "departments": departments, "session_years": session_years, "selected_department": department, "selected_session_year": sessionyear})
+
 @api_view(['POST'])
 def add_course_form_api(request):
     serializer = CourseSerializer(data=request.data)

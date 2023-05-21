@@ -40,9 +40,8 @@ urlpatterns = [
     path('add_subject',HodViews.add_subject),
     path('manage_staff',HodViews.manage_staff),
     path('manage_admin',HodViews.manage_admin),
-    path('manage_student',HodViews.manage_student),
     path('manage_course',HodViews.manage_course),
-    path('manage_subject',HodViews.manage_subject,name='manage_subject'),
+    
     path('delete_course/<str:course_id>/',delete_course_save, name='delete_course_save'),
     path('hod_profile', HodViews.hod_profile, name="hod_profile"),
     path('edit_hod_profile_form', HodViews.edit_hod_profile_form, name="edit_hod_profile_form"),
@@ -118,8 +117,12 @@ urlpatterns = [
     path("approve_staff_leave/<str:leave_id>",HodViews.approve_staff_leave,name="approve_staff_leave"),
     path("disapprove_staff_leave/<str:leave_id>",HodViews.disapprove_staff_leave,name="disapprove_staff_leave"),
     
-    path("get_subjects",HodViews.get_subjects,name="get_subjects"),
+    path('manage_subject',HodViews.manage_subject,name='manage_subject'),
     path("get_subjects_list",HodViews.get_subjects_list,name="get_subjects_list"),
+    
+    path('manage_students',HodViews.manage_students,name='manage_students'),
+    path("get_students_list",HodViews.get_students_list,name="get_students_list"),
+
 
 
     path('edit_testdetails/<int:testdetails_id>/', StaffViews.edit_testdetails, name='edit_testdetails'),
