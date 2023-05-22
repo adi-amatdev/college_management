@@ -1,0 +1,57 @@
+{% extends 'student_template/base_template.html' %}
+{% load static %}
+{% block page_title %}
+CIE SCORES
+{% endblock page_title %}
+{% block main_content %}
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">CIE SCORES</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                              <tr>
+                                <th>Subject Code</th>
+                                <th>CIE 1</th>
+                                <th>CIE 2</th>
+                                <th>CIE 3</th>
+                                <th>Average Score</th>
+                                <th>Attendance %</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {% for test_score in test_scores %}
+                                <tr>
+                                  <td>{{ test_score.subject_code }}</td>
+                                  <td>{{ test_score.test1 }}</td>
+                                  <td>{{ test_score.test2 }}</td>
+                                  <td>{{ test_score.test3 }}</td>
+                                  <td>{{ test_score.final }}</td>
+                                  <td>{{ test_score.attendance }}</td>
+                              </tr>
+                                {% endfor %}
+                                    
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+          
+      
+      
+      
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+
+{% endblock main_content %}
