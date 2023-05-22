@@ -23,6 +23,7 @@ Manage Session
                                     <th>Session Start Year</th>
                                     <th>Session End Year</th>
                                     <th>Action</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -32,6 +33,7 @@ Manage Session
                                     <td>{{session_year.session_start_year}}</td>
                                     <td>{{session_year.session_end_year}}</td>
                                     <th><a href = "/edit_session/{{session_year.id}}"class="btn btn-success">Edit</a></th>
+                                    <th><a href = "/delete_session_confirm/{{session_year.id}}"class="btn btn-danger">Delete</a></th>
                                 </tr>
                                 {% endfor %}
                                     
