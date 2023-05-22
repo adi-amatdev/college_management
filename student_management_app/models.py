@@ -59,20 +59,9 @@ class Subjects(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects=models.Manager()
-     
-
-'''class Students(models.Model):
-    id = models.AutoField(primary_key=True)
-    admin = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
-    gender = models.CharField(max_length=255)
-    section = models.CharField(max_length=2,default='A')
-    profile_pic = models.FileField()
-    address = models.TextField()
-    objects=models.Manager()
-    course_id = models.ForeignKey(Courses,on_delete=models.CASCADE,default=1)
-    session_year_id = models.ForeignKey(SessionYearModel,on_delete=models.CASCADE,default=1)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)'''
+    
+    def __str__(self):
+        return self.subject_code
 
 class Students(models.Model):
     id = models.AutoField(primary_key=True)

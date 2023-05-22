@@ -1,7 +1,7 @@
-{% extends 'hod_template/base_template.html' %}
+{% extends 'student_template/base_template.html' %}
 {% load static %}
 {% block page_title %}
-Manage Session
+CIE SCORES
 {% endblock page_title %}
 {% block main_content %}
 <!-- Main content -->
@@ -12,27 +12,31 @@ Manage Session
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Session Details</h3>
+                        <h3 class="card-title">CIE SCORES</h3>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
                         <table id="example2" class="table table-bordered table-hover">
                             <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Session Start Year</th>
-                                    <th>Session End Year</th>
-                                    <th>Action</th>
-                                </tr>
+                              <tr>
+                                <th>Subject Code</th>
+                                <th>CIE 1</th>
+                                <th>CIE 2</th>
+                                <th>CIE 3</th>
+                                <th>Average Score</th>
+                                <th>Attendance %</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                {% for session_year in sessionyearmodel %}
+                                {% for test_score in test_scores %}
                                 <tr>
-                                    <td>{{session_year.id }}</td>
-                                    <td>{{session_year.session_start_year}}</td>
-                                    <td>{{session_year.session_end_year}}</td>
-                                    <th><a href = "/edit_session/{{session_year.id}}"class="btn btn-success">Edit</a></th>
-                                </tr>
+                                  <td>{{ test_score.subject_code }}</td>
+                                  <td>{{ test_score.test1 }}</td>
+                                  <td>{{ test_score.test2 }}</td>
+                                  <td>{{ test_score.test3 }}</td>
+                                  <td>{{ test_score.final }}</td>
+                                  <td>{{ test_score.attendance }}</td>
+                              </tr>
                                 {% endfor %}
                                     
                             </tbody>

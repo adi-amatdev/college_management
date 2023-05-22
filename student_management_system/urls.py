@@ -72,8 +72,8 @@ urlpatterns = [
     path('student_feedback_reply_msg',HodViews.student_feedback_reply_msg,name="student_feedback_reply_msg"),
     path('staff_feedback_reply_msg',HodViews.staff_feedback_reply_msg,name="staff_feedback_reply_msg"),
 
-    path('student_view_attendance',StudentViews.student_view_attendance,name = 'student_view_attendance'),
-    path('student_view_attendance_post',StudentViews.student_view_attendance_post,name = 'student_view_attendance_post'),
+    path('student_view_results',StudentViews.student_view_results,name = 'student_view_results'),
+   
     path('student_apply_leave', StudentViews.student_apply_leave, name="student_apply_leave"),
     path('student_apply_leave_save', StudentViews.student_apply_leave_save, name="student_apply_leave_save"),
     path('student_feedback', StudentViews.student_feedback, name="student_feedback"),

@@ -14,15 +14,11 @@ def student_home(request):
     return render(request,"student_template/student_home_template.html")
 
 @login_required
-def student_view_attendance(request):
-   # student=Students.objects.get(admin=request.user.id)
-    #course=student.course_id
-    #subjects=Subjects.objects.filter(course_id=course)
-    return render(request,"student_template/student_view_attendance.html")#,{"subjects":subjects}
-
-@login_required
-def student_view_attendance_post(request):
-    return render(request,"student_template/student_attendance_data.html") #,{"attendance_reports":attendance_reports}
+def student_view_results(request):
+    student = CustomUser.objects.get(id=request.user.id)
+    test_scores = TestScores.objects.filter(usn_id=student)
+    
+    return render(request, "student_template/student_view_results.html", {"student": student, "test_scores": test_scores})
 
 @login_required
 def student_apply_leave(request):
