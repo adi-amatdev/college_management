@@ -1,0 +1,56 @@
+# Ignore Python-related files
+*.pyc
+*.pyo
+__pycache__/
+*.egg-info/
+*.egg
+
+# Ignore Django-specific files
+*.sqlite3
+*.pyc
+*.pyo
+*.pyd
+*.pyc
+
+# Ignore static files
+/static/
+
+# Ignore media files
+/media/
+
+# Ignore front-end dependencies managed by package managers
+/node_modules/
+/bower_components/
+
+# Ignore IDE and editor-specific files
+.idea/
+.vscode/
+*.sublime-*
+*.swp
+
+# Ignore deployment and environment-specific files
+.env
+.env.local
+.env.*.local
+.env.*.prod
+*.env
+
+# Ignore log files
+*.log
+
+# Ignore database backups
+*.bak
+*.sql
+
+# Ignore system and temporary files
+.DS_Store
+Thumbs.db
+
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml

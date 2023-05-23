@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-nll-7%t@=wd(g9v_-6p6uxa$xxz0d_6!+7sg%n=3-n$cx67r($
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,"media")
@@ -88,8 +88,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'student_management_system',
-        'USER': 'student_management_system',
-        'PASSWORD': 'student_management_password',
+        'USER': 'root',
+        'PASSWORD': 'ThisPass22!',
         'PORT':3306,
         'HOST':'localhost',
         
