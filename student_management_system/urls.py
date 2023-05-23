@@ -41,10 +41,22 @@ urlpatterns = [
     path('manage_admin',HodViews.manage_admin),
     path('manage_course',HodViews.manage_course),
     
-    path('delete_course/<str:course_id>/',delete_course_save, name='delete_course_save'),
+    path('delete_course',HodViews.delete_course, name='delete_course'),
+    path('delete_course_confirm/<str:course_id>/',delete_course_confirm, name='delete_course_confirm'),
     path('hod_profile', HodViews.hod_profile, name="hod_profile"),
     path('edit_hod_profile_form', HodViews.edit_hod_profile_form, name="edit_hod_profile_form"),
     path('hod_edit_profile', HodViews.hod_edit_profile, name="hod_edit_profile"), 
+
+    path('delete_staff', HodViews.delete_staff, name="delete_staff"), 
+    path('delete_staff_confirm/<str:staff_id>', HodViews.delete_staff_confirm, name="delete_staff_confirm"),
+    path('delete_student', HodViews.delete_student, name="delete_student"),
+    path('delete_student_confirm/<str:student_id>', HodViews.delete_student_confirm, name="delete_student_confirm"),
+    path('delete_subject', HodViews.delete_subject, name="delete_subject"),
+    path('delete_subject_confirm/<str:subject_id>', HodViews.delete_subject_confirm, name="delete_subject_confirm"),
+    path('delete_session', HodViews.delete_session, name="delete_session"),
+    path('delete_session_confirm/<str:session_id>', HodViews.delete_session_confirm, name="delete_session_confirm"),
+    path('delete_admin', HodViews.delete_admin_hod, name="delete_admin_hod"),
+    path('delete_admin_confirm/<str:admin_id>', HodViews.delete_admin_hod_confirm, name="delete_admin_hod_confirm"),
      
     
     path('edit_subject/<str:subject_id>',HodViews.edit_subject),

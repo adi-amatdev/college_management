@@ -30,6 +30,7 @@ Manage Admin
                                     <th>Last Login</th>
                                     <th>Date Joined</th>
                                     <th>Action</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -46,6 +47,7 @@ Manage Admin
                                     <td>{{admin.admin.last_login}}</td>
                                     <td>{{admin.admin.date_joined}}</td>
                                     <th><a href = "/edit_admin/{{admin.admin.id}}"class="btn btn-success">Edit</a></th>
+                                    <th><a href = "/delete_admin_confirm/{{admin.admin.id}}"class="btn btn-danger">Delete</a></th>
                                 </tr>
                                 {% endfor %}
                                     
