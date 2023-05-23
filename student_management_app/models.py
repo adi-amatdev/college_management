@@ -1,9 +1,14 @@
+import pandas as pd
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.auth.models import UserManager
 from django.contrib.auth.hashers import make_password
+
+
+
+
 
 class SessionYearModel(models.Model):
     id = models.AutoField(primary_key=True)
@@ -47,26 +52,16 @@ class Staff(models.Model):
 class Subjects(models.Model):
     id = models.AutoField(primary_key=True)
     subject_name = models.CharField(max_length=255)
+    sem = models.IntegerField(default=0)
     course_id = models.ForeignKey(Courses,on_delete=models.CASCADE)
     subject_code = models.CharField(max_length=10,unique=True)
     staff_id = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects=models.Manager()
-     
-
-'''class Students(models.Model):
-    id = models.AutoField(primary_key=True)
-    admin = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
-    gender = models.CharField(max_length=255)
-    section = models.CharField(max_length=2,default='A')
-    profile_pic = models.FileField()
-    address = models.TextField()
-    objects=models.Manager()
-    course_id = models.ForeignKey(Courses,on_delete=models.CASCADE,default=1)
-    session_year_id = models.ForeignKey(SessionYearModel,on_delete=models.CASCADE,default=1)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)'''
+    
+    def __str__(self):
+        return self.subject_code
 
 class Students(models.Model):
     id = models.AutoField(primary_key=True)
@@ -113,7 +108,7 @@ class StudentLeave(models.Model):
     student = models.ForeignKey(Students, on_delete=models.CASCADE)
     leave_date = models.CharField(max_length=60)
     leave_message = models.TextField()
-    leave_status = models.IntegerField(default=0) # for pending , 1 for approved , 2 for rejected
+    leave_status = models.IntegerField(default=0) #  0 for pending , 1 for approved , 2 for rejected
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects=models.Manager() 
@@ -164,9 +159,32 @@ class NotificationStaff(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     objects=models.Manager() 
 
-
-
+class TestDetails(models.Model):
+    id = models.AutoField(primary_key=True)
+    subject_code = models.ForeignKey(Subjects, on_delete=models.CASCADE,null = True)
+    semester = models.IntegerField()
+    test1_date = models.DateField()
+    test2_date = models.DateField()
+    test3_date = models.DateField()
     
+    class Meta:
+        unique_together = ('subject_code', 'semester')
+    
+class TestScores(models.Model):
+    id = models.AutoField(primary_key=True)
+    subject_code = models.ForeignKey(Subjects, on_delete=models.CASCADE,to_field='subject_code')
+    usn = models.ForeignKey(CustomUser,on_delete = models.CASCADE,to_field ='username',null =  True)
+    test1 = models.FloatField(default = '0.0')
+    test2 = models.FloatField(default = '0.0')
+    test3 = models.FloatField(default = '0.0')
+    final = models.FloatField(default = '0.0')
+    attendance = models.FloatField(default = '0.0')
+
+    #removes the composite key problem , allowing constraints in combinations
+    class Meta:
+        unique_together = ('subject_code', 'usn')
+
+
 
 '''@receiver(post_save, sender=CustomUser)
 def create_user_profile(sender, instance, created, **kwargs):
