@@ -30,7 +30,7 @@ def staff_take_attendance(request):
 def get_students(request):
     subject_id=request.POST.get("subject")
     session_year=request.POST.get("session_year")
-
+    
     subject=Subjects.objects.get(id=subject_id)
     session_model=SessionYearModel.object.get(id=session_year)
     students=Students.objects.filter(course_id=subject.course_id,session_year_id=session_model)
@@ -41,97 +41,12 @@ def get_students(request):
         list_data.append(data_small)
     return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
 
-@login_required
-@csrf_exempt
-def save_attendance_data(request):
-    student_ids=request.POST.get("student_ids")
-    subject_id=request.POST.get("subject_id")
-    attendance_date=request.POST.get("attendance_date")
-    session_year_id=request.POST.get("session_year_id")
 
-    subject_model=Subjects.objects.get(id=subject_id)
-    session_model=SessionYearModel.object.get(id=session_year_id)
-    json_sstudent=json.loads(student_ids)
-    #print(data[0]['id'])
-
-
-    try:
-        attendance=Attendance(subject_id=subject_model,attendance_date=attendance_date,session_year_id=session_model)
-        attendance.save()
-
-        for stud in json_sstudent:
-             student=Students.objects.get(admin=stud['id'])
-             attendance_report=AttendanceReport(student_id=student,attendance_id=attendance,status=stud['status'])
-             attendance_report.save()
-        return HttpResponse("OK")
-    except:
-        return HttpResponse("ERR")
-  
 @login_required
 def update_attendance(request):
     subjects = Subjects.objects.all()
     session_years = SessionYearModel.objects.all()
     return render(request,'staff_template/staff_update_attendance.html',{"subjects":subjects,"session_year":session_years})
-
-@csrf_exempt
-def get_attendance_dates(request):
-    subject=request.POST.get("subject")
-    session_year_id=request.POST.get("session_year_id")
-    subject_obj=Subjects.objects.get(id=subject)
-    session_year_obj=SessionYearModel.object.get(id=session_year_id)
-    attendance=Attendance.objects.filter(subject_id=subject_obj,session_year_id=session_year_obj)
-    attendance_obj=[]
-    for attendance_single in attendance:
-        data={"id":attendance_single.id,"attendance_date":str(attendance_single.attendance_date),"session_year_id":attendance_single.session_year_id.id}
-        attendance_obj.append(data)
-
-    return JsonResponse(json.dumps(attendance_obj),safe=False)
-
-@login_required
-@csrf_exempt
-def get_attendance_student(request):
-    attendance_date=request.POST.get("attendance_date")
-    attendance=Attendance.objects.get(id=attendance_date)
-
-    attendance_data=AttendanceReport.objects.filter(attendance_id=attendance)
-    list_data=[]
-
-    for student in attendance_data:
-        data_small={"id":student.student_id.admin.id,"name":student.student_id.admin.first_name+" "+student.student_id.admin.last_name,"status":student.status}
-        list_data.append(data_small)
-    return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
-
-@login_required
-@csrf_exempt
-def save_updateattendance_data(request):
-    student_ids=request.POST.get("student_ids")
-    attendance_date=request.POST.get("attendance_date")
-    attendance=Attendance.objects.get(id=attendance_date)
-    json_sstudent=json.loads(student_ids)
-    try:
-        for stud in json_sstudent:
-             student=Students.objects.get(admin=stud['id'])
-             attendance_report=AttendanceReport.objects.get(student_id=student,attendance_id=attendance)
-             attendance_report.status=stud['status']
-             attendance_report.save()
-        return HttpResponse("OK")
-    except:
-        return HttpResponse("ERR")
-   
-@login_required 
-@csrf_exempt
-def get_attendance_student(request):
-    attendance_date=request.POST.get("attendance_date")
-    attendance=Attendance.objects.get(id=attendance_date)
-
-    attendance_data=AttendanceReport.objects.filter(attendance_id=attendance)
-    list_data=[]
-
-    for student in attendance_data:
-        data_small={"id":student.student_id.admin.id,"name":student.student_id.admin.first_name+" "+student.student_id.admin.last_name,"status":student.status}
-        list_data.append(data_small)
-    return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
-
 
 @login_required
 def staff_apply_leave_save(request: HttpRequest):
@@ -192,12 +107,13 @@ def staff_feedback(request):
     feedback_obj = FeedbackStaff.objects.filter(staff_id=staff_obj)
     return render(request,"staff_template/staff_feedback.html",{"feedback_obj":feedback_obj})
 
-@login_required
-def staff_add_result(request):
-    subjects = Subjects.objects.all()
-    session_years = SessionYearModel.objects.all()
-    return render(request,"staff_template/staff_add_result.html",{"subjects":subjects,"session_years":session_years})
 
+def staff_view_test_details(request):
+    subjects = Subjects.objects.all()
+    tests = TestDetails.objects.all()
+    return render(request,"staff_template/view_test_details.html",{"tests":tests, "subjects":subjects})
+
+    
 @login_required
 def staff_edit_result(request):
     #subjects = Subjects.objects.all()
@@ -242,5 +158,114 @@ def staff_edit_profile(request):
     staff=Staff.objects.get(admin=user)
     return render(request,"staff_template/staff_edit_profile.html",{"user":user,"staff":staff})      
 
+from django.db import transaction
+#import xlrd
+from django.shortcuts import get_object_or_404
+import time
 
+def excel_dump_view(request):
+    if request.method == 'POST':
+        file = request.FILES['file']
+        
+        try:
+            with transaction.atomic():
+                # Read the Excel file into a pandas DataFrame
+                df = pd.read_excel(file, sheet_name='Sheet1')
+
+                # Iterate over the rows of the DataFrame and create TestScores objects
+                for index, row in df.iterrows():
+                    subject_code = row['subject_code']
+                    subjects = get_object_or_404(Subjects, subject_code=subject_code)
+                    username = row['usn']
+                    usernames = get_object_or_404(CustomUser, username=username)
+
+                    testscore = TestScores(
+                        subject_code=subjects,
+                        usn=usernames,
+                        test1=row['test1'],
+                        test2=row['test2'],
+                        test3=row['test3'],
+                        final=row['final'],
+                        attendance=row['attendance']
+                    )
+                    testscore.save()
+
+            time.sleep(1)
+            messages.success(request, "ADDED TEST SCORES!")
+            return HttpResponseRedirect("/add_results")
+            
+        
+        except Exception as e:
+            with transaction.atomic():
+                transaction.set_rollback(True)
+                messages.error(request, "FAILED TO ADD TEST SCORES - " + str(e))
+            return HttpResponseRedirect("/add_results")    
+    
+    else:
+        return render(request, "staff_template/add_results_template.html")
+
+@login_required
+def add_results(request):
+    subjects = Subjects.objects.all()
+    return render(request,"staff_template/add_results_template.html",{"subjects":subjects})
+
+@login_required
+def add_testdetails_form_save(request):
+    if request.method != "POST":
+        return HttpResponse("METHOD NOT ALLOWED")
+    else:
+        subject_code = request.POST.get("subject_code")
+        semester = request.POST.get("semester")
+        test1_date = request.POST.get("test1_date")
+        test2_date = request.POST.get("test2_date")
+        test3_date = request.POST.get("test3_date")
+        
+        try:
+            with transaction.atomic():
+                subject = Subjects.objects.get(subject_code=subject_code)  # Fetch the Subjects instance
+                testdetails = TestDetails.objects.create(
+                    subject_code=subject,  # Assign the Subjects instance
+                    semester=semester,
+                    test1_date=test1_date,
+                    test2_date=test2_date,
+                    test3_date=test3_date,
+                )
+                messages.success(request, "ADDED TEST DETAILS!")
+                return HttpResponseRedirect("/add_results")
+        except Exception as e:
+            with transaction.atomic():
+                transaction.set_rollback(True)
+                messages.error(request, "FAILED TO ADD TEST DETAILS - " + str(e))
+            return HttpResponseRedirect("/add_results")
+        
+@login_required
+def edit_testdetails_form(request):
+    test = TestDetails.objects.all()
+    return render(request,"staff_template/edit_testdetails.html" ,{"test":test})
+        
+def edit_testdetails(request):
+    if request.method != 'POST':
+        return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
+    else:
+        testdetails_id = request.POST.get('testdetails_id')
+        semester = request.POST.get("semester")
+        test1_date = request.POST.get("test1_date")
+        test2_date = request.POST.get("test2_date")
+        test3_date = request.POST.get("test3_date")
+        
+        try:
+            testdetails = TestDetails.objects.get(id=testdetails_id)
+            testdetails.semester = semester
+            testdetails.test1_date = test1_date
+            testdetails.test2_date = test2_date
+            testdetails.test3_date = test3_date
+            testdetails.save()
+            
+            messages.success(request, "SUCCESSFULLY UPDATED THE DETAILS")
+            return HttpResponseRedirect("/edit_testdetails_form/" + testdetails_id)
+        
+        except Exception as e:
+            messages.error(request, "FAILED TO UPDATE THE DETAILS - " + str(e))
+            return HttpResponseRedirect("/edit_testdetails_form/" + testdetails_id)   
+        
     

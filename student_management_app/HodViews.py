@@ -18,7 +18,6 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.views.decorators.csrf import csrf_exempt
 
-
  
 @login_required
 def admin_home(request):
@@ -159,8 +158,7 @@ def add_student_form_save(request):
 @login_required
 def add_subject(request):
     courses = Courses.objects.all()
-    #staffs = CustomUser.objects.filter(user_type=2)
-    staffs = CustomUser.objects.all()
+    staffs = CustomUser.objects.filter(user_type=2)
     return render(request,"hod_template/add_subject_template.html",{"staffs":staffs, "courses":courses})
 
 @login_required
@@ -173,10 +171,6 @@ def manage_staff(request):
     staffs = Staff.objects.all()
     return render(request,"hod_template/manage_staff_template.html",{ "staffs":staffs})
 
-@login_required
-def manage_student(request):
-    students = Students.objects.all()
-    return render(request,"hod_template/manage_student_template.html",{ "students":students})
 
 @login_required
 def manage_course(request):
@@ -184,9 +178,44 @@ def manage_course(request):
     return render(request,"hod_template/manage_course_template.html",{ "courses":courses})
 
 @login_required
+def get_subjects_list(request):
+    departments = Courses.objects.all()
+    return render(request,"hod_template/get_subjects_template.html",{"departments":departments})
+
+@login_required
 def manage_subject(request):
-    subjects = Subjects.objects.all()
-    return render(request,"hod_template/manage_subject_template.html",{ "subjects":subjects})
+    department = request.POST.get('department')
+    semester = request.POST.get('semester')
+    subjects = Subjects.objects.filter(course_id__course_name=department, sem=semester)
+    return render(request, "hod_template/manage_subject_template.html", {"subjects": subjects})
+    
+@login_required
+def get_students_list(request):
+    departments = Courses.objects.all()
+    students = Students.objects.all()
+    session_years = SessionYearModel.objects.all()
+    return render(request,"hod_template/get_students_template.html",{"students":students , "departments":departments,"session_years":session_years})
+
+@login_required
+def manage_students(request):
+    department = request.POST.get('department')
+    sessionyear = request.POST.get('session_year_id_id')
+    students = Students.objects.filter(course_id__course_name=department, session_year_id=sessionyear)
+    departments = Courses.objects.all()
+    session_years = SessionYearModel.objects.all()
+    return render(request, "hod_template/manage_student_template.html", {"students": students, "departments": departments, "session_years": session_years, "selected_department": department, "selected_session_year": sessionyear})
+
+@login_required
+def get_staff_list(request):
+    departments = Courses.objects.all()
+    return render(request,"hod_template/get_staff_template.html",{"departments":departments})
+
+@login_required
+def manage_staff(request):
+    department = request.POST.get('department')
+    staffs = Staff.objects.filter(department__course_name=department)
+    return render(request, "hod_template/manage_staff_template.html", {"staffs": staffs})
+
     
 @api_view(['POST'])
 def add_course_form_api(request):
@@ -206,6 +235,7 @@ def add_subject_form_save(request):
         course_id = request.POST.get("course")
         staff_id = request.POST.get("staff_id")
         subject_code = request.POST.get("subject_code")
+        sem = request.POST.get("sem")
         try:
             with transaction.atomic():
                 course = get_object_or_404(Courses, id=course_id)
@@ -215,6 +245,7 @@ def add_subject_form_save(request):
                     subject_name=subject_name,
                     course_id=course,
                     staff_id=staff,
+                    sem = sem,
                 )
                 messages.success(request, "ADDED SUBJECT DETAILS!")
                 return HttpResponseRedirect("/add_subject")
@@ -573,7 +604,6 @@ def hod_edit_profile(request):
     user=CustomUser.objects.get(id=request.user.id)
     hod=AdminHOD.objects.get(admin=user)
     return render(request,"hod_template/hod_edit_profile.html" ,{"user":user,"hod":hod})
-
 
 @csrf_exempt
 def delete_course_save(request, course_id):

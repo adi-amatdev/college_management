@@ -23,7 +23,6 @@ from student_management_app.StaffViews import *
 from student_management_app.StudentViews import *
 
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     
@@ -39,11 +38,9 @@ urlpatterns = [
     path('add_course',HodViews.add_course),
     path('add_student',HodViews.add_student),
     path('add_subject',HodViews.add_subject),
-    path('manage_staff',HodViews.manage_staff),
     path('manage_admin',HodViews.manage_admin),
-    path('manage_student',HodViews.manage_student),
     path('manage_course',HodViews.manage_course),
-    path('manage_subject',HodViews.manage_subject),
+    
     path('delete_course/<str:course_id>/',delete_course_save, name='delete_course_save'),
     path('hod_profile', HodViews.hod_profile, name="hod_profile"),
     path('edit_hod_profile_form', HodViews.edit_hod_profile_form, name="edit_hod_profile_form"),
@@ -58,18 +55,8 @@ urlpatterns = [
     path('staff_home',StaffViews.staff_profile,name='staff_profile'),
     path('staff_take_attendance',StaffViews.staff_take_attendance, name="staff_take_attendance"),
     path('get_students',StaffViews.get_students, name="get_students"),
-    path('save_attendance_data',StaffViews.save_attendance_data, name="save_attendance_data"),
-    path('staff_update_attendance',StaffViews.update_attendance,name="staff_update_attendance"),
-    path('get_attendance_data',StaffViews.save_attendance_data,name='save_attendance_data'), 
-    path('staff_add_result', StaffViews.staff_add_result, name="staff_add_result"),
+    path('staff_view_test_details',StaffViews.staff_view_test_details,name="staff_view_test_details"),
     path('edit_student_result', StaffViews.staff_edit_result, name="staff_edit_result"),
-
-    
-    path('get_attendance_dates', StaffViews.get_attendance_dates, name="get_attendance_dates"),
-    path('save_attendance_data', StaffViews.save_attendance_data, name="save_attendance_data"),
-    path('get_attendance_student', StaffViews.get_attendance_student, name="get_attendance_student"),
-    path('save_updateattendance_data', StaffViews.save_updateattendance_data, name="save_updateattendance_data"),
-    
     
     path('staff_apply_leave_save', StaffViews.staff_apply_leave_save, name="staff_apply_leave_save"),
     path('staff_apply_leave', StaffViews.staff_apply_leave, name="staff_apply_leave"),
@@ -85,8 +72,8 @@ urlpatterns = [
     path('student_feedback_reply_msg',HodViews.student_feedback_reply_msg,name="student_feedback_reply_msg"),
     path('staff_feedback_reply_msg',HodViews.staff_feedback_reply_msg,name="staff_feedback_reply_msg"),
 
-    path('student_view_attendance',StudentViews.student_view_attendance,name = 'student_view_attendance'),
-    path('student_view_attendance_post',StudentViews.student_view_attendance_post,name = 'student_view_attendance_post'),
+    path('student_view_results',StudentViews.student_view_results,name = 'student_view_results'),
+   
     path('student_apply_leave', StudentViews.student_apply_leave, name="student_apply_leave"),
     path('student_apply_leave_save', StudentViews.student_apply_leave_save, name="student_apply_leave_save"),
     path('student_feedback', StudentViews.student_feedback, name="student_feedback"),
@@ -106,7 +93,10 @@ urlpatterns = [
     path('add_subject_form_save',HodViews.add_subject_form_save,name='add_subject_form_save'),
     path('add_session_form_api', add_session_form_api, name='add_session_form_api'),
     
+    
     path('courses/<int:course_id>/update/', update_course, name='update-course'),
+    path('edittestdetails/<int:testdetails_id>/update/', StaffViews.edit_testdetails, name='edit_testdetails'),
+    path('edit_testdetails_form',StaffViews.edit_testdetails_form,name='edit_testdetails_form'),
     
     path('edit_admin/<str:admin_id>',HodViews.edit_admin,name='edit_admin'),
     path('edit_staff/<str:staff_id>',HodViews.edit_staff),
@@ -125,8 +115,20 @@ urlpatterns = [
     path('disapprove_student_leave/<str:leave_id>',HodViews.disapprove_student_leave,name="disapprove_student_leave"),
     path("approve_staff_leave/<str:leave_id>",HodViews.approve_staff_leave,name="approve_staff_leave"),
     path("disapprove_staff_leave/<str:leave_id>",HodViews.disapprove_staff_leave,name="disapprove_staff_leave"),
-
     
+    path('manage_subject',HodViews.manage_subject,name='manage_subject'),
+    path("get_subjects_list",HodViews.get_subjects_list,name="get_subjects_list"),
+    
+    path('manage_students',HodViews.manage_students,name='manage_students'),
+    path("get_students_list",HodViews.get_students_list,name="get_students_list"),
+    
+    path('manage_staff',HodViews.manage_staff,name='manage_staff'),
+    path("get_staff_list",HodViews.get_staff_list,name="get_staff_list"),
+
+    path('edit_testdetails/<int:testdetails_id>/', StaffViews.edit_testdetails, name='edit_testdetails'),
+    path('add_testdetails_form_save',StaffViews.add_testdetails_form_save,name='add_testdetails_form_save'),
+    path('excel_dump_view', StaffViews.excel_dump_view, name='excel_dump_view'),
+    path('add_results',StaffViews.add_results,name="add_results"),
     
     
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)+static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
