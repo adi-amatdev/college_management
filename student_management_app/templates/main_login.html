@@ -4,29 +4,33 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" type="text/css" href="\static\main.css">
 	<title>RNSIT</title>
 	<style>
-		body{
-			margin:0;
-			color:#6a6f8c;
-			font:600 16px/18px 'Open Sans',sans-serif;
-
-			background-image: url('https://www.knaufdanoline.com/media/0jvbyuzy/rns-college-india_1080x1920.jpg?anchor=center&mode=crop&quality=90&width=1320&height=770&rnd=132700266454630000');
-            background-repeat: no-repeat;
-            background-size: cover;
-			background-color: rgba(255, 255, 255, 0.1);
-		}
+    body {
+      margin: 0;
+      color: #6a6f8c;
+      font: 600 16px/18px 'Open Sans', sans-serif;
+      background-image: url('https://www.knaufdanoline.com/media/0jvbyuzy/rns-college-india_1080x1920.jpg?anchor=center&mode=crop&quality=90&width=1320&height=770&rnd=132700266454630000');
+      background-repeat: no-repeat;
+      background-color: rgba(255, 255, 255, 0.1);
+      background-size: cover;
+      -webkit-background-size: cover; /* Chrome, Safari, Opera */
+      -moz-background-size: cover; /* Firefox */
+      -ms-background-size: cover; /* IE */
+    }
 		*,:after,:before{box-sizing:border-box}
 		.clearfix:after,.clearfix:before{content:'';display:table}
 		.clearfix:after{clear:both;display:block}
 		a{color:inherit;text-decoration:none}
 		
-		.login-wrap{
+    .login-wrap{
 			width:100%;
 			margin:auto;
 			max-width:525px;
 			min-height:670px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 			position:relative;
 			background:url(https://raw.githubusercontent.com/khadkamhn/day-01-login-form/master/img/bg.jpg) no-repeat center;
 			box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19);
@@ -165,14 +169,12 @@
 </head>
 <body>
 	<br><br><br><br>
-    <form action="/doLogin" method="post">
+<form action="/doLogin" method="post">
     {% csrf_token %}
 	<div class="login-wrap">
 		<div class="login-html">
 			<input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Sign In</label>
-			<input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Sign Up</label>
-            <!--<form action="/doLogin" method="post">
-                {% csrf_token %}-->
+			<input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab"></label>
 			<div class="login-form">
 				<div class="sign-in-htm">
 					<div class="group">
@@ -187,7 +189,7 @@
 					<br><br>
 					<div class="group">
 						<input type="submit" class="button" value="Sign In">
-                        <!--<button type="submit" class="btn btn-primary btn-block">Sign In</button>-->
+                
 					</div>
                     {% if messages %}
                     <!-- /.col -->
@@ -199,39 +201,17 @@
                         {% endfor %}
                     </div>
                     {% endif %}
+          
 					<div class="hr"></div>
 					<div class="foot-lnk">
 						<a href="#forgot">Forgot Password?</a>
 					</div>
 				</div>
-				<div class="sign-up-htm">
-					<div class="group">
-						<label for="user" class="label">USN</label>
-						<input id="user" type="text" class="input">
-					</div>
-					<div class="group">
-						<label for="pass" class="label">Password</label>
-						<input id="pass" type="password" class="input" data-type="password">
-					</div>
-					<div class="group">
-						<label for="pass" class="label">Repeat Password</label>
-						<input id="pass" type="password" class="input" data-type="password">
-					</div>
-					<div class="group">
-						<label for="pass" class="label">Email Address</label>
-						<input id="pass" type="text" class="input">
-					</div>
-					<div class="group">
-						<input type="submit" class="button" value="Sign Up">
-					</div>
-					<div class="hr"></div>
-					<div class="foot-lnk">
-						<label for="tab-1">Already Member?</a>
-					</div>
-				</div>
+
 			</div>
 		</div>
 	</div>
+</form>
 	
 </body>
 </html>
