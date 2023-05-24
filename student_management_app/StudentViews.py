@@ -183,3 +183,8 @@ def edit_student_profile_save(request):
         except Exception as e:
             messages.error(request,"FAILED TO UPDATE THE DETAILS "+str(e))
             return HttpResponseRedirect("/edit_student/"+student_id)  
+
+def cie_schedule(request):
+    subjects = Subjects.objects.all()
+    tests = TestDetails.objects.all()
+    return render(request,"student_template/view_test_details.html",{"tests":tests, "subjects":subjects})

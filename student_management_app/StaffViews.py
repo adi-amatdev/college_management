@@ -18,12 +18,7 @@ from .models import Staff, StaffLeave
 def staff_home(request):
     return render(request,"staff_template/staff_home_template.html")
 
-@login_required
-def staff_take_attendance(request):
-    subjects = Subjects.objects.all()
-    #subjects = Subjects.objects.filter(staff_id=request.user.id)
-    session_years = SessionYearModel.objects.all()
-    return render(request,"staff_template/staff_take_attendance.html",{"subjects":subjects,"session_years":session_years})
+
 
 @login_required
 @csrf_exempt
