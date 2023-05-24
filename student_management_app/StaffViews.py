@@ -237,9 +237,6 @@ def add_testdetails_form_save(request):
 def edit_testdetails_form(request):
     test = TestDetails.objects.all()
     return render(request,"staff_template/edit_testdetails.html" ,{"test":test})
-        
-from django.shortcuts import get_object_or_404
-from .models import TestDetails
 
 def edit_testdetails(request, testdetails_id):
     testdetails = get_object_or_404(TestDetails, id=testdetails_id)
