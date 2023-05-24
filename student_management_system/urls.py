@@ -110,12 +110,15 @@ urlpatterns = [
     path('edittestdetails/<int:testdetails_id>/update/', StaffViews.edit_testdetails, name='edit_testdetails'),
     path('edit_testdetails_form',StaffViews.edit_testdetails_form,name='edit_testdetails_form'),
     
-    path('edit_admin/<str:admin_id>',HodViews.edit_admin,name='edit_admin'),
+    path('edit_admin/<str:admin_id>/', HodViews.edit_admin,name='edit_admin'),
+    path('edit_admin_save/',HodViews.edit_admin_form,name='edit_admin_save'),
+
     path('edit_staff/<str:staff_id>',HodViews.edit_staff),
-    path('edit_student/<str:student_id>',HodViews.edit_student),
-    path('edit_admin_save',HodViews.edit_admin_form,name='edit_admin_save'),
     path('edit_staff_save',HodViews.edit_staff_form,name='edit_staff_save'),
+    
+    path('edit_student/<str:student_id>',HodViews.edit_student),
     path('edit_student_save',HodViews.edit_student_form,name='edit_student_save'),
+    
     path('edit_subject/<str:subject_id>',HodViews.edit_subject),
     path('edit_subject_save',HodViews.edit_subject_form,name='edit_subject_save'),
     path('edit_session/<int:session_year_id>/', HodViews.edit_session, name='edit_session'),
@@ -139,6 +142,7 @@ urlpatterns = [
 
     path('edit_testdetails/<int:testdetails_id>/', StaffViews.edit_testdetails, name='edit_testdetails'),
     path('add_testdetails_form_save',StaffViews.add_testdetails_form_save,name='add_testdetails_form_save'),
+    
     path('excel_dump_view', StaffViews.excel_dump_view, name='excel_dump_view'),
     path('add_results',StaffViews.add_results,name="add_results"),
     

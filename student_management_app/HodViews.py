@@ -266,11 +266,6 @@ def add_course_form_api(request):
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@login_required
-def edit_admin(request,admin_id):  
-    admin = AdminHOD.objects.get(admin=admin_id)
-    return render(request,"hod_template/edit_admin_template.html",{"admin":admin})
-
 @login_required    
 def edit_staff(request,staff_id):  
     staff = Staff.objects.get(admin=staff_id) 
@@ -344,13 +339,18 @@ def add_session_form_api(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@login_required
+def edit_admin(request, admin_id):
+    admin = AdminHOD.objects.get(admin=admin_id)
+    return render(request, "hod_template/edit_admin_template.html", {"admin": admin})
  
 @login_required  
 def edit_admin_form(request):
     if request.method != 'POST':
         return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
     else:
-        admin_id = request.POST.get('staff_id')
+        admin_id = request.POST.get('admin_id')
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
@@ -372,10 +372,10 @@ def edit_admin_form(request):
             admin_model.save()
             
             messages.success(request,"SUCCESSFULY UPDATED THE DETAILS")
-            return HttpResponseRedirect("/edit_admin/"+admin_id)
+            return HttpResponseRedirect("/edit_admin/"+str(admin_id))
         except Exception as e:
             messages.error(request,"FAILED TO UPDATE THE DETAILS " +str(e))
-            return HttpResponseRedirect("/edit_admin/"+admin_id)  
+            return HttpResponseRedirect("/edit_admin/"+str(admin_id))
 
 @login_required
 def edit_staff_form(request):
@@ -565,9 +565,9 @@ def disapprove_staff_leave(request,leave_id):
  
 @login_required   
 def hod_profile(request):
-    #user=CustomUser.objects.get(id=request.user.id)
-    #hod=AdminHOD.objects.get(admin=user)
-    return render(request,"hod_template/hod_profile.html")# ,{"user":user,"hod":hod})
+    user=CustomUser.objects.get(id=request.user.id)
+    hod=AdminHOD.objects.get(admin=user)
+    return render(request,"hod_template/hod_profile.html",{"user":user,"hod":hod})
 
 @login_required
 def edit_hod_profile_form(request):
