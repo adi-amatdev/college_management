@@ -565,9 +565,9 @@ def disapprove_staff_leave(request,leave_id):
  
 @login_required   
 def hod_profile(request):
-    #user=CustomUser.objects.get(id=request.user.id)
-    #hod=AdminHOD.objects.get(admin=user)
-    return render(request,"hod_template/hod_profile.html")# ,{"user":user,"hod":hod})
+    user=CustomUser.objects.get(id=request.user.id)
+    hod=AdminHOD.objects.get(admin=user)
+    return render(request,"hod_template/hod_profile.html",{"user":user,"hod":hod})
 
 @login_required
 def edit_hod_profile_form(request):
