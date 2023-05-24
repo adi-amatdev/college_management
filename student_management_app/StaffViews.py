@@ -238,29 +238,37 @@ def edit_testdetails_form(request):
     test = TestDetails.objects.all()
     return render(request,"staff_template/edit_testdetails.html" ,{"test":test})
         
-def edit_testdetails(request):
-    if request.method != 'POST':
-        return HttpResponse("<h2>METHOD NOT PERMITTED</h2>")
-    else:
-        testdetails_id = request.POST.get('testdetails_id')
+from django.shortcuts import get_object_or_404
+from .models import TestDetails
+
+def edit_testdetails(request, testdetails_id):
+    testdetails = get_object_or_404(TestDetails, id=testdetails_id)
+
+    if request.method == 'POST':
+        subject_code = request.POST.get("subject_code")
         semester = request.POST.get("semester")
         test1_date = request.POST.get("test1_date")
         test2_date = request.POST.get("test2_date")
         test3_date = request.POST.get("test3_date")
-        
+
         try:
-            testdetails = TestDetails.objects.get(id=testdetails_id)
+            subject = get_object_or_404(Subjects, subject_code=subject_code)
+            testdetails.subject_code = subject
             testdetails.semester = semester
             testdetails.test1_date = test1_date
             testdetails.test2_date = test2_date
             testdetails.test3_date = test3_date
             testdetails.save()
-            
+
             messages.success(request, "SUCCESSFULLY UPDATED THE DETAILS")
-            return HttpResponseRedirect("/edit_testdetails_form/" + testdetails_id)
-        
+            return HttpResponseRedirect("/edit_testdetails/" + str(testdetails_id))
+
         except Exception as e:
             messages.error(request, "FAILED TO UPDATE THE DETAILS - " + str(e))
-            return HttpResponseRedirect("/edit_testdetails_form/" + testdetails_id)   
+            return HttpResponseRedirect("/edit_testdetails/" + str(testdetails_id))
+
+    else:
+        return render(request, "staff_template/edit_testdetails.html", {"testdetails": testdetails})
+
         
     
