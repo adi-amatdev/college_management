@@ -145,6 +145,7 @@ urlpatterns = [
     
     path('excel_dump_view', StaffViews.excel_dump_view, name='excel_dump_view'),
     path('add_results',StaffViews.add_results,name="add_results"),
-    
+    path('add_staff_excel_dump',HodViews.add_staff_excel_dump_view,name='add_staff_excel_dump_view'),
+    path('add_student_excel_dump',HodViews.add_student_excel_dump_view,name='add_student_excel_dump_view'),
     
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)+static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
