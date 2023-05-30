@@ -88,8 +88,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'student_management_system',
-        'USER': 'student_management_system',
-        'PASSWORD': 'student_management_password',
+        'USER': 'root',
+        'PASSWORD': 'ThisPass22!',
         'PORT':3306,
         'HOST':'localhost',
         

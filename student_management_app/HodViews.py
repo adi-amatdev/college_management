@@ -19,6 +19,11 @@ from django.db import transaction
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
+import pandas as pd
+from django.contrib import messages
+from .models import CustomUser, AdminHOD
+
+
  
 @login_required
 def admin_home(request):
@@ -768,7 +773,122 @@ def delete_admin_hod_confirm(request,admin_id):
     admin_hod = AdminHOD.objects.get(admin=admin_id) 
     return render(request,"hod_template/delete_admin_template.html",{"admin_hod":admin_hod})
 
-    
+@login_required
+def add_staff_excel_dump_view(request):
+    if request.method != "POST":
+        return HttpResponse("METHOD NOT ALLOWED")
+    else:
+        try:
+            excel_file = request.FILES.get('excel_file')
+            df = pd.read_excel(excel_file)  # Read data from the Excel file
+
+            with transaction.atomic():
+                for index, row in df.iterrows():
+                    first_name = row['first_name']
+                    last_name = row['last_name']
+                    username = row['username']
+                    gender = row['gender']
+                    email = row['email']
+                    password = row['password']
+                    department_id = row['department_id']
+                    address = row['address']
+
+                    user = CustomUser.objects.create_user(
+                        password=password,
+                        username=username,
+                        first_name=first_name,
+                        last_name=last_name,
+                        email=email,
+                        user_type=2,
+                    )
+
+                    staff = Staff.objects.create(
+                        admin=user,
+                        address=address,
+                        gender=gender,
+                        department_id=department_id
+                    )
+
+                messages.success(request, "ADDED STAFF DETAILS!")
+                return HttpResponseRedirect("/add_staff")
+
+        except Exception as e:
+            with transaction.atomic():
+                transaction.set_rollback(True)
+                messages.error(request, "FAILED TO ADD STAFF DETAILS - " + str(e))
+            return HttpResponseRedirect("/add_staff")
+
+
+@login_required(login_url='login')
+def add_student_excel_dump_view(request):
+    if request.method != 'POST':
+        return HttpResponse("METHOD NOT ALLOWED")
+
+    try:
+        excel_file = request.FILES.get('excel_file')
+        df = pd.read_excel(excel_file)  # Read data from the Excel file
+
+        with transaction.atomic():
+            for index, row in df.iterrows():
+                email = row['email']
+                password = row['password']
+                first_name = row['first_name']
+                last_name = row['last_name']
+                username = row['username']
+                address = row['address']
+                course_id = row['course_id']
+                session_year_id_id = row['session_year_id_id']
+                section = row['section']
+                gender = row['gender']
+                father_name = row['father_name']
+                father_num = row['father_num']
+                mother_name = row['mother_name']
+                mother_num = row['mother_num']
+                gaurdian_name = row['gaurdian_name']
+                gaurdian_num = row['gaurdian_num']
+                parent_or_gaurdian_email = row['parent_or_gaurdian_email']
+
+                # Create a new user
+
+                user = CustomUser.objects.create_user(
+                        email=email,
+                        password=password,
+                        first_name=first_name,
+                        last_name=last_name,
+                        username=username,
+                        user_type=3
+                )
+                # user.save()
+                # Create a new student
+                # try:
+                student = Students.objects.create(
+                        admin=user,
+                        gender=gender,
+                        section=section,
+                        address=address,
+                        course_id_id=course_id,
+                        session_year_id_id=session_year_id_id,
+                        father_name=father_name,
+                        father_num=father_num,
+                        mother_name=mother_name,
+                        mother_num=mother_num,
+                        gaurdian_name=gaurdian_name,
+                        gaurdian_num=gaurdian_num,
+                        parent_or_gaurdian_email=parent_or_gaurdian_email
+                )
+                # student.save()
+                messages.success(request, "ADDED STUDENT DETAILS!")
+
+
+        return redirect('/add_student')
+
+    except Exception as e:
+        messages.error(request, "FAILED TO ADD STUDENT - " + str(e))
+        return redirect('/add_student')
+
+
+
+
 
     
 
