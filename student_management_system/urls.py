@@ -67,7 +67,6 @@ urlpatterns = [
     path('staff_home',StaffViews.staff_profile,name='staff_profile'),
     path('get_students',StaffViews.get_students, name="get_students"),
     path('staff_view_test_details',StaffViews.staff_view_test_details,name="staff_view_test_details"),
-    path('edit_student_result', StaffViews.staff_edit_result, name="staff_edit_result"),
     
     path('staff_apply_leave_save', StaffViews.staff_apply_leave_save, name="staff_apply_leave_save"),
     path('staff_apply_leave', StaffViews.staff_apply_leave, name="staff_apply_leave"),
@@ -143,6 +142,8 @@ urlpatterns = [
     path('get_test_details',StaffViews.get_test_details,name='get_test_details'),
     path('staff_view_test_details',StaffViews.staff_view_test_details,name='staff_view_test_details'),
     
+    path('filter_for_edit_results',StaffViews.filter_for_edit_results,name='filter_for_edit_results'),
+    path('staff_manage_testscore',StaffViews.staff_manage_testscore,name="staff_manage_testscore"),
     path('edit_testdetails/<int:testdetails_id>/', StaffViews.edit_testdetails, name='edit_testdetails'),
     path('add_testdetails_form_save',StaffViews.add_testdetails_form_save,name='add_testdetails_form_save'),
     

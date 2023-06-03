@@ -111,11 +111,7 @@ def staff_view_test_details(request):
     return render(request, "staff_template/view_test_details.html", {"tests": tests})
 
     
-@login_required
-def staff_edit_result(request):
-    #subjects = Subjects.objects.all()
-    #session_years = SessionYearModel.objects.all()
-    return render(request,"staff_template/edit_student_result.html")
+
 
 @login_required
 def staff_profile(request):
@@ -235,6 +231,20 @@ def add_testdetails_form_save(request):
                 messages.error(request, "FAILED TO ADD TEST DETAILS - " + str(e))
             return HttpResponseRedirect("/add_results")
         
+@login_required
+def filter_for_edit_results(request):
+    departments = Courses.objects.all()
+    subcodes = Subjects.objects.all()
+    return render(request,"staff_template/filter_for_edit_results.html",{"departments":departments,"subcodes":subcodes})
+    
+@login_required
+def staff_manage_testscore(request):
+    department = request.POST.get('department')
+    subjectcode = request.POST.get('subject_code')
+    tests = TestScores.objects.filter(subject_code__course_id__course_name=department,subject_code=subjectcode)
+    return render(request,"staff_template/staff_manage_testscore.html",{"tests":tests})
+    
+    
 @login_required
 def edit_testdetails_form(request):
     test = TestDetails.objects.all()
