@@ -37,11 +37,7 @@ def get_students(request):
     return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
 
 
-@login_required
-def update_attendance(request):
-    subjects = Subjects.objects.all()
-    session_years = SessionYearModel.objects.all()
-    return render(request,'staff_template/staff_update_attendance.html',{"subjects":subjects,"session_year":session_years})
+
 
 @login_required
 def staff_apply_leave_save(request: HttpRequest):
@@ -102,11 +98,17 @@ def staff_feedback(request):
     feedback_obj = FeedbackStaff.objects.filter(staff_id=staff_obj)
     return render(request,"staff_template/staff_feedback.html",{"feedback_obj":feedback_obj})
 
+@login_required
+def get_test_details(request):
+    departments = Courses.objects.all()
+    return render(request,"staff_template/get_test_details_template.html",{"departments":departments})
+
 
 def staff_view_test_details(request):
-    subjects = Subjects.objects.all()
-    tests = TestDetails.objects.all()
-    return render(request,"staff_template/view_test_details.html",{"tests":tests, "subjects":subjects})
+    department = request.POST.get('department')
+    semester = request.POST.get('semester')
+    tests = TestDetails.objects.filter(subject_code__course_id__course_name=department, semester=semester)
+    return render(request, "staff_template/view_test_details.html", {"tests": tests})
 
     
 @login_required
