@@ -67,7 +67,6 @@ urlpatterns = [
     path('staff_home',StaffViews.staff_profile,name='staff_profile'),
     path('get_students',StaffViews.get_students, name="get_students"),
     path('staff_view_test_details',StaffViews.staff_view_test_details,name="staff_view_test_details"),
-    path('edit_student_result', StaffViews.staff_edit_result, name="staff_edit_result"),
     
     path('staff_apply_leave_save', StaffViews.staff_apply_leave_save, name="staff_apply_leave_save"),
     path('staff_apply_leave', StaffViews.staff_apply_leave, name="staff_apply_leave"),
@@ -97,7 +96,7 @@ urlpatterns = [
 
     
     
-    #working related urls 
+    
     path('add_student_form_save',HodViews.add_student_form_save,name='add_student_form_save'),
     path('add_staff_form_save',HodViews.add_staff_form_save,name='add_staff_form_save'),
     path('add_admin_form_save',HodViews.add_admin_form_save,name='add_admin_form_save'),
@@ -140,9 +139,18 @@ urlpatterns = [
     path('manage_staff',HodViews.manage_staff,name='manage_staff'),
     path("get_staff_list",HodViews.get_staff_list,name="get_staff_list"),
 
+    path('get_test_details',StaffViews.get_test_details,name='get_test_details'),
+    path('staff_view_test_details',StaffViews.staff_view_test_details,name='staff_view_test_details'),
+    
+    path('edit_testscores/<int:testscores_id>/', StaffViews.edit_testscores, name='edit_testscores'),
+    
+    path('filter_for_edit_results',StaffViews.filter_for_edit_results,name='filter_for_edit_results'),
+    
+    path('staff_manage_testscore',StaffViews.staff_manage_testscore,name="staff_manage_testscore"),
     path('edit_testdetails/<int:testdetails_id>/', StaffViews.edit_testdetails, name='edit_testdetails'),
     path('add_testdetails_form_save',StaffViews.add_testdetails_form_save,name='add_testdetails_form_save'),
     
+    #excel dumps 
     path('excel_dump_view', StaffViews.excel_dump_view, name='excel_dump_view'),
     path('add_results',StaffViews.add_results,name="add_results"),
     path('add_staff_excel_dump',HodViews.add_staff_excel_dump_view,name='add_staff_excel_dump_view'),
