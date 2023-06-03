@@ -300,11 +300,13 @@ def edit_testscores(request, testscores_id):
         test1_scores = request.POST.get("test1")
         test2_scores = request.POST.get("test2")
         test3_scores = request.POST.get("test3")
+        attendance = request.POST.get("attendance")
 
         try:
             testscores.test1 = test1_scores
             testscores.test2 = test2_scores
             testscores.test3 = test3_scores
+            testscores.attendance = attendance
             testscores.save()
 
             messages.success(request, "SUCCESSFULLY UPDATED SCORES")
