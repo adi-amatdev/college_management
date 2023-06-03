@@ -142,7 +142,10 @@ urlpatterns = [
     path('get_test_details',StaffViews.get_test_details,name='get_test_details'),
     path('staff_view_test_details',StaffViews.staff_view_test_details,name='staff_view_test_details'),
     
+    path('edit_testscores/<int:testscores_id>/', StaffViews.edit_testscores, name='edit_testscores'),
+    
     path('filter_for_edit_results',StaffViews.filter_for_edit_results,name='filter_for_edit_results'),
+    
     path('staff_manage_testscore',StaffViews.staff_manage_testscore,name="staff_manage_testscore"),
     path('edit_testdetails/<int:testdetails_id>/', StaffViews.edit_testdetails, name='edit_testdetails'),
     path('add_testdetails_form_save',StaffViews.add_testdetails_form_save,name='add_testdetails_form_save'),

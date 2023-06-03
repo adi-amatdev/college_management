@@ -13,11 +13,14 @@ from django.shortcuts import render, get_object_or_404, HttpResponseRedirect, re
 from django.contrib import messages
 from django.http import HttpRequest
 from .models import Staff, StaffLeave
+from django.db import transaction
+#import xlrd
+from django.shortcuts import get_object_or_404
+import time
 
 @login_required
 def staff_home(request):
     return render(request,"staff_template/staff_home_template.html")
-
 
 
 @login_required
@@ -35,8 +38,6 @@ def get_students(request):
         data_small={"id":student.admin.id,"name":student.admin.first_name+" "+student.admin.last_name}
         list_data.append(data_small)
     return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
-
-
 
 
 @login_required
@@ -62,6 +63,7 @@ def staff_apply_leave_save(request: HttpRequest):
         except Exception as e:
             messages.error(request, f"LEAVE APPLICATION FAILED - {str(e)}")
             return HttpResponseRedirect(reverse("staff_apply_leave"))
+ 
      
 @login_required   
 def staff_send_feedback_save(request):
@@ -92,11 +94,13 @@ def staff_apply_leave(request):
     leave_data = StaffLeave.objects.filter(staff_id=staff_obj)
     return render(request,"staff_template/staff_apply_leave.html",{"leave_data":leave_data})
   
+  
 @login_required   
 def staff_feedback(request):
     staff_obj = Staff.objects.get(admin=request.user.id)
     feedback_obj = FeedbackStaff.objects.filter(staff_id=staff_obj)
     return render(request,"staff_template/staff_feedback.html",{"feedback_obj":feedback_obj})
+
 
 @login_required
 def get_test_details(request):
@@ -110,14 +114,13 @@ def staff_view_test_details(request):
     tests = TestDetails.objects.filter(subject_code__course_id__course_name=department, semester=semester)
     return render(request, "staff_template/view_test_details.html", {"tests": tests})
 
-    
-
 
 @login_required
 def staff_profile(request):
     user=CustomUser.objects.get(id=request.user.id)
     staff=Staff.objects.get(admin=user)
     return render(request,"staff_template/staff_profile.html",{"user":user,"staff":staff})
+
 
 @login_required
 def staff_profile_save(request):
@@ -145,16 +148,13 @@ def staff_profile_save(request):
             messages.error(request, "Failed to Update Profile")
             return HttpResponseRedirect(reverse("staff_profile"))   
 
+
 @login_required
 def staff_edit_profile(request):
     user=CustomUser.objects.get(id=request.user.id)
     staff=Staff.objects.get(admin=user)
     return render(request,"staff_template/staff_edit_profile.html",{"user":user,"staff":staff})      
 
-from django.db import transaction
-#import xlrd
-from django.shortcuts import get_object_or_404
-import time
 
 def excel_dump_view(request):
     if request.method == 'POST':
@@ -197,10 +197,12 @@ def excel_dump_view(request):
     else:
         return render(request, "staff_template/add_results_template.html")
 
+
 @login_required
 def add_results(request):
     subjects = Subjects.objects.all()
     return render(request,"staff_template/add_results_template.html",{"subjects":subjects})
+
 
 @login_required
 def add_testdetails_form_save(request):
@@ -230,12 +232,14 @@ def add_testdetails_form_save(request):
                 transaction.set_rollback(True)
                 messages.error(request, "FAILED TO ADD TEST DETAILS - " + str(e))
             return HttpResponseRedirect("/add_results")
+     
         
 @login_required
 def filter_for_edit_results(request):
     departments = Courses.objects.all()
     subcodes = Subjects.objects.all()
     return render(request,"staff_template/filter_for_edit_results.html",{"departments":departments,"subcodes":subcodes})
+   
     
 @login_required
 def staff_manage_testscore(request):
@@ -250,6 +254,8 @@ def edit_testdetails_form(request):
     test = TestDetails.objects.all()
     return render(request,"staff_template/edit_testdetails.html" ,{"test":test})
 
+
+@login_required
 def edit_testdetails(request, testdetails_id):
     testdetails = get_object_or_404(TestDetails, id=testdetails_id)
 
@@ -278,6 +284,38 @@ def edit_testdetails(request, testdetails_id):
 
     else:
         return render(request, "staff_template/edit_testdetails.html", {"testdetails": testdetails})
+    
+    
+@login_required
+def edit_testscores_form(request):
+    test = TestScores.objects.all()
+    return render(request,"staff_template/edit_testscores.html" ,{"test":test})
+
+
+@login_required
+def edit_testscores(request, testscores_id):
+    testscores = get_object_or_404(TestScores, id=testscores_id)
+    
+    if request.method == 'POST':
+        test1_scores = request.POST.get("test1")
+        test2_scores = request.POST.get("test2")
+        test3_scores = request.POST.get("test3")
+
+        try:
+            testscores.test1 = test1_scores
+            testscores.test2 = test2_scores
+            testscores.test3 = test3_scores
+            testscores.save()
+
+            messages.success(request, "SUCCESSFULLY UPDATED SCORES")
+            return HttpResponseRedirect("/edit_testscores/" + str(testscores_id))
+
+        except Exception as e:
+            messages.error(request, "FAILED TO UPDATE THE SCORES - " + str(e))
+            return HttpResponseRedirect("/edit_testscores/" + str(testscores_id))
+
+    else:
+        return render(request, "staff_template/edit_testscores.html", {"testscores": testscores})
 
         
     

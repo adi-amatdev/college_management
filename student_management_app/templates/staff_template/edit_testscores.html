@@ -1,0 +1,70 @@
+{% extends 'staff_template/base_template.html' %}
+{% load static %}
+{% block page_title %}
+Edit Test Scores| Test ID: {{ testscores.id }}
+{% endblock page_title %}
+{% block main_content %}
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Edit Test Scores</h3>
+                    </div>
+
+                    <div class="card-body">
+                        <form method="post" action="{% url 'edit_testscores' testscores_id=testscores.id %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label>Subject Code</label>
+                                <input type="text" class="form-control" name="subject_code" value="{{ testscores.subject_code}}" disabled="disabled">
+                                <input type="hidden" name="testscores_id" value="{{ testscores.id }}">
+                            </div>
+                            <div class="form-group">
+                              <label>USN</label>
+                              <input type="text" class="form-control" name="usn" value="{{ testscores.usn }}" disabled="disabled">
+                            </div>
+                            <div class="form-group">
+                                <label>CIE 1 Scores</label>
+                                <input type="number" class="form-control" name="test1" value="{{ testscores.test1 }}">
+                            </div>
+                            <div class="form-group">
+                                <label>CIE 2 Scores</label>
+                                <input type="number" class="form-control" name="test2" value="{{ testscores.test2 }}">
+                            </div>
+                            <div class="form-group">
+                                <label>CIE 3 Scores</label>
+                                <input type="number" class="form-control" name="test3" value="{{ testscores.test3 }}">
+                            </div>
+                            
+                            <div class="form-group">
+                                {% if messages %}
+                                <!-- /.col -->
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == 'error' %}
+                                    <div class="alert alert-danger" style="margin-top:8px">{{ message }}</div>
+                                    {% endif %}
+                                    {% if message.tags == 'success' %}
+                                    <div class="alert alert-success" style="margin-top:8px">{{ message }}</div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary btn-block">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+{% endblock main_content %}
