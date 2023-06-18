@@ -570,9 +570,9 @@ def disapprove_staff_leave(request,leave_id):
  
 @login_required   
 def hod_profile(request):
-    user=CustomUser.objects.get(id=request.user.id)
-    hod=AdminHOD.objects.get(admin=user)
-    return render(request,"hod_template/hod_profile.html",{"user":user,"hod":hod})
+    #user=CustomUser.objects.get(id=request.user.id)
+    #hod=AdminHOD.objects.get(admin=user)
+    return render(request,"hod_template/hod_profile.html")#,{"user":user,"hod":hod})
 
 @login_required
 def edit_hod_profile_form(request):
@@ -619,7 +619,7 @@ def delete_course(request):
     
         course.delete()
         messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
-        return HttpResponseRedirect("/delete_course_confirm/"+course_id)
+        return render(request,"hod_template/delete_course_template.html",{"course":course})
     except Courses.DoesNotExist:
         return JsonResponse({'error': f'Course object with id {course_id} does not exist'}, status=404)
     except Exception as e:
@@ -654,7 +654,7 @@ def delete_staff(request):
         user.delete()
 
         messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
-        return HttpResponseRedirect("/delete_staff_confirm/"+staff_id)
+        return render(request,"hod_template/delete_staff_template.html",{"staff":staff})
     except Staff.DoesNotExist:
         return JsonResponse({'message': f'Staff member with id {staff_id} does not exist.'}, status=404)
     except CustomUser.DoesNotExist:
@@ -687,7 +687,8 @@ def delete_student(request):
         user.delete()
 
         messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
-        return HttpResponseRedirect("/delete_student_confirm/"+student_id)
+        #return HttpResponseRedirect("/delete_student_confirm/"+student_id)
+        return render(request,"hod_template/delete_student_template.html",{"student":student})
     except Students.DoesNotExist:
         return JsonResponse({'message': f'Student with id {student_id} does not exist.'}, status=404)
     except CustomUser.DoesNotExist:
@@ -714,7 +715,8 @@ def delete_subject(request):
         subject.delete()
 
         messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
-        return HttpResponseRedirect("/delete_subject_confirm/"+subject_id)
+        #return HttpResponseRedirect("/delete_subject_confirm/"+subject_id)
+        return render(request,"hod_template/delete_subject_template.html",{"subject":subject})
     except Exception as e:
             messages.error(request,"Subject does not exist "+str(e))
             return HttpResponseRedirect("/delete_subject_confirm/"+subject_id) 
@@ -734,6 +736,30 @@ def delete_subject_confirm(request,subject_id):
 @csrf_exempt
 def delete_session(request):
     session_id = request.POST.get('session_id')
+    
+    if session_id is not None:
+        try:
+            # Get the session
+            session = SessionYearModel.objects.get(id=session_id)
+
+            # Delete the session
+            session.delete()
+
+            messages.success(request, "Successfully deleted the details")
+            return render(request, "hod_template/delete_session_template.html", {"session_year": session})
+        except SessionYearModel.DoesNotExist:
+            messages.error(request, "Session does not exist")
+        except Exception as e:
+            messages.error(request, "Failed to delete the session: " + str(e))
+    else:
+        messages.error(request, "Invalid session ID")
+
+    return HttpResponseRedirect("/delete_session_confirm/" + str(session_id))
+
+
+
+'''def delete_session(request):
+    session_id = request.POST.get('session_id')
     try:
         # Get the session
         session = SessionYearModel.objects.get(id=session_id)
@@ -742,36 +768,51 @@ def delete_session(request):
         session.delete()
 
         messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
-        return HttpResponseRedirect("/delete_session_confirm/"+session_id)
+        #return HttpResponseRedirect("/delete_session_confirm/"+session_id)
+        return render(request,"hod_template/delete_session_template.html",{"session_year":session})
     except Exception as e:
             messages.error(request,"Session does not exist "+str(e))
-            return HttpResponseRedirect("/delete_session_confirm/"+session_id) 
+            return HttpResponseRedirect("/delete_session_confirm/"+session_id)''' 
     
-def delete_session_confirm(request,session_id):
+'''def delete_session_confirm(request,session_id):
     session = SessionYearModel.objects.get(id=session_id) 
-    return render(request,"hod_template/delete_session_template.html",{"session":session})
+    return render(request,"hod_template/delete_session_template.html",{"session_year":session})'''
+
+def delete_session_confirm(request, session_id):
+    try:
+        session = SessionYearModel.objects.get(id=session_id)
+        return render(request, "hod_template/delete_session_template.html", {"session_year": session})
+    except SessionYearModel.DoesNotExist:
+        messages.error(request, "Session does not exist")
+        return render(request, "hod_template/delete_session_template.html", {"session_year": session})    
+
 
 
 @require_http_methods(["DELETE"])
-def delete_admin_hod(request):
+def delete_admin(request):
     admin_hod_id = request.POST.get('admin_id')
     try:
         admin_hod = AdminHOD.objects.get(id=admin_hod_id)
         admin_user = CustomUser.objects.get(id=admin_hod.admin_id)
+        # Delete the AdminHOD instance
+        admin_hod.delete()
+    
+        # Delete the corresponding CustomUser instance
+        admin_user.delete()
+        messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
+        return render(request,"hod_template/delete_admin_template.html",{"admin":admin_hod})
     except (AdminHOD.DoesNotExist, CustomUser.DoesNotExist):
         return JsonResponse({"error": "AdminHOD not found"}, status=404)
+    except Exception as e:
+        messages.error(request,"FAILED TO DELETE THE DETAILS " +str(e))
+        return HttpResponseRedirect("/delete_student_confirm/"+admin_hod_id)
     
-    # Delete the AdminHOD instance
-    admin_hod.delete()
     
-    # Delete the corresponding CustomUser instance
-    admin_user.delete()
     
-    return HttpResponse("AdminHOD deleted successfully")
 
 def delete_admin_hod_confirm(request,admin_id):
     admin_hod = AdminHOD.objects.get(admin=admin_id) 
-    return render(request,"hod_template/delete_admin_template.html",{"admin_hod":admin_hod})
+    return render(request,"hod_template/delete_admin_template.html",{"admin":admin_hod})
 
 @login_required
 def add_staff_excel_dump_view(request):

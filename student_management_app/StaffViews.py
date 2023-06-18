@@ -318,6 +318,30 @@ def edit_testscores(request, testscores_id):
 
     else:
         return render(request, "staff_template/edit_testscores.html", {"testscores": testscores})
+    
+
+
+def delete_test_details(request): 
+    test_details_id = request.POST.get(request)
+    try:
+    # Retrieve the TestDetails object
+        test_details = TestDetails.objects.get(id=test_details_id)
+    
+    # Delete the TestDetails object
+        test_details.delete()
+    
+        messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
+        return render(request,"staff_template/delete_testdetails.html",{"testdetails":test_details}) 
+    except Exception as e:
+        messages.error(request,"FAILED TO DELETE THE DETAILS " +str(e))
+        return HttpResponseRedirect("/delete_test_details_confirm/"+str(test_details_id))
+
+def delete_test_details_confirm(request, testdetails_id):
+    # Retrieve the TestDetails object
+    test_details = get_object_or_404(TestDetails, id=testdetails_id)
+    
+    return render(request, "staff_template/delete_testdetails.html", {"testdetails": test_details})
+
 
         
     

@@ -6,7 +6,7 @@ Delete Admin | username : {{admin.admin.username}} | ID : {{admin.id}}
 {% block main_content %}
 <!-- Main content -->
 <section class="content">
-    <div class="container-fluid">
+    <div class="container-fluid"> 
       <div class="row">
         <div class="col-md-12">
       <div class="card card-primary">
@@ -14,8 +14,9 @@ Delete Admin | username : {{admin.admin.username}} | ID : {{admin.id}}
           <h3 class="card-title">Delete Admin</h3>
         </div>
 
-        <form role="form" action="/delete_admin" method = "POST">
+        <form role="form" action="/delete_admin" method = "POST" enctype = "multipart/form-data">
           {% csrf_token %}
+          <input type="hidden" name="_method" value="DELETE">
           <div class="card-body">
             <div class="form-group">
               <label>Email address</label>
@@ -24,7 +25,7 @@ Delete Admin | username : {{admin.admin.username}} | ID : {{admin.id}}
             <div class="form-group">
               <label>First Name</label>
               <input type="text" class="form-control" placeholder="First Name" name="first_name" value="{{admin.admin.first_name}}">
-            </div>
+            </div> 
             <div class="form-group">
               <label>Last Name</label>
               <input type="text" class="form-control" placeholder="Last Name" name="last_name" value="{{admin.admin.last_name}}">

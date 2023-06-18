@@ -26,6 +26,7 @@ CIE Schedule
                                     <th>Test 2 Date</th>
                                     <th>Test 3 Date</th>
                                     <th>Action</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -38,6 +39,7 @@ CIE Schedule
                                     <td>{{test.test2_date}}</td>
                                     <td>{{test.test3_date}}</td>
                                     <th><a href = "/edit_testdetails/{{test.id}}"class="btn btn-success">Edit</a></th>
+                                    <th><a href = "/delete_test_details_confirm/{{test.id}}"class="btn btn-danger">Delete</a></th>
                                 </tr>
                                 {% endfor %}
                                     

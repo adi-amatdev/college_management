@@ -55,7 +55,8 @@ urlpatterns = [
     path('delete_subject_confirm/<str:subject_id>', HodViews.delete_subject_confirm, name="delete_subject_confirm"),
     path('delete_session', HodViews.delete_session, name="delete_session"),
     path('delete_session_confirm/<str:session_id>', HodViews.delete_session_confirm, name="delete_session_confirm"),
-    path('delete_admin', HodViews.delete_admin_hod, name="delete_admin_hod"),
+    path('delete_session_confirm_error/', HodViews.delete_session_confirm, name="delete_session_confirm"),
+    path('delete_admin', HodViews.delete_admin, name="delete_admin"),
     path('delete_admin_confirm/<str:admin_id>', HodViews.delete_admin_hod_confirm, name="delete_admin_hod_confirm"),
      
     
@@ -75,6 +76,8 @@ urlpatterns = [
     path('staff_profile', StaffViews.staff_profile, name="staff_profile"),
     path('staff_profile_save', StaffViews.staff_profile_save, name="staff_profile_save"),
     path('staff_edit_profile', StaffViews.staff_edit_profile, name="staff_edit_profile"),
+    path('delete_test_details', StaffViews.delete_test_details, name="delete_test_details"),
+    path('delete_test_details_confirm/<str:testdetails_id>', StaffViews.delete_test_details_confirm, name="delete_test_details_confirm"),
     
     path("replyto_staff_feedback",HodViews.replyto_staff_feedback,name="replyto_staff_feedback"),
     path("replyto_student_feedback",HodViews.replyto_student_feedback,name="replyto_student_feedback"),
