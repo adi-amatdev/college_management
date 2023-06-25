@@ -644,12 +644,7 @@ def delete_course(request):
     except Exception as e:
         messages.error(request,"FAILED TO DELETE THE DETAILS " +str(e))
         return HttpResponseRedirect("/delete_course_confirm/"+course_id)
-        #return JsonResponse({'message': str(e)}, status=500)
-    #return JsonResponse({'success': f'Course object with id {course_id} has been deleted'})
-    #messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
-    #return HttpResponseRedirect("/delete_course/"+course_id)
-    #else:
-        #return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+
 
 @login_required
 def delete_course_confirm(request,course_id):
@@ -722,7 +717,6 @@ def delete_student_confirm(request,student_id):
     return render(request,"hod_template/delete_student_template.html",{"student":student,"courses":courses})
     
 
-
 @csrf_exempt
 def delete_subject(request):
     subject_id = request.POST.get('subject_id')
@@ -740,13 +734,11 @@ def delete_subject(request):
             messages.error(request,"Subject does not exist "+str(e))
             return HttpResponseRedirect("/delete_subject_confirm/"+subject_id) 
 
-
     
 def delete_subject_confirm(request,subject_id):
     subject = Subjects.objects.get(id=subject_id) 
     return render(request,"hod_template/delete_subject_template.html",{"subject":subject})
     
-
 @csrf_exempt
 def delete_session(request):
     session_id = request.POST.get('session_id')
@@ -801,8 +793,6 @@ def delete_admin(request):
         return HttpResponseRedirect("/delete_student_confirm/"+admin_hod_id)
     
     
-    
-
 def delete_admin_hod_confirm(request,admin_id):
     admin_hod = AdminHOD.objects.get(admin=admin_id) 
     return render(request,"hod_template/delete_admin_template.html",{"admin":admin_hod})

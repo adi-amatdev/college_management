@@ -19,7 +19,6 @@ CIE Schedule
                         <table id="example2" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
                                     <th>Subject Code</th>
                                     <th>Semester</th>
                                     <th>Test 1 Date</th>
@@ -32,7 +31,6 @@ CIE Schedule
                             <tbody>
                                 {% for test in tests %}
                                 <tr>
-                                    <td>{{test.id}}</td>
                                     <td>{{test.subject_code}}</td>
                                     <td>{{test.semester}}</td>
                                     <td>{{test.test1_date}}</td>
