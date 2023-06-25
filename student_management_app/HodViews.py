@@ -82,7 +82,6 @@ def add_admin_form_save(request):
         gender = request.POST.get('gender')
         email = request.POST.get("email")
         password = request.POST.get("password")
-        department_id = request.POST.get("department_id")
         address = request.POST.get("address")
         try:
             with transaction.atomic():
@@ -95,7 +94,7 @@ def add_admin_form_save(request):
                     user_type=1,
                     is_superuser = 1,
                 )
-                admin = AdminHOD.objects.create(admin=user, address=address,gender=gender,department_id=department_id)
+                admin = AdminHOD.objects.create(admin=user, address=address,gender=gender)
                 messages.success(request, "ADDED ADMIN DETAILS!")
                 return HttpResponseRedirect("/add_admin")
         except Exception as e:
@@ -174,8 +173,9 @@ def manage_admin(request):
 
 @login_required
 def manage_staff(request):
+    departments = Courses.objects.all()
     staffs = Staff.objects.all()
-    return render(request,"hod_template/manage_staff_template.html",{ "staffs":staffs})
+    return render(request,"hod_template/manage_staff_template.html",{ "staffs":staffs ,"departments":departments})
 
 
 @login_required
@@ -262,14 +262,22 @@ def add_subject_form_save(request):
             return HttpResponseRedirect("/add_subject")
     
 @login_required 
-@api_view(['POST'])
 def add_course_form_api(request):
-    serializer = CourseSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    if request.method != "POST":
+        return HttpResponse("METHOD NOT ALLOWED")
     else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        course_name = request.POST.get("course_name")
+        try:
+            course = Courses(course_name=course_name)
+            course.save()
+            
+            messages.success(request, "ADDED COURSE DETAILS!")
+            return redirect("/add_course")  
+        except Exception as e:
+            messages.error(request, "FAILED TO ADD COURSE DETAILS - " + str(e))
+            return redirect("/add_course")  
+
+    
 
 @login_required    
 def edit_staff(request,staff_id):  
@@ -302,7 +310,6 @@ def edit_session(request, session_year_id):
         session_start_year = request.POST.get('session_start_year')
         session_end_year = request.POST.get('session_end_year')
         try:
-            #updating to new values
             session_year.session_start_year = session_start_year
             session_year.session_end_year = session_end_year
             session_year.save()
@@ -336,15 +343,27 @@ def manage_session(request):
     session = SessionYearModel.objects.all()
     return render(request,"hod_template/manage_session_template.html",{"sessionyearmodel":session})
 
-@api_view(['POST'])
+@login_required
 def add_session_form_api(request):
-    serializer = SessionYearSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    if request.method != "POST":
+        return HttpResponse("METHOD NOT ALLOWED")
     else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        session_start_year = request.POST.get("session_start_year")
+        session_end_year = request.POST.get("session_end_year")
+        try:
+            session = SessionYearModel(
+                session_start_year=session_start_year,
+                session_end_year=session_end_year,
+            )
+            session.save()
+            messages.success(request, "ADDED SESSION YEAR!")
+            return redirect("/add_session")
+        except Exception as e:
+            messages.error(request, "FAILED TO ADD SESSION YEAR - " + str(e))
+            return redirect("/add_session")
+    
 
+    
 @login_required
 def edit_admin(request, admin_id):
     admin = AdminHOD.objects.get(admin=admin_id)
@@ -619,18 +638,13 @@ def delete_course(request):
     
         course.delete()
         messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
-        return HttpResponseRedirect("/delete_course_confirm/"+course_id)
+        return render(request,"hod_template/delete_course_template.html",{"course":course})
     except Courses.DoesNotExist:
         return JsonResponse({'error': f'Course object with id {course_id} does not exist'}, status=404)
     except Exception as e:
         messages.error(request,"FAILED TO DELETE THE DETAILS " +str(e))
         return HttpResponseRedirect("/delete_course_confirm/"+course_id)
-        #return JsonResponse({'message': str(e)}, status=500)
-    #return JsonResponse({'success': f'Course object with id {course_id} has been deleted'})
-    #messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
-    #return HttpResponseRedirect("/delete_course/"+course_id)
-    #else:
-        #return JsonResponse({'error': 'Invalid HTTP method'}, status=405)
+
 
 @login_required
 def delete_course_confirm(request,course_id):
@@ -654,7 +668,7 @@ def delete_staff(request):
         user.delete()
 
         messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
-        return HttpResponseRedirect("/delete_staff_confirm/"+staff_id)
+        return render(request,"hod_template/delete_staff_template.html",{"staff":staff})
     except Staff.DoesNotExist:
         return JsonResponse({'message': f'Staff member with id {staff_id} does not exist.'}, status=404)
     except CustomUser.DoesNotExist:
@@ -687,7 +701,8 @@ def delete_student(request):
         user.delete()
 
         messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
-        return HttpResponseRedirect("/delete_student_confirm/"+student_id)
+        #return HttpResponseRedirect("/delete_student_confirm/"+student_id)
+        return render(request,"hod_template/delete_student_template.html",{"student":student})
     except Students.DoesNotExist:
         return JsonResponse({'message': f'Student with id {student_id} does not exist.'}, status=404)
     except CustomUser.DoesNotExist:
@@ -702,7 +717,6 @@ def delete_student_confirm(request,student_id):
     return render(request,"hod_template/delete_student_template.html",{"student":student,"courses":courses})
     
 
-
 @csrf_exempt
 def delete_subject(request):
     subject_id = request.POST.get('subject_id')
@@ -714,64 +728,74 @@ def delete_subject(request):
         subject.delete()
 
         messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
-        return HttpResponseRedirect("/delete_subject_confirm/"+subject_id)
+        #return HttpResponseRedirect("/delete_subject_confirm/"+subject_id)
+        return render(request,"hod_template/delete_subject_template.html",{"subject":subject})
     except Exception as e:
             messages.error(request,"Subject does not exist "+str(e))
             return HttpResponseRedirect("/delete_subject_confirm/"+subject_id) 
 
-
-    '''return JsonResponse({'message': 'Subject deleted successfully.'})
-    except Subjects.DoesNotExist:
-        return JsonResponse({'message': 'Subject does not exist.'}, status=404)
-    except Exception as e:
-        return JsonResponse({'message': str(e)}, status=500)'''
     
 def delete_subject_confirm(request,subject_id):
     subject = Subjects.objects.get(id=subject_id) 
     return render(request,"hod_template/delete_subject_template.html",{"subject":subject})
     
-
 @csrf_exempt
 def delete_session(request):
     session_id = request.POST.get('session_id')
-    try:
-        # Get the session
-        session = SessionYearModel.objects.get(id=session_id)
-
-        # Delete the session
-        session.delete()
-
-        messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
-        return HttpResponseRedirect("/delete_session_confirm/"+session_id)
-    except Exception as e:
-            messages.error(request,"Session does not exist "+str(e))
-            return HttpResponseRedirect("/delete_session_confirm/"+session_id) 
     
-def delete_session_confirm(request,session_id):
-    session = SessionYearModel.objects.get(id=session_id) 
-    return render(request,"hod_template/delete_session_template.html",{"session":session})
+    if session_id is not None:
+        try:
+            # Get the session
+            session = SessionYearModel.objects.get(id=session_id)
+
+            # Delete the session
+            session.delete()
+
+            messages.success(request, "Successfully deleted the details")
+            return render(request, "hod_template/delete_session_template.html", {"session_year": session})
+        except SessionYearModel.DoesNotExist:
+            messages.error(request, "Session does not exist")
+        except Exception as e:
+            messages.error(request, "Failed to delete the session: " + str(e))
+    else:
+        messages.error(request, "Invalid session ID")
+
+    return HttpResponseRedirect("/delete_session_confirm/" + str(session_id))
 
 
-@require_http_methods(["DELETE"])
-def delete_admin_hod(request):
+
+def delete_session_confirm(request, session_id):
+    try:
+        session = SessionYearModel.objects.get(id=session_id)
+        return render(request, "hod_template/delete_session_template.html", {"session_year": session})
+    except SessionYearModel.DoesNotExist:
+        messages.error(request, "Session does not exist")
+        return render(request, "hod_template/delete_session_template.html", {"session_year": None})
+
+
+@csrf_exempt
+def delete_admin(request):
     admin_hod_id = request.POST.get('admin_id')
     try:
         admin_hod = AdminHOD.objects.get(id=admin_hod_id)
         admin_user = CustomUser.objects.get(id=admin_hod.admin_id)
+        # Delete the AdminHOD instance
+        admin_hod.delete()
+    
+        # Delete the corresponding CustomUser instance
+        admin_user.delete()
+        messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
+        return render(request,"hod_template/delete_admin_template.html",{"admin":admin_hod})
     except (AdminHOD.DoesNotExist, CustomUser.DoesNotExist):
         return JsonResponse({"error": "AdminHOD not found"}, status=404)
+    except Exception as e:
+        messages.error(request,"FAILED TO DELETE THE DETAILS " +str(e))
+        return HttpResponseRedirect("/delete_student_confirm/"+admin_hod_id)
     
-    # Delete the AdminHOD instance
-    admin_hod.delete()
     
-    # Delete the corresponding CustomUser instance
-    admin_user.delete()
-    
-    return HttpResponse("AdminHOD deleted successfully")
-
 def delete_admin_hod_confirm(request,admin_id):
     admin_hod = AdminHOD.objects.get(admin=admin_id) 
-    return render(request,"hod_template/delete_admin_template.html",{"admin_hod":admin_hod})
+    return render(request,"hod_template/delete_admin_template.html",{"admin":admin_hod})
 
 @login_required
 def add_staff_excel_dump_view(request):

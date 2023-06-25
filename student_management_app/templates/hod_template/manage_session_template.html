@@ -19,7 +19,6 @@ Manage Session
                         <table id="example2" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
                                     <th>Session Start Year</th>
                                     <th>Session End Year</th>
                                     <th>Action</th>
@@ -29,7 +28,6 @@ Manage Session
                             <tbody>
                                 {% for session_year in sessionyearmodel %}
                                 <tr>
-                                    <td>{{session_year.id }}</td>
                                     <td>{{session_year.session_start_year}}</td>
                                     <td>{{session_year.session_end_year}}</td>
                                     <th><a href = "/edit_session/{{session_year.id}}"class="btn btn-success">Edit</a></th>
