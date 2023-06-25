@@ -5,7 +5,7 @@ Delete Session Year | Session ID : {{session_year.id}}
 {% block main_content %}
     <!-- Main content -->
     <section class="content">
-      <div class="container-fluid">
+      <div class="container-fluid"> 
           <div class="row">
               <div class="col-md-12">
             <!-- general form elements -->
@@ -17,6 +17,7 @@ Delete Session Year | Session ID : {{session_year.id}}
               <!-- form start -->
               <form role="form" action="/delete_session" method="post">
                   {% csrf_token %}
+                  <input type="hidden" name="session_id" value="{{ session_year.id }}">
                 <div class="card-body">
                   <div class="form-group">
                     <label>Session Start Year </label>

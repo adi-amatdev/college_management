@@ -18,6 +18,8 @@ Delete Test Details | Test ID: {{ testdetails.id }}
                         
                             <form role="form" action="/delete_test_details" method="post">
                             {% csrf_token %}
+                            <input type="hidden" name="testdetails_id" value="{{ testdetails_id }}">
+
                             <div class="form-group">
                                 <label>Subject Code</label>
                                 <input type="text" class="form-control" name="subject_code" value="{{ testdetails.subject_code}}">

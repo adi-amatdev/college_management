@@ -758,37 +758,16 @@ def delete_session(request):
 
 
 
-'''def delete_session(request):
-    session_id = request.POST.get('session_id')
-    try:
-        # Get the session
-        session = SessionYearModel.objects.get(id=session_id)
-
-        # Delete the session
-        session.delete()
-
-        messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
-        #return HttpResponseRedirect("/delete_session_confirm/"+session_id)
-        return render(request,"hod_template/delete_session_template.html",{"session_year":session})
-    except Exception as e:
-            messages.error(request,"Session does not exist "+str(e))
-            return HttpResponseRedirect("/delete_session_confirm/"+session_id)''' 
-    
-'''def delete_session_confirm(request,session_id):
-    session = SessionYearModel.objects.get(id=session_id) 
-    return render(request,"hod_template/delete_session_template.html",{"session_year":session})'''
-
 def delete_session_confirm(request, session_id):
     try:
         session = SessionYearModel.objects.get(id=session_id)
         return render(request, "hod_template/delete_session_template.html", {"session_year": session})
     except SessionYearModel.DoesNotExist:
         messages.error(request, "Session does not exist")
-        return render(request, "hod_template/delete_session_template.html", {"session_year": session})    
+        return render(request, "hod_template/delete_session_template.html", {"session_year": None})
 
 
-
-@require_http_methods(["DELETE"])
+@csrf_exempt
 def delete_admin(request):
     admin_hod_id = request.POST.get('admin_id')
     try:
