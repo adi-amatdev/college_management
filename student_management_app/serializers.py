@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import *
 from .models import CustomUser
 from django.db import transaction
+from rest_framework import serializers
+from .models import Students, CustomUser
         
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
@@ -79,8 +81,7 @@ class AddStaffFormSerializer(serializers.Serializer):
         }
 
         
-from rest_framework import serializers
-from .models import Students, CustomUser
+
 
 class AddStudentFormSerializer(serializers.Serializer):
     email = serializers.EmailField()

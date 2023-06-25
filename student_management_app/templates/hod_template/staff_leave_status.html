@@ -18,7 +18,7 @@ Staff Application For Leave
                 <div class="table">
                     <table class="table">
                         <tr>
-                            <th>ID</th>
+                            <th>No.</th>
                             <th>Staff ID</th>
                             <th>Staff Name</th>
                             <th>Leave Date</th>
@@ -29,7 +29,7 @@ Staff Application For Leave
                         {% for leave in leaves %}
                         <tr>
                             <td>{{ leave.id }}</td>
-                            <td>{{ leave.staff_id.admin.id }}</td>
+                            <td>{{ leave.staff_id.admin.username }}</td>
                             <td>{{ leave.staff_id.admin.first_name }} {{ leave.staff_id.admin.last_name }}</td>
                             <td>{{ leave.leave_date }}</td>
                             <td>{{ leave.leave_message }}</td>

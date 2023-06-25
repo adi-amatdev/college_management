@@ -82,7 +82,6 @@ def add_admin_form_save(request):
         gender = request.POST.get('gender')
         email = request.POST.get("email")
         password = request.POST.get("password")
-        department_id = request.POST.get("department_id")
         address = request.POST.get("address")
         try:
             with transaction.atomic():
@@ -95,7 +94,7 @@ def add_admin_form_save(request):
                     user_type=1,
                     is_superuser = 1,
                 )
-                admin = AdminHOD.objects.create(admin=user, address=address,gender=gender,department_id=department_id)
+                admin = AdminHOD.objects.create(admin=user, address=address,gender=gender)
                 messages.success(request, "ADDED ADMIN DETAILS!")
                 return HttpResponseRedirect("/add_admin")
         except Exception as e:
@@ -174,8 +173,9 @@ def manage_admin(request):
 
 @login_required
 def manage_staff(request):
+    departments = Courses.objects.all()
     staffs = Staff.objects.all()
-    return render(request,"hod_template/manage_staff_template.html",{ "staffs":staffs})
+    return render(request,"hod_template/manage_staff_template.html",{ "staffs":staffs ,"departments":departments})
 
 
 @login_required
@@ -262,14 +262,22 @@ def add_subject_form_save(request):
             return HttpResponseRedirect("/add_subject")
     
 @login_required 
-@api_view(['POST'])
 def add_course_form_api(request):
-    serializer = CourseSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    if request.method != "POST":
+        return HttpResponse("METHOD NOT ALLOWED")
     else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        course_name = request.POST.get("course_name")
+        try:
+            course = Courses(course_name=course_name)
+            course.save()
+            
+            messages.success(request, "ADDED COURSE DETAILS!")
+            return redirect("/add_course")  
+        except Exception as e:
+            messages.error(request, "FAILED TO ADD COURSE DETAILS - " + str(e))
+            return redirect("/add_course")  
+
+    
 
 @login_required    
 def edit_staff(request,staff_id):  
@@ -302,7 +310,6 @@ def edit_session(request, session_year_id):
         session_start_year = request.POST.get('session_start_year')
         session_end_year = request.POST.get('session_end_year')
         try:
-            #updating to new values
             session_year.session_start_year = session_start_year
             session_year.session_end_year = session_end_year
             session_year.save()
@@ -336,15 +343,27 @@ def manage_session(request):
     session = SessionYearModel.objects.all()
     return render(request,"hod_template/manage_session_template.html",{"sessionyearmodel":session})
 
-@api_view(['POST'])
+@login_required
 def add_session_form_api(request):
-    serializer = SessionYearSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    if request.method != "POST":
+        return HttpResponse("METHOD NOT ALLOWED")
     else:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        session_start_year = request.POST.get("session_start_year")
+        session_end_year = request.POST.get("session_end_year")
+        try:
+            session = SessionYearModel(
+                session_start_year=session_start_year,
+                session_end_year=session_end_year,
+            )
+            session.save()
+            messages.success(request, "ADDED SESSION YEAR!")
+            return redirect("/add_session")
+        except Exception as e:
+            messages.error(request, "FAILED TO ADD SESSION YEAR - " + str(e))
+            return redirect("/add_session")
+    
 
+    
 @login_required
 def edit_admin(request, admin_id):
     admin = AdminHOD.objects.get(admin=admin_id)
@@ -570,9 +589,9 @@ def disapprove_staff_leave(request,leave_id):
  
 @login_required   
 def hod_profile(request):
-    #user=CustomUser.objects.get(id=request.user.id)
-    #hod=AdminHOD.objects.get(admin=user)
-    return render(request,"hod_template/hod_profile.html")#,{"user":user,"hod":hod})
+    user=CustomUser.objects.get(id=request.user.id)
+    hod=AdminHOD.objects.get(admin=user)
+    return render(request,"hod_template/hod_profile.html",{"user":user,"hod":hod})
 
 @login_required
 def edit_hod_profile_form(request):
@@ -722,11 +741,6 @@ def delete_subject(request):
             return HttpResponseRedirect("/delete_subject_confirm/"+subject_id) 
 
 
-    '''return JsonResponse({'message': 'Subject deleted successfully.'})
-    except Subjects.DoesNotExist:
-        return JsonResponse({'message': 'Subject does not exist.'}, status=404)
-    except Exception as e:
-        return JsonResponse({'message': str(e)}, status=500)'''
     
 def delete_subject_confirm(request,subject_id):
     subject = Subjects.objects.get(id=subject_id) 

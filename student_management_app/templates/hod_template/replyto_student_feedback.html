@@ -17,10 +17,9 @@ Student Feedback
         <div class = "table">
             <table class="table">
                 <tr>
-                    <th>ID</th>
+                    <th>NO</th>
                     <th>Student ID</th>
                     <th>Student Name</th>
-                    <th>Session Year</th>
                     <th>Message</th>
                     <th>Sent On</th>
                     <th>Reply</th>
@@ -29,9 +28,8 @@ Student Feedback
                 {% for feedback in student_feedback %}
                 <tr>
                     <td>{{ feedback.id }}</td>
-                    <td>{{feedback.student_id.admin_id}}</td>
+                    <td>{{feedback.student_id.admin.username}}</td>
                     <td>{{ feedback.student_id.admin.first_name}} {{feedback.student_id.admin.last_name}}</td>
-                    <td>{{feedback.student_id.session_start_year}} - {{feedback.student_id.session_end_year}}</td>
                     <td>{{feedback.feedback}}</td>
                     <td>{{ feedback.created_at}}</td>
                     <td>

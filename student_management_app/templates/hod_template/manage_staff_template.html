@@ -19,11 +19,12 @@ Manage Staff
                         <table id="example2" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    
                                     <th>First Name</th>
                                     <th>Last Name</th>
                                     <th>Username</th>
                                     <th>Email</th>
+                                    <th>Department</th>
                                     <th>Gender</th>
                                     <th>Address</th>
                                     <th>Last Login</th>
@@ -35,11 +36,12 @@ Manage Staff
                             <tbody>
                                 {% for staff in staffs %}
                                 <tr>
-                                    <td>{{staff.id }}</td>
+                                    
                                     <td>{{staff.admin.first_name}}</td>
                                     <td>{{staff.admin.last_name}}</td>
                                     <td>{{staff.admin.username}}</td>
                                     <td>{{staff.admin.email}}</td>
+                                    <td>{{staff.course_id.course_name}}</td>
                                     <td>{{staff.gender}}</td>
                                     <td>{{staff.address}}</td>
                                     <td>{{staff.admin.last_login}}</td>
