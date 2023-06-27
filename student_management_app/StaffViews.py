@@ -2,11 +2,9 @@ import json
 from pyexpat.errors import messages
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from student_management_app import serializers
 from student_management_app.models import *
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from . serializers import *
 from student_management_app.models import *
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect, reverse
@@ -14,7 +12,6 @@ from django.contrib import messages
 from django.http import HttpRequest
 from .models import Staff, StaffLeave
 from django.db import transaction
-#import xlrd
 from django.shortcuts import get_object_or_404
 import time
 

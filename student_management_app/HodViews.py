@@ -12,7 +12,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView
 from rest_framework.generics import GenericAPIView
-from .serializers import *
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
@@ -107,10 +106,6 @@ def add_admin_form_save(request):
 def add_course(request):
     return render(request,"hod_template/add_course_template.html")
 
-
-class CreateCourseAPIView(CreateAPIView):
-    serializer_class = CourseSerializer
-    queryset = Courses.objects.all()
 
 @login_required
 def add_student(request): 

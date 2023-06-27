@@ -18,7 +18,6 @@ Student Leave Application
                 <div class="table">
                     <table class="table">
                         <tr>
-                            <th>No.</th>
                             <th>Student ID</th>
                             <th>Student Name</th>
                             <th>Leave Date</th>
@@ -28,7 +27,6 @@ Student Leave Application
                         </tr>
                         {% for leave in leaves %}
                         <tr>
-                          <td>{{ leave.id }}</td>
                           <td>{{ leave.student_id.admin.username }}</td>  <!--not getting displayed-->
                           <td>{{ leave.student_id.admin.first_name }} {{ leave.student_id.admin.last_name }}</td>  <!--not getting displayed-->
                           <td>{{ leave.leave_date }}</td>

@@ -17,7 +17,6 @@ Student Feedback
         <div class = "table">
             <table class="table">
                 <tr>
-                    <th>NO</th>
                     <th>Student ID</th>
                     <th>Student Name</th>
                     <th>Message</th>
@@ -27,7 +26,6 @@ Student Feedback
                 </tr>
                 {% for feedback in student_feedback %}
                 <tr>
-                    <td>{{ feedback.id }}</td>
                     <td>{{feedback.student_id.admin.username}}</td>
                     <td>{{ feedback.student_id.admin.first_name}} {{feedback.student_id.admin.last_name}}</td>
                     <td>{{feedback.feedback}}</td>
