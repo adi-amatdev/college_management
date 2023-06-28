@@ -54,13 +54,11 @@ Feedback Message
                <div class="table">
                <table class="table">
                    <tr>
-                       <th>ID</th>
                        <th>Feedback Message</th>
                        <th>Feedback Reply</th>
                    </tr>
                    {% for eachrow in feedback_obj %}
                         <tr>
-                            <td>{{ eachrow.id }}</td>
                             <td>{{ eachrow.feedback }}</td>
                             <td>{{ eachrow.feedback_reply }}</td>
                         </tr>

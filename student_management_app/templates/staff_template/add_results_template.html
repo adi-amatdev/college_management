@@ -11,7 +11,7 @@ Add Results
         <div class="col-md-12">
       <div class="card card-primary">
         <div class="card-header">
-          <h3 class="card-title">Enter Test Details</h3>
+          <h3 class="card-title">Enter CIE Details   [ Ignore if the test details have been added previously ]</h3>
         </div>
         <form role="form" action="/add_testdetails_form_save" method="post">
           {% csrf_token %}
@@ -87,7 +87,7 @@ Add Results
         <div class="col-md-12">
       <div class="card card-primary">
         <div class="card-header">
-          <h3 class="card-title">Enter Test Scores</h3>
+          <h3 class="card-title">Enter CIE Scores</h3>
         </div>
 
         <form role="form" action="{% url 'excel_dump_view' %}" method="POST" enctype="multipart/form-data">

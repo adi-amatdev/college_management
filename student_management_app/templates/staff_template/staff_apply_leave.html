@@ -58,14 +58,12 @@ Leave Report and Apply for Leave
                <div class="table">
                <table class="table">
                    <tr>
-                       <th>ID</th>
                        <th>Leave Date</th>
                        <th>Leave Message</th>
                        <th>Leave Status</th>
                    </tr>
                    {% for row in leave_data %}
                         <tr>
-                            <td>{{ row.id }}</td>
                             <td>{{ row.leave_date }}</td>
                             <td>{{ row.leave_message }}</td>
                             <td>

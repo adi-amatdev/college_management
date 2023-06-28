@@ -1,6 +1,6 @@
 import json
 from pyexpat.errors import messages
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from student_management_app.models import *
 from django.views.decorators.csrf import csrf_exempt
@@ -15,103 +15,12 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 import time
 
+
 @login_required
 def staff_home(request):
     return render(request,"staff_template/staff_home_template.html")
 
-
-@login_required
-@csrf_exempt
-def get_students(request):
-    subject_id=request.POST.get("subject")
-    session_year=request.POST.get("session_year")
     
-    subject=Subjects.objects.get(id=subject_id)
-    session_model=SessionYearModel.object.get(id=session_year)
-    students=Students.objects.filter(course_id=subject.course_id,session_year_id=session_model)
-    student_data=serializers.serialize('python',students)
-    list_data=[]
-    for student in student_data:
-        data_small={"id":student.admin.id,"name":student.admin.first_name+" "+student.admin.last_name}
-        list_data.append(data_small)
-    return JsonResponse(json.dumps(list_data),content_type="application/json",safe=False)
-
-
-@login_required
-def staff_apply_leave_save(request: HttpRequest):
-    if request.method != "POST":
-        return HttpResponseRedirect(reverse("staff_apply_leave"))
-    else:
-        leave_date = request.POST.get("leave_date")
-        leave_msg = request.POST.get("leave_message")
-        print(f"request.user.id: {request.user.id}")
-        staff_obj = get_object_or_404(Staff, admin=request.user.id)
-        print(f"staff_obj: {staff_obj}")
-        try:
-            leave_report = StaffLeave(
-                staff_id=staff_obj,
-                leave_date=leave_date,
-                leave_message=leave_msg,
-                leave_status=0,
-            )
-            leave_report.save()
-            messages.success(request, "LEAVE APPLICATION SENT")
-            return HttpResponseRedirect(reverse("staff_apply_leave"))
-        except Exception as e:
-            messages.error(request, f"LEAVE APPLICATION FAILED - {str(e)}")
-            return HttpResponseRedirect(reverse("staff_apply_leave"))
- 
-     
-@login_required   
-def staff_send_feedback_save(request):
-    if request.method != "POST":
-        return HttpResponseRedirect(reverse("staff_feedback"))
-    else:
-        feedback_msg = request.POST.get("feedback_msg")
-        print(f"request.user.id: {request.user.id}")
-        staff_obj = get_object_or_404(Staff, admin=request.user.id)
-        print(f"staff_obj: {staff_obj}")
-        try:
-            feedback = FeedbackStaff(
-                staff_id=staff_obj,
-                feedback=feedback_msg,
-                feedback_reply=""  
-            )
-            feedback.save()
-            messages.success(request, "FEEDBACK SUCCESSFULY SENT!")
-            return HttpResponseRedirect(reverse("staff_feedback"))
-        except Exception as e:
-            messages.error(request, f"FAILED TO SEND FEEDBACK - {str(e)}")
-            return HttpResponseRedirect(reverse("staff_feedback"))
-    
-
-@login_required
-def staff_apply_leave(request):
-    staff_obj = Staff.objects.get(admin=request.user.id)
-    leave_data = StaffLeave.objects.filter(staff_id=staff_obj)
-    return render(request,"staff_template/staff_apply_leave.html",{"leave_data":leave_data})
-  
-  
-@login_required   
-def staff_feedback(request):
-    staff_obj = Staff.objects.get(admin=request.user.id)
-    feedback_obj = FeedbackStaff.objects.filter(staff_id=staff_obj)
-    return render(request,"staff_template/staff_feedback.html",{"feedback_obj":feedback_obj})
-
-
-@login_required
-def get_test_details(request):
-    departments = Courses.objects.all()
-    return render(request,"staff_template/get_test_details_template.html",{"departments":departments})
-
-
-def staff_view_test_details(request):
-    department = request.POST.get('department')
-    semester = request.POST.get('semester')
-    tests = TestDetails.objects.filter(subject_code__course_id__course_name=department, semester=semester)
-    return render(request, "staff_template/view_test_details.html", {"tests": tests})
-
-
 @login_required
 def staff_profile(request):
     user=CustomUser.objects.get(id=request.user.id)
@@ -144,19 +53,36 @@ def staff_profile_save(request):
         except:
             messages.error(request, "Failed to Update Profile")
             return HttpResponseRedirect(reverse("staff_profile"))   
-
+        
 
 @login_required
 def staff_edit_profile(request):
     user=CustomUser.objects.get(id=request.user.id)
     staff=Staff.objects.get(admin=user)
-    return render(request,"staff_template/staff_edit_profile.html",{"user":user,"staff":staff})      
+    return render(request,"staff_template/staff_edit_profile.html",{"user":user,"staff":staff})    
 
+
+@login_required
+def get_test_details(request):
+    departments = Courses.objects.all()
+    return render(request,"staff_template/get_test_details_template.html",{"departments":departments})
+
+
+def staff_view_test_details(request):
+    department = request.POST.get('department')
+    semester = request.POST.get('semester')
+    tests = TestDetails.objects.filter(subject_code__course_id__course_name=department, semester=semester)
+    return render(request, "staff_template/view_test_details.html", {"tests": tests})
+
+
+@login_required
+def add_results(request):
+    subjects = Subjects.objects.all()
+    return render(request,"staff_template/add_results_template.html",{"subjects":subjects})
 
 def excel_dump_view(request):
     if request.method == 'POST':
         file = request.FILES['file']
-        
         try:
             with transaction.atomic():
                 # Read the Excel file into a pandas DataFrame
@@ -179,26 +105,16 @@ def excel_dump_view(request):
                         attendance=row['attendance']
                     )
                     testscore.save()
-
             time.sleep(1)
             messages.success(request, "ADDED TEST SCORES!")
-            return HttpResponseRedirect("/add_results")
-            
-        
+            return HttpResponseRedirect("/add_results")   
         except Exception as e:
             with transaction.atomic():
                 transaction.set_rollback(True)
                 messages.error(request, "FAILED TO ADD TEST SCORES - " + str(e))
             return HttpResponseRedirect("/add_results")    
-    
     else:
         return render(request, "staff_template/add_results_template.html")
-
-
-@login_required
-def add_results(request):
-    subjects = Subjects.objects.all()
-    return render(request,"staff_template/add_results_template.html",{"subjects":subjects})
 
 
 @login_required
@@ -315,23 +231,82 @@ def edit_testscores(request, testscores_id):
 
     else:
         return render(request, "staff_template/edit_testscores.html", {"testscores": testscores})
-    
 
+
+@login_required
+def staff_apply_leave(request):
+    staff_obj = Staff.objects.get(admin=request.user.id)
+    leave_data = StaffLeave.objects.filter(staff_id=staff_obj)
+    return render(request,"staff_template/staff_apply_leave.html",{"leave_data":leave_data})
+
+@login_required
+def staff_apply_leave_save(request: HttpRequest):
+    if request.method != "POST":
+        return HttpResponseRedirect(reverse("staff_apply_leave"))
+    else:
+        leave_date = request.POST.get("leave_date")
+        leave_msg = request.POST.get("leave_message")
+        print(f"request.user.id: {request.user.id}")
+        staff_obj = get_object_or_404(Staff, admin=request.user.id)
+        print(f"staff_obj: {staff_obj}")
+        try:
+            leave_report = StaffLeave(
+                staff_id=staff_obj,
+                leave_date=leave_date,
+                leave_message=leave_msg,
+                leave_status=0,
+            )
+            leave_report.save()
+            messages.success(request, "LEAVE APPLICATION SENT")
+            return HttpResponseRedirect(reverse("staff_apply_leave"))
+        except Exception as e:
+            messages.error(request, f"LEAVE APPLICATION FAILED - {str(e)}")
+            return HttpResponseRedirect(reverse("staff_apply_leave"))
+ 
+  
+@login_required   
+def staff_feedback(request):
+    staff_obj = Staff.objects.get(admin=request.user.id)
+    feedback_obj = FeedbackStaff.objects.filter(staff_id=staff_obj)
+    return render(request,"staff_template/staff_feedback.html",{"feedback_obj":feedback_obj})
+
+
+@login_required   
+def staff_send_feedback_save(request):
+    if request.method != "POST":
+        return HttpResponseRedirect(reverse("staff_feedback"))
+    else:
+        feedback_msg = request.POST.get("feedback_msg")
+        print(f"request.user.id: {request.user.id}")
+        staff_obj = get_object_or_404(Staff, admin=request.user.id)
+        print(f"staff_obj: {staff_obj}")
+        try:
+            feedback = FeedbackStaff(
+                staff_id=staff_obj,
+                feedback=feedback_msg,
+                feedback_reply=""  
+            )
+            feedback.save()
+            messages.success(request, "FEEDBACK SUCCESSFULY SENT!")
+            return HttpResponseRedirect(reverse("staff_feedback"))
+        except Exception as e:
+            messages.error(request, f"FAILED TO SEND FEEDBACK - {str(e)}")
+            return HttpResponseRedirect(reverse("staff_feedback"))
+    
 
 def delete_test_details(request): 
     testdetails_id = request.POST.get('testdetails_id')
     try:
     # Retrieve the TestDetails object
         test_details = TestDetails.objects.get(id=testdetails_id)
-    
     # Delete the TestDetails object
         test_details.delete()
-    
         messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
         return render(request,"staff_template/delete_testdetails.html",{"testdetails":test_details}) 
     except Exception as e:
         messages.error(request,"FAILED TO DELETE THE DETAILS " +str(e))
         return HttpResponseRedirect("/delete_test_details_confirm/"+str(testdetails_id))
+    
 
 def delete_test_details_confirm(request, testdetails_id):
     print(testdetails_id)

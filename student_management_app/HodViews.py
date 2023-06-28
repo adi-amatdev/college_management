@@ -1,6 +1,4 @@
-from urllib import request
 from django.contrib import messages
-from django.forms import modelform_factory
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -9,15 +7,10 @@ import requests
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.generics import CreateAPIView
-from rest_framework.generics import GenericAPIView
 from .models import *
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-
 import pandas as pd
 from django.contrib import messages
 from .models import CustomUser, AdminHOD
@@ -683,20 +676,11 @@ def delete_staff_confirm(request,staff_id):
 def delete_student(request):
     student_id = request.POST.get('student_id')
     try:
-        # Get the student
         student = Students.objects.get(id=student_id)
-        
-        # Get the associated user
         user = CustomUser.objects.get(id=student.admin.id)
-
-        # Delete the student
         student.delete()
-
-        # Delete the associated user
         user.delete()
-
         messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
-        #return HttpResponseRedirect("/delete_student_confirm/"+student_id)
         return render(request,"hod_template/delete_student_template.html",{"student":student})
     except Students.DoesNotExist:
         return JsonResponse({'message': f'Student with id {student_id} does not exist.'}, status=404)
@@ -705,6 +689,7 @@ def delete_student(request):
     except Exception as e:
         messages.error(request,"FAILED TO DELETE THE DETAILS " +str(e))
         return HttpResponseRedirect("/delete_student_confirm/"+student_id)
+    
     
 def delete_student_confirm(request,student_id):
     student = Students.objects.get(admin=student_id) 
@@ -716,14 +701,9 @@ def delete_student_confirm(request,student_id):
 def delete_subject(request):
     subject_id = request.POST.get('subject_id')
     try:
-        # Get the subject
         subject = Subjects.objects.get(id=subject_id)
-        
-        # Delete the subject
         subject.delete()
-
         messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
-        #return HttpResponseRedirect("/delete_subject_confirm/"+subject_id)
         return render(request,"hod_template/delete_subject_template.html",{"subject":subject})
     except Exception as e:
             messages.error(request,"Subject does not exist "+str(e))
@@ -740,12 +720,8 @@ def delete_session(request):
     
     if session_id is not None:
         try:
-            # Get the session
             session = SessionYearModel.objects.get(id=session_id)
-
-            # Delete the session
             session.delete()
-
             messages.success(request, "Successfully deleted the details")
             return render(request, "hod_template/delete_session_template.html", {"session_year": session})
         except SessionYearModel.DoesNotExist:
@@ -754,7 +730,6 @@ def delete_session(request):
             messages.error(request, "Failed to delete the session: " + str(e))
     else:
         messages.error(request, "Invalid session ID")
-
     return HttpResponseRedirect("/delete_session_confirm/" + str(session_id))
 
 
@@ -774,10 +749,7 @@ def delete_admin(request):
     try:
         admin_hod = AdminHOD.objects.get(id=admin_hod_id)
         admin_user = CustomUser.objects.get(id=admin_hod.admin_id)
-        # Delete the AdminHOD instance
         admin_hod.delete()
-    
-        # Delete the corresponding CustomUser instance
         admin_user.delete()
         messages.success(request,"SUCCESSFULY DELETED THE DETAILS")
         return render(request,"hod_template/delete_admin_template.html",{"admin":admin_hod})
